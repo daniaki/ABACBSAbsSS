@@ -20,7 +20,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'logs/info.log',
+            'filename': './info.log',
             'formatter': 'verbose'
         }
     },
