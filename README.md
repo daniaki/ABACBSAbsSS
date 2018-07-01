@@ -2,12 +2,12 @@
 Conference abstract submission and review web application
 
 # Requirements
-- django>=2.0
-- djangorestframework>=3.8.2
-- djangorestframework-filters>=0.10.2
-- social-auth-app-django>=1.2.0
-- factory-boy>=2.9.2
-- Faker>=0.7.18
+- django==2.0
+- djangorestframework
+- djangorestframework-filters
+- social-auth-app-django
+- factory-boy
+- Faker
 - mod_wsgi
 
 # Local Development
