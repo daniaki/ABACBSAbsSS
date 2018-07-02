@@ -84,6 +84,8 @@ INSTALLED_APPS = [
 
     'core',
     'index',
+    'demographic',
+    'account',
 
     'social_django',
     'rest_framework',
