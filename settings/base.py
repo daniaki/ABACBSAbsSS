@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'core',
+    'index',
 
     'social_django',
     'rest_framework',
