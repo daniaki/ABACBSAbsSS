@@ -1,0 +1,7 @@
+Student
+Postdoc
+Faculty
+Professional
+Scientist
+Other academic
+Prefer not to say

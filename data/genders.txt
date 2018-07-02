@@ -1,0 +1,30 @@
+Male
+Female
+Transgender
+Intersex
+Other
+Prefer not to say
+Transsexual
+Cisgender
+Agender
+Non-Binary
+Neutrois
+Genderfluid
+Demigender
+Cis Female
+Cis Male
+Gender Non-Conforming
+Male to Female
+Female to Male
+Demigirl
+Demiboy
+Demigod
+Intergender
+Pangender
+Poligender
+Omnigender
+Bigender
+Androgyne
+Androgyny
+Third Gender
+Trigender

@@ -1,0 +1,11 @@
+Statistical bioinformatics
+Image analysis
+Non-model organisms
+Microbial genomics or metagenomics
+Methods development
+Genomics
+Transcriptomics
+Metabolomics
+Proteomics
+Clinical informatics
+Big data
