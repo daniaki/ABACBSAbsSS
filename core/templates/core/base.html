@@ -12,29 +12,31 @@
     <meta name="description" content="AbsSS">
     <meta name="author" content="Daniel C. Esposito">
     <meta name="keywords" content="abstract,submission system,abstract review,conference abstract review,conference">
-    <link href="{% static 'core/google/fonts_icons.css' %}" rel="stylesheet" type="text/css">
+{#    <link href="{% static 'core/google/fonts_icons.css' %}" rel="stylesheet" type="text/css">#}
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
     <link href="{% static 'core/bootstrap/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'core/select2/select2_4.0.5.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'core/fontawesome/fontawesome_5.1.0.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'core/datatables/datatables.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'core/core/base.css' %}" rel="stylesheet" type="text/css">
-    <link rel="icon" type="image/x-icon" href="{% static 'core/core/favicon.ico.png' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'core/core/small_logo.png' %}">
   </head>
 
   <body>
     <!-- Header for screen width > 768 -->
     <header id="header">
       <a id="header-logo-wrapper" href="https://www.abacbs.org/" target="_blank">
-        <img id="header-logo" src="{% static 'core/core/favicon.ico.png' %}">
+        <img id="header-logo" src="{% static 'core/core/small_logo.png' %}">
       </a>
       <div class="header-nav">
         <a class="nav-link" href="">Home</a>
         <a class="nav-link" href="">Guide</a>
         <div id="login-dropdown" href="">
-          <a class="nav-link" href="">Login <i class="fa fa-caret-down"></i></a>
+          <a class="nav-link" href="#">Login <i class="fa fa-caret-down"></i></a>
           <ul id="login-dropdown-content" class="zero-pad-ul">
-            <li><a class="nav-link" href="">Attendee</a></li>
-            <li><a class="nav-link" href="">Staff</a></li>
+            <li><a class="nav-link" href="#" data-toggle="modal"
+                   data-target="#orcid-login">Applicant</a></li>
+            <li><a class="nav-link" href="#">Staff</a></li>
           </ul>
         </div>
       </div>
@@ -42,20 +44,25 @@
 
     <!-- Header for screen width <= 768 -->
     <div id="mobile-header">
-      <img id="mobile-header-menu" class="menu-icon" src="{% static 'core/core/favicon.ico.png' %}">
+      <img id="mobile-header-menu" class="menu-icon"
+           src="{% static 'core/core/small_logo.png' %}">
     </div>
+
+    <!-- ORCID modal -->
+    {% include 'index/orcid.html' %}
 
     <!-- Sidebar for mobile devices -->
     <div id="sidebar">
       <div id="inner-sidebar">
-        <img id="sidebar-logo" src="{% static 'core/core/favicon.ico.png' %}">
+        <img id="sidebar-logo" src="{% static 'core/core/small_logo.png' %}">
         <hr>
         <ul class="zero-pad-ul">
-          <li class="nav-link"><a class="hover-underlin" href="">Home</a></li>
+          <li class="nav-link"><a class="hover-underline" href="">Home</a></li>
           <li class="nav-link"><a class="hover-underline" href="">Guide</a></li>
           <li class="nav-link"><a class="hover-underline" href="">Login</a></li>
           <li class="nav-link" style="margin-left: 1.25em">
-            <a class="hover-underline" href="">Attendee</a>
+            <a class="hover-underline" href="#" data-toggle="modal"
+               data-target="#orcid-login">Applicant</a>
           </li>
           <li class="nav-link" style="margin-left: 1.25em">
             <a class="hover-underline" href="">Staff</a>

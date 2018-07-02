@@ -21,7 +21,7 @@ futura-pt
 --------------------------------------------------------------------------- */
 /* Universal Font*/
 * {
-  font-family: europa, futura-pt, sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-style: normal;
   font-size: 14px;
   letter-spacing: 1px;
@@ -86,7 +86,7 @@ a:hover {
   color: #1c1c1c;
 }
 .text-like {
-  font-family: europa, futura-pt, sans-serif;
+  font-family: 'PT Sans', sans-serif;
   font-style: normal;
   font-size: 14px;
   letter-spacing: 1px;
@@ -102,6 +102,25 @@ a:hover {
   box-shadow: 0 0 2px rgba(0,0,0,0.25);
 }
 
+.hover-underline {
+  position: relative;
+}
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background-color: #007ab1;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+.hover-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
 
 /* Headers
 --------------------------------------------------------------------------- */
@@ -181,6 +200,7 @@ header a {
   border-radius: 2px;
 }
 
+
 /* Sidebar
 --------------------------------------------------------------------------- */
 #sidebar {
@@ -217,26 +237,6 @@ header a {
   color: #1c1c1c;
 }
 
-.hover-underline {
-  position: relative;
-}
-.hover-underline::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 1px;
-  bottom: 0;
-  left: 0;
-  background-color: #007ab1;
-  transform-origin: bottom right;
-  transition: transform 0.25s ease-out;
-}
-.hover-underline:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
-}
-
 
 /* Footer
 --------------------------------------------------------------------------- */
@@ -253,3 +253,31 @@ footer a {
   margin-top: 25px;
 }
 
+
+/* ORCID button
+--------------------------------------------------------------------------- */
+#connect-orcid-button{
+	border: 1px solid #d3d3d3;
+	padding: .3em;
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 1px 1px 3px #999999;
+	cursor: pointer;
+	color: #999999;
+	font-weight: bold;
+	font-size: .8em;
+	line-height: 24px;
+	vertical-align: middle;
+}
+
+#connect-orcid-button:hover{
+	border: 1px solid #338caf;
+	color: #338caf;
+}
+
+#orcid-id-logo{
+	display: block;
+	margin: 0 .5em 0 0;
+	padding: 0;
+	float: left;
+}

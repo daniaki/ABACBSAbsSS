@@ -27,6 +27,14 @@ function openSidebar(event) {
   }
 }
 
+// ORCID button in base.html
+function openORCID() {
+  let baseUrl = window.location.origin;
+  let loginPath = baseUrl + "/login/";
+  window.location.assign(loginPath);
+  return false;
+}
+
 // On Load ----------------------------------------------------------------- //
 $("document").ready(function() {
   let mobileHeader = document.getElementById("mobile-header");
