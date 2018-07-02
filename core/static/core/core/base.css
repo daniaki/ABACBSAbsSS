@@ -1,0 +1,255 @@
+/* ---------------------------------------------------------------------------
+Colour Palette
+
+footer: #201a16
+background: #ffffff
+text: #1c1c1c
+link: #b0aca9/rgba(31,31,31,.4);
+link-hover: #1c1c1c
+logo-red: #dd0c15
+logo-blue: #007ab1
+
+Fonts
+europa
+futura-pt
+
+@media (min-width: 576px) { ... }
+@media (min-width: 768px) { ... }
+@media (min-width: 992px) { ... }
+@media (min-width: 1200px) { ... }
+
+--------------------------------------------------------------------------- */
+/* Universal Font*/
+* {
+  font-family: europa, futura-pt, sans-serif;
+  font-style: normal;
+  font-size: 14px;
+  letter-spacing: 1px;
+	font-weight: 300;
+  color: #1c1c1c;
+
+  /* Debug */
+  /*border: solid 1px red;*/
+}
+
+/* Hyperlinks and transitions */
+a {
+	text-decoration: none !important;
+  color: rgba(31,31,31,.4);
+  line-height: 1.25em;
+  font-size: 16px;
+	letter-spacing: .5px;
+  transition: .25s;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+a:hover {
+  color: #1c1c1c;
+}
+
+
+/* Logos
+--------------------------------------------------------------------------- */
+#header-logo {
+  width: 42px;
+  height: 42px;
+  display: inline-block;
+}
+#combine-logo {
+  width: 96px;
+  height: 24px;
+  display: inline-block;
+}
+#mobile-header-menu {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  left: 40px;
+  cursor: pointer;
+}
+#sidebar-logo {
+  width: 42px;
+  height: 42px;
+  position: relative;
+  left: 30px;
+  margin-bottom: 5px;
+}
+
+
+/* Mixins
+--------------------------------------------------------------------------- */
+.link-like {
+  color: rgba(31,31,31,.4);
+  transition: .05s;
+}
+.link-like:hover {
+  color: #1c1c1c;
+}
+.text-like {
+  font-family: europa, futura-pt, sans-serif;
+  font-style: normal;
+  font-size: 14px;
+  letter-spacing: 1px;
+	font-weight: 300;
+  color: #1c1c1c;
+}
+.sticky {
+  position: fixed !important;
+  top: 0 !important;
+  width: 100% !important;
+  z-index: 9;
+  background-color: #ffffff;
+  box-shadow: 0 0 2px rgba(0,0,0,0.25);
+}
+
+
+/* Headers
+--------------------------------------------------------------------------- */
+header {
+	background-color: #fff;
+	height: 80px;
+	padding: 10px 80px;
+	position: relative;
+	z-index: 100;
+}
+
+#mobile-header {
+  position: relative;
+  top: 8px;
+  margin-bottom: 25px;
+  height: 40px;
+}
+
+.menu-icon {
+	position: absolute;
+	width: 24px;
+	height: 24px;
+	top: 8px;
+	left: 12px;
+}
+
+@media(max-width: 767px) {
+  header, .header-border {
+    display: none;
+  }
+  #mobile-header {
+    display: inline-block;
+  }
+}
+@media(min-width: 767px) {
+  #mobile-header {
+    display: none;
+  }
+}
+
+.header-nav {
+  float: right;
+  position: relative;
+  top: 8px;
+}
+header a {
+  float: left;
+  text-align: center;
+  padding: 10px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 24px;
+}
+#header-logo-warpper {
+  position: relative;
+  top: -5px;
+}
+.header-border {
+  width: 90%;
+  margin-bottom: 25px;
+}
+
+#login-dropdown {
+  display: inline-grid;
+}
+#login-dropdown-content {
+	display: none;
+
+  position: absolute;
+  top: 100%;
+  right: -15px;
+  padding: 10px 0;
+
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 2px;
+}
+
+/* Sidebar
+--------------------------------------------------------------------------- */
+#sidebar {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  height: 100%;
+  top: 0; left: 0;
+  background-color: rgba(249, 249, 249, 0.95);
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+.open {
+  display: block;
+}
+#inner-sidebar {
+  padding: 25px;
+}
+#inner-sidebar ul {
+  list-style: none;
+}
+#inner-sidebar ul li {
+  text-align: left;
+}
+.zero-pad-ul {
+  list-style: none;
+  padding-left: 0;
+}
+.nav-link a {
+  color: #827e7b;
+  font-size: 14px;
+  font-weight: 300;
+}
+.nav-link a:hover {
+  color: #1c1c1c;
+}
+
+.hover-underline {
+  position: relative;
+}
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background-color: #007ab1;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+.hover-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+
+/* Footer
+--------------------------------------------------------------------------- */
+footer {
+  padding: 20px 20px;
+  color: #ffffff;
+  text-align: center;
+}
+footer a {
+  text-transform: lowercase;
+}
+.footer-border {
+  width: 90%;
+  margin-top: 25px;
+}
+

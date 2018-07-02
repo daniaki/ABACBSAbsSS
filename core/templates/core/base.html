@@ -1,0 +1,108 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ABACBS Abstract Submission</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="AbsSS">
+    <meta name="author" content="Daniel C. Esposito">
+    <meta name="keywords" content="abstract,submission system,abstract review,conference abstract review,conference">
+    <link href="{% static 'core/google/fonts_icons.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'core/bootstrap/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'core/select2/select2_4.0.5.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'core/fontawesome/fontawesome_5.1.0.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'core/datatables/datatables.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'core/core/base.css' %}" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/x-icon" href="{% static 'core/core/favicon.ico.png' %}">
+  </head>
+
+  <body>
+    <!-- Header for screen width > 768 -->
+    <header id="header">
+      <a id="header-logo-wrapper" href="https://www.abacbs.org/" target="_blank">
+        <img id="header-logo" src="{% static 'core/core/favicon.ico.png' %}">
+      </a>
+      <div class="header-nav">
+        <a class="nav-link" href="">Home</a>
+        <a class="nav-link" href="">Guide</a>
+        <div id="login-dropdown" href="">
+          <a class="nav-link" href="">Login <i class="fa fa-caret-down"></i></a>
+          <ul id="login-dropdown-content" class="zero-pad-ul">
+            <li><a class="nav-link" href="">Attendee</a></li>
+            <li><a class="nav-link" href="">Staff</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <!-- Header for screen width <= 768 -->
+    <div id="mobile-header">
+      <img id="mobile-header-menu" class="menu-icon" src="{% static 'core/core/favicon.ico.png' %}">
+    </div>
+
+    <!-- Sidebar for mobile devices -->
+    <div id="sidebar">
+      <div id="inner-sidebar">
+        <img id="sidebar-logo" src="{% static 'core/core/favicon.ico.png' %}">
+        <hr>
+        <ul class="zero-pad-ul">
+          <li class="nav-link"><a class="hover-underlin" href="">Home</a></li>
+          <li class="nav-link"><a class="hover-underline" href="">Guide</a></li>
+          <li class="nav-link"><a class="hover-underline" href="">Login</a></li>
+          <li class="nav-link" style="margin-left: 1.25em">
+            <a class="hover-underline" href="">Attendee</a>
+          </li>
+          <li class="nav-link" style="margin-left: 1.25em">
+            <a class="hover-underline" href="">Staff</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container-fluid border-bottom header-border"></div>
+
+    <!-- Main content -->
+    <div id="middle-content" class="container">
+      {% block body %}{% endblock %}
+    </div>
+
+    <div class="container-fluid border-top footer-border"></div>
+
+    <!-- Footer is not sticky and shift when main content grows -->
+    <footer id="footer">
+      <p id="footer-links">
+        <a href="https://twitter.com/abacbs?lang=en" target="_blank">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://github.com/daniaki/ABACBSAbsSS" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      </p>
+      <p id="footer-info">
+        Australian Bioinformatics and Computational Biology Society Inc.
+        <br>
+        <a href="tel:+61393452627" class="text-like">+61 3 9345 2627</a>
+        <br>
+        <a href="mailto:committee@abacbs.org" class="text-like">committee@abacbs.org</a>
+      </p>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Ask user confirmation to remove themself as an instance admin -->
+    <!-- This needs to be here in order to record the user pk from django -->
+    <script src="{% static 'core/jquery/jquery-3.3.1.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'core/jquery/jquery-ui.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'core/bootstrap/popper_1.12.9.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'core/bootstrap/bootstrap.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'core/select2/select2_4.0.5.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'core/datatables/datatables.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'core/fontawesome/fontawesome_5.1.0.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'core/core/base.js' %}" type="text/javascript"></script>
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>
