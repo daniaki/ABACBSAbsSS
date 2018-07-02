@@ -10,6 +10,7 @@ from django.core.management.base import BaseCommand
 BASE_DIR = Path()
 SETTINGS_DIR = BASE_DIR / "settings"
 
+
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         secrets = {
