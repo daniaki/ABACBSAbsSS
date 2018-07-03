@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+
+{% block body %}
+
+  <div id='login-block' class="container">
+    {% if request.user.profile.is_complete %}
+      <h1>Edit your profile</h1>
+      You can freely edit the settings associated with your account below.
+    {% else %}
+      <h1>Hi, {{ request.user.profile.full_name }}!</h1>
+      Almost done! We need to collect some additional information before you
+      can submit an abstract for review.
+    {% endif %}
+    <br><br>
+    <form action="{% url 'account:edit_profile' %}" method="post">
+      {% csrf_token %}
+      {% include 'core/bs4_form.html' %}
+      <button type="submit" class="btn btn-outline-dark">Save</button>
+    </form>
+  </div>
+
+{% endblock %}
