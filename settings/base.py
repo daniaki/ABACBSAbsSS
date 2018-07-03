@@ -55,8 +55,8 @@ SOCIAL_AUTH_ORCID_KEY = get_secret('orcid_key')
 SOCIAL_AUTH_ORCID_SECRET = get_secret('orcid_secret')
 SOCIAL_AUTH_USER_MODEL = 'auth.User'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/profile/"
-SOCIAL_AUTH_LOGIN_ERROR_URL = "/profile/error/"
-SOCIAL_AUTH_URL_NAMESPACE = 'accounts:social'
+SOCIAL_AUTH_LOGIN_ERROR_URL = "/orcid/error/"
+SOCIAL_AUTH_URL_NAMESPACE = 'account:social'
 SOCIAL_AUTH_PIPELINE = [
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
@@ -71,6 +71,12 @@ SOCIAL_AUTH_PIPELINE = [
     'social_core.pipeline.user.user_details',
     'social_core.pipeline.social_auth.associate_by_email',
 ]
+
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # this is default
+    'social_core.backends.orcid.ORCIDOAuth2'
+)
 
 # Application definition
 
@@ -178,8 +184,9 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 
 # Redirect to home URL after login (Default redirects to /profile/)
-LOGIN_REDIRECT_URL = '/profile/'
-LOGOUT_REDIRECT_URL = '/profile/'
+LOGIN_REDIRECT_URL = 'account:profile'
+LOGOUT_REDIRECT_URL = 'account:profile'
+LOGIN_URL = 'account:orcid_login'
 
 
 REST_FRAMEWORK = {
