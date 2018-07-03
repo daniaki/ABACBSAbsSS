@@ -11,6 +11,9 @@ class Gender(TimeStampedModel):
         default=None,
         unique=True,
     )
+    
+    def __str__(self):
+        return self.type
 
 
 class State(TimeStampedModel):
@@ -22,6 +25,9 @@ class State(TimeStampedModel):
         default=None,
         unique=True,
     )
+    
+    def __str__(self):
+        return self.name
 
 
 class CareerStage(TimeStampedModel):
@@ -33,5 +39,22 @@ class CareerStage(TimeStampedModel):
         default=None,
         unique=True,
     )
+    
+    def __str__(self):
+        return self.name
+
+
+class AboriginalOrTorres(TimeStampedModel):
+    """Custom options indicating Aboriginal or Torres."""
+    type = models.CharField(
+        max_length=128,
+        null=False,
+        blank=False,
+        default=None,
+        unique=True,
+    )
+    
+    def __str__(self):
+        return self.type
 
 
