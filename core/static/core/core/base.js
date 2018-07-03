@@ -30,7 +30,8 @@ function openSidebar(event) {
 // ORCID button in base.html
 function openORCID() {
   let baseUrl = window.location.origin;
-  let loginPath = baseUrl + "/login/";
+  let loginPath = baseUrl + "/login/orcid/";
+  console.log(loginPath);
   window.location.assign(loginPath);
   return false;
 }
@@ -68,10 +69,10 @@ $("document").ready(function() {
     closeSidebar(event);
   });
   
-  $("#login-dropdown").hover(function() {
-    $("#login-dropdown #login-dropdown-content").show();
+  $(".nav-dropdown").hover(function() {
+    $(".nav-dropdown .nav-dropdown-content").show();
   });
-  $("#login-dropdown").mouseleave(function() {
-    $("#login-dropdown #login-dropdown-content").hide();
+  $(".nav-dropdown").mouseleave(function() {
+    $(".nav-dropdown .nav-dropdown-content").hide();
   });
 });

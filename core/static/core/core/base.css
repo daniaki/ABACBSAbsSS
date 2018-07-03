@@ -48,6 +48,13 @@ a:hover {
 }
 
 
+/* Main
+--------------------------------------------------------------------------- */
+#middle-content {
+    /*min-height: 66vh;*/
+}
+
+
 /* Logos
 --------------------------------------------------------------------------- */
 #header-logo {
@@ -61,10 +68,11 @@ a:hover {
   display: inline-block;
 }
 #mobile-header-menu {
-  width: 24px;
-  height: 24px;
+  width: 42px;
+  height: 42px;
   position: relative;
   left: 40px;
+  top: 6px;
   cursor: pointer;
 }
 #sidebar-logo {
@@ -121,6 +129,9 @@ a:hover {
   transform: scaleX(1);
   transform-origin: bottom left;
 }
+.indent {
+    margin-left: 1.25em;
+}
 
 /* Headers
 --------------------------------------------------------------------------- */
@@ -136,7 +147,7 @@ header {
   position: relative;
   top: 8px;
   margin-bottom: 25px;
-  height: 40px;
+  height: 54px;
 }
 
 .menu-icon {
@@ -164,7 +175,7 @@ header {
 .header-nav {
   float: right;
   position: relative;
-  top: 8px;
+  top: 12px;
 }
 header a {
   float: left;
@@ -184,11 +195,11 @@ header a {
   margin-bottom: 25px;
 }
 
-#login-dropdown {
+.nav-dropdown {
   display: inline-grid;
 }
-#login-dropdown-content {
-	display: none;
+.nav-dropdown-content {
+  display: none;
 
   position: absolute;
   top: 100%;
@@ -209,7 +220,7 @@ header a {
   z-index: 10;
   height: 100%;
   top: 0; left: 0;
-  background-color: rgba(249, 249, 249, 0.95);
+  background-color: rgba(249, 249, 249, 0.975);
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 .open {
