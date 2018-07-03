@@ -1,0 +1,58 @@
+{% load static %}
+{% load form_tags %}
+{% load i18n %}
+
+{% for hidden_field in form.hidden_fields %}
+  {{ hidden_field }}
+{% endfor %}
+
+{% if form.non_field_errors %}
+  <div class="alert alert-danger" role="alert">
+    {% for error in form.non_field_errors %}
+      {{ error }}
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% for field in form.visible_fields %}
+  {% is_checkbox field as is_checkbox %}
+
+  <div class="form-group {{ field.label|lower }}-group">
+
+    {{ field.label_tag }}{% if field.field.required %}*{% endif %}
+    <label for="{{ field.id_for_label }}"></label>
+    {% if field.help_text %}
+      <small class="form-text text-muted">{{ field.help_text }}</small>
+    {% endif %}
+
+    {% if form.is_bound %}
+      {% if field.errors or not field.errors and form.non_field_errors %}
+
+        {% if is_checkbox %}
+          {% add_css_class field "is-invalid" %}
+        {% else %}
+          {% add_css_class field "form-control is-invalid" %}
+        {% endif %}
+
+        {% for error in field.errors %}
+          <div class="invalid-feedback">
+            {{ error }}
+          </div>
+        {% endfor %}
+      {% else %}
+        {% if is_checkbox %}
+          {% add_css_class field "is-valid" %}
+        {% else %}
+          {% add_css_class field "form-control is-valid" %}
+        {% endif %}
+      {% endif %}
+    {% else %}
+      {% if is_checkbox %}
+        {% add_css_class field "" %}
+      {% else %}
+        {% add_css_class field "form-control" %}
+      {% endif %}
+    {% endif %}
+  </div>
+
+{% endfor %}
