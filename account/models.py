@@ -9,6 +9,8 @@ from django.core.mail import send_mail
 
 from core.models import TimeStampedModel
 
+from .utilities import user_is_anonymous
+
 
 User = get_user_model()
 logger = logging.getLogger('django')
@@ -30,36 +32,63 @@ class Profile(TimeStampedModel):
     affiliation : `models.CharField`
         The primary affiliation of a user.
 
-    funding_statement : `models.TextField
-        A short description of why this application has applied for funding.
+    gender : `models.ForeignKey
+        The user's identified gender.
+        
+    state : `models.ForeignKey
+        The user's state of residence.
+        
+    career_stage: `models.ForeignKey`
+        The user's career stage.
 
-    aboriginal_or_torres: `models.NullBooleanField`
+    aboriginal_or_torres: `models.ForeignKey`
         Indicates if this user is  an Aboriginal or Torres Strait Islander.
         If None, then they have chosen to not disclose this information.
 
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    completed_intial_login = models.BooleanField(null=False, default=False)
+    
+    # Basic Info
+    # ----------------------------------------------------------------------- #
     email = models.EmailField(
-        default=None, blank=True, null=True,
+        default=None, blank=False, null=True,
         verbose_name='Email address',
     )
     affiliation = models.CharField(
-        max_length=64, null=False, blank=False,
+        max_length=64, null=True, blank=False,
         default=None, verbose_name="Primary Affliation",
     )
-    funding_statement = models.TextField(
-        null=True, blank=True, default=None,
-        verbose_name="Statement",
+    
+    # Demographic fields
+    # ----------------------------------------------------------------------- #
+    aboriginal_or_torres = models.ForeignKey(
+        to='demographic.AboriginalOrTorres',
+        null=True, blank=False,
+        on_delete=models.PROTECT,
+        verbose_name='Do you identify as an Aboriginal or Torres Strait Islander?',
+        related_name='associated_%(class)ss'
     )
-    aboriginal_or_torres = models.NullBooleanField(
-        null=True,
-        blank=False,
-        default=False,
-        verbose_name="Aboriginal or Torres Strait Islander",
-        choices=(
-            (True, 'Yes'), (False, 'No'),
-            (None, 'Prefer not to say')
-        ),
+    gender = models.ForeignKey(
+        to='demographic.Gender',
+        null=True, blank=False,
+        on_delete=models.PROTECT,
+        verbose_name='Gender',
+        related_name='associated_%(class)ss'
+    )
+    career_stage = models.ForeignKey(
+        to='demographic.CareerStage',
+        null=True, blank=False,
+        on_delete=models.PROTECT,
+        verbose_name='Career Stage',
+        related_name='associated_%(class)ss'
+    )
+    state = models.ForeignKey(
+        to='demographic.State',
+        null=True, blank=False,
+        on_delete=models.PROTECT,
+        verbose_name='State',
+        related_name='associated_%(class)ss'
     )
 
     def email_user(self, subject, message, from_email=None, **kwargs):
@@ -77,10 +106,61 @@ class Profile(TimeStampedModel):
                 "Tried email user {uname} from Profile but could not find an "
                 "email address.".format(uname=self.user.username)
             )
+            
+    @property
+    def is_complete(self):
+        return self.completed_intial_login
+            
+    @property
+    def is_anon(self):
+        """
+        Checks if the user associated with this profile is anonymous.
+        Returns
+        -------
+        `bool`
+            True if the profile and user are anonymous.
+        """
+        return user_is_anonymous(self.user)
+    
+    @property
+    def display_name(self):
+        """
+        Returns the users credit-name from ORCID if one exists for this user,
+        otherwise calls `get_full_name`.
+        """
+        if self.is_anon:
+            return None
+
+        social_auth = UserSocialAuth.get_social_auth_for_user(
+            self.user).first()
+        if not isinstance(social_auth, UserSocialAuth):
+            return self.full_name
+        else:
+            credit_name = social_auth.extra_data.get('credit-name', None)
+            if not credit_name:
+                return self.full_name
+            return credit_name
 
     @property
-    def applied_for_funding(self):
-        return bool(self.funding_statement)
+    def full_name(self):
+        """
+        Returns the users full name formatted as "<first> <last>" If the user
+        does not have a last name, the first name is returned. If the user has
+        neither, then the username is returned.
+        """
+        if self.is_anon:
+            return None
+        if not self.user.last_name:
+            if not self.user.first_name:
+                return self.user.username
+            else:
+                # support for mononyms
+                return self.user.first_name.capitalize()
+        else:
+            return '{} {}'.format(
+                self.user.first_name.capitalize(),
+                self.user.last_name.capitalize()
+)
 
 
 # Post Save signals
