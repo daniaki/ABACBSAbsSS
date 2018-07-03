@@ -52,6 +52,19 @@ class Command(BaseCommand):
                 else:
                     sys.stdout.write("\t{} already exists.\n".format(stage))
 
+        sys.stdout.write("Creating Aboriginal/Torres options.\n")
+        with open(DATA_DIR / 'aboriginal_torres.txt') as fp:
+            options = [
+                x.strip().capitalize() for x in fp.readlines() if x.strip()]
+            for option in options:
+                model, created = models.AboriginalOrTorres.objects.get_or_create(
+                    type=option
+                )
+                if created:
+                    sys.stdout.write("\tCreated option {}.\n".format(option))
+                else:
+                    sys.stdout.write("\tOption {} already exists.\n".format(option))
+
         sys.stdout.write("Creating keywords.\n")
         with open(DATA_DIR / 'keywords.txt') as fp:
             keywords = [
@@ -64,3 +77,4 @@ class Command(BaseCommand):
                     sys.stdout.write("\tCreated keyword {}.\n".format(keyword))
                 else:
                     sys.stdout.write("\t{} already exists.\n".format(keyword))
+                    
