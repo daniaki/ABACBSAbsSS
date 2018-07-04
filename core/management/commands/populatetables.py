@@ -4,7 +4,8 @@ from pathlib import Path
 from django.core.management.base import BaseCommand
 
 from demographic import models
-from core import models as core_models
+from abstract import models as abstract_models
+from account.models import UserGroups
 
 BASE_DIR = Path()
 DATA_DIR = BASE_DIR / 'data'
@@ -13,6 +14,9 @@ DATA_DIR = BASE_DIR / 'data'
 class Command(BaseCommand):
     """Populates the gender, state and career stage tables."""
     def handle(self, *args, **options):
+        sys.stdout.write("Creating user groups.\n")
+        UserGroups.create_groups()
+        
         sys.stdout.write("Creating states.\n")
         with open(DATA_DIR / 'states.txt') as fp:
             states = [
@@ -70,7 +74,7 @@ class Command(BaseCommand):
             keywords = [
                 x.strip().capitalize() for x in fp.readlines() if x.strip()]
             for keyword in keywords:
-                model, created = core_models.Keyword.objects.get_or_create(
+                model, created = abstract_models.Keyword.objects.get_or_create(
                     text=keyword
                 )
                 if created:
@@ -78,3 +82,16 @@ class Command(BaseCommand):
                 else:
                     sys.stdout.write("\t{} already exists.\n".format(keyword))
                     
+        sys.stdout.write("Creating presentation categories.\n")
+        with open(DATA_DIR / 'categories.txt') as fp:
+            categories = [
+                x.strip().capitalize() for x in fp.readlines() if x.strip()]
+            for category in categories:
+                model, created = abstract_models.PresentationCategory.\
+                    objects.get_or_create(
+                    name=category
+                )
+                if created:
+                    sys.stdout.write("\tCreated category {}.\n".format(category))
+                else:
+                    sys.stdout.write("\t{} already exists.\n".format(category))
