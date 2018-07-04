@@ -4,8 +4,14 @@ Custom pipeline step for loading extra data within the ORCID pipeline.
 
 import logging
 from social_core.pipeline.social_auth import load_extra_data
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
+User = get_user_model()
 logger = logging.getLogger("django")
+
+
+from account.models import UserGroups
 
 
 def orcid_load_extra_data(backend, details, response, uid, user, *args, **kwargs):
@@ -43,3 +49,20 @@ def orcid_load_extra_data(backend, details, response, uid, user, *args, **kwargs
         else:
             social.set_extra_data({'credit-name': ""})
         return
+
+
+def assign_group(backend, details, response, uid, user, *args, **kwargs):
+    if user:
+        submitters = Group.objects.get(name=UserGroups.SUBMITTER.value)
+        submitters.user_set.add(user)
+        return
+    else:
+        raise TypeError(
+            "`assign_group` called with NoneType user argument. "
+            "Called with backend={}, details={}, response={}, "
+            "uid={}, user={}, *args={}, **kwargs={}".format(
+                backend, details, response, uid, user,
+                args, kwargs
+            )
+        )
+    

@@ -38,14 +38,19 @@ function openORCID() {
 
 // On Load ----------------------------------------------------------------- //
 $("document").ready(function() {
+  // Initialise select2
+  $(".select2").select2();
+  $(".select2-token-select").select2({
+      tags: true,
+      tokenSeparators: [","]
+  });
+
   let mobileHeader = document.getElementById("mobile-header");
   let middle_content = document.getElementById("middle-content");
   let sticky = middle_content.offsetTop;
   stickHeader();
   
   function stickHeader() {
-    console.log(window.pageYOffset);
-    console.log(middle_content.offsetTop);
     if (window.pageYOffset > 3 * sticky) {
       mobileHeader.classList.add("sticky");
     } else {

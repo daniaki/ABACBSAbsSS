@@ -6,7 +6,11 @@ register = template.Library()
 
 @register.simple_tag
 def add_css_class(field, css):
-    return field.as_widget(attrs={'class': css})
+    if 'class' in field.field.widget.attrs:
+        field.field.widget.attrs['class'] += ' ' + css
+    else:
+        field.field.widget.attrs['class'] = css
+    return field.as_widget()
 
 
 @register.simple_tag

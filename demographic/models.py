@@ -40,6 +40,8 @@ class CareerStage(TimeStampedModel):
         unique=True,
     )
     
+    STUDENT = 'student'
+    
     def __str__(self):
         return self.name
 

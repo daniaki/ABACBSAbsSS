@@ -70,6 +70,7 @@ SOCIAL_AUTH_PIPELINE = [
     'core.pipeline.orcid_load_extra_data',
     'social_core.pipeline.user.user_details',
     'social_core.pipeline.social_auth.associate_by_email',
+    'core.pipeline.assign_group',
 ]
 
 

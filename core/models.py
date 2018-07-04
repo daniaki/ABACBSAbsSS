@@ -28,14 +28,3 @@ class TimeStampedModel(models.Model):
     def save(self, *args, **kwargs):
         self.modification_date = datetime.date.today()
         return super().save(*args, **kwargs)
-
-
-class Keyword(TimeStampedModel):
-    """Keywords that can be associated with abstract submissions."""
-    text = models.CharField(
-        max_length=128,
-        null=False,
-        blank=False,
-        default=None,
-        unique=True,
-    )
