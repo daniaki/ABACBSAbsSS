@@ -1,8 +1,10 @@
 import logging
+from enum import Enum
 
 from social_django.models import UserSocialAuth
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.db import models
 from django.dispatch import receiver
 from django.core.mail import send_mail
@@ -15,6 +17,28 @@ from .utilities import user_is_anonymous
 User = get_user_model()
 logger = logging.getLogger('django')
 
+
+class UserGroups(Enum):
+    SUBMITTER = 'submitter'
+    REVIEWER = 'reviewer'
+    ASSIGNER = 'assigner'
+    CONFERENCE_CHAIR = 'conference_chair'
+    
+    def __iter__(self):
+        return iter(
+            [self.SUBMITTER, self.REVIEWER,
+             self.ASSIGNER, self.CONFERENCE_CHAIR]
+        )
+    
+    @classmethod
+    def get_group(cls, item):
+        return Group.objects.get(name=item.value)
+    
+    @classmethod
+    def create_groups(cls):
+        for group in cls:
+            Group.objects.get_or_create(name=group.value)
+            
 
 class Profile(TimeStampedModel):
     """
@@ -107,6 +131,10 @@ class Profile(TimeStampedModel):
                 "email address.".format(uname=self.user.username)
             )
             
+    @property
+    def user_group(self):
+        return self.user.groups.first()
+    
     @property
     def is_complete(self):
         return self.completed_intial_login

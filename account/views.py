@@ -61,4 +61,7 @@ class EditProfileView(LoginRequiredMixin, FormView):
 
 class ProfileView(LoginRequiredMixin, CompleteProfileRequired, TemplateView):
     template_name = 'account/profile.html'
+    
+    
+    
 

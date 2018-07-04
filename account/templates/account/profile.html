@@ -1,1 +1,18 @@
 {% extends 'core/base.html' %}
+
+{% block body %}
+
+  <h1>Your submissions</h1>
+  {% if not request.user.abstracts.count %}
+    <p class="text-muted">You have not submitted any abstracts. Submit one <a href="{% url 'abstract:submit_abstract' %}" style="text-transform: lowercase">now</a>.</p>
+  {% else %}
+    {% for abstract in request.user.abstracts.all %}
+      <div class="abstract-card">
+        <h4> {{ abstract.title }}</h4>
+        <p> {{ abstract.text }}</p>
+      </div>
+      <hr>
+    {% endfor %}
+  {% endif %}
+
+{% endblock %}

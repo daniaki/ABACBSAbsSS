@@ -1,42 +1,87 @@
 import random
 import factory.fuzzy
 import factory.faker
+from factory.django import DjangoModelFactory
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+from demographic import models as demographic_models
+
+from .models import UserGroups
 
 
-def UserFactory(username=None, password=None, first_name=None,
-                last_name=None, email=None, **kwargs):
-    """
-    Test fixture factory for the user class which sets username,
-    first_name, last_name and password.
-    """
-    names = list(zip(
-        ['Spike', 'Jet', 'Faye', 'Ed', 'Ein'],
-        ['Spiegel', 'Black', 'Valentine', 'Ed', 'Ein']
-    ))
-    if email is None:
-        email = factory.faker.Faker('email').generate({})
-    if username is None:
-        username = factory.fuzzy.FuzzyText(length=8).fuzz()
-    if password is None:
-        password = factory.fuzzy.FuzzyText(length=16).fuzz()
+User = get_user_model()
 
-    if User.objects.filter(username=username).count():
-        return User.objects.filter(username=username).first()
+first_names = ['Spike', 'Jet', 'Faye', 'Ed', 'Ein']
+last_names = ['Spiegel', 'Black', 'Valentine', 'Wong Hau Pepelu Tivrusky IV', '']
+names = list(zip(first_names, last_names))
 
-    first, last = random.choice(names)
-    if first_name is None:
-        first_name = first
-    if last_name is None:
-        last_name = last
 
-    user = User.objects.create(
-        username=username,
-        first_name=first_name,
-        last_name=last_name,
-        email=email,
-        **kwargs
-    )
-    user.set_password(password)
-    return user
+class UserFactory(DjangoModelFactory):
+    class Meta:
+        model = User
+        django_get_or_create = ('username',)
+    
+    username = factory.fuzzy.FuzzyText(length=8)
+    email = factory.faker.Faker('email')
+    first_name = ''
+    last_name = ''
+    password = factory.PostGenerationMethodCall('set_password', '1234qwerty')
+    
+    is_staff = False
+    is_superuser = False
+    is_active = True
+    
+    @factory.post_generation
+    def set_name(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if not self.first_name and not self.last_name:
+            first, last = random.choice(names)
+            self.first_name = first
+            self.last_name = last
+        return self
+
+
+class SubmitterFactory(UserFactory):
+    """Submitter user object creation."""
+    @factory.post_generation
+    def set_group(self, create, extracted, **kwargs):
+        if not create:
+            return
+        group = UserGroups.get_group(UserGroups.SUBMITTER)
+        group.user_set.add(self)
+        return self
+
+
+class ReviewerFactory(UserFactory):
+    """Reviewer user object creation."""
+    @factory.post_generation
+    def set_group(self, create, extracted, **kwargs):
+        if not create:
+            return
+        group = UserGroups.get_group(UserGroups.REVIEWER)
+        group.user_set.add(self)
+        return self
+    
+    
+class AssignerFactory(UserFactory):
+    """Assigner user object creation."""
+    @factory.post_generation
+    def set_group(self, create, extracted, **kwargs):
+        if not create:
+            return
+        group = UserGroups.get_group(UserGroups.ASSIGNER)
+        group.user_set.add(self)
+        return self
+
+
+class ConferenceChairFactory(UserFactory):
+    """Conference chair user object creation."""
+    @factory.post_generation
+    def set_group(self, create, extracted, **kwargs):
+        if not create:
+            return
+        group = UserGroups.get_group(UserGroups.CONFERENCE_CHAIR)
+        group.user_set.add(self)
+        return self
