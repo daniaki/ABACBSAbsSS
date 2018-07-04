@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block body %}
+
+  <div id='abstract-form-container' class="container">
+    <h1>Submit an abstract</h1>
+    Please fill out the form below. You can also apply for travel funding
+    from your profile.
+    <br><br>
+    <form id='abstract-form' action="{% url 'abstract:submit_abstract' %}" method="post">
+      {% csrf_token %}
+      {% include 'core/bs4_form.html' %}
+      <br>
+      <button type="submit" class="btn btn-outline-dark">Submit</button>
+    </form>
+  </div>
+
+{% endblock %}

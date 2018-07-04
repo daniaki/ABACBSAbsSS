@@ -4,4 +4,7 @@ from . import views
 
 app_name = 'abstract'
 
-urlpatterns = []
+urlpatterns = [
+    path('abstract/submit/', views.SubmissionView.as_view(), name='submit_abstract'),
+    path('abstract/edit/<slug:id>/', views.EditSubmissionView.as_view(), name='edit_abstract'),
+]

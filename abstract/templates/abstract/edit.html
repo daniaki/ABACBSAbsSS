@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block body %}
+
+  <div id='abstract-form-container' class="container">
+    <h1>Submit an abstract</h1>
+    You may edit your submission freely up until the deadline. Further editing past
+    this date will not be considered.
+    <br><br>
+    <form id='abstract-form' action="{% url 'abstract:edit_abstract' instance.id %}" method="post">
+      {% csrf_token %}
+      {% include 'core/bs4_form.html' %}
+      <br>
+      <button type="submit" class="btn btn-outline-dark">Submit</button>
+    </form>
+  </div>
+
+{% endblock %}
