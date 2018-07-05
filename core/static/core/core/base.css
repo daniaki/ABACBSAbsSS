@@ -26,10 +26,17 @@ futura-pt
   font-size: 14px;
   letter-spacing: 1px;
 	font-weight: 300;
-  color: #1c1c1c;
 
   /* Debug */
   /*border: solid 1px red;*/
+}
+
+p {
+  color: #1c1c1c;
+}
+
+body {
+  padding: 5px;
 }
 
 /* Hyperlinks and transitions */
@@ -47,6 +54,11 @@ a:hover {
   color: #1c1c1c;
 }
 
+/* Fixes resizing issue with select2 components */
+span.select2.select2-container.select2-container--default {
+    width: 100% !important;
+}
+
 
 /* Main
 --------------------------------------------------------------------------- */
@@ -54,6 +66,12 @@ a:hover {
     min-height: 66vh;
 }
 
+[id^='id_categories'] {
+  list-style: none;
+  border: none;
+  display: inline-block;
+  width: auto;
+}
 
 /* Logos
 --------------------------------------------------------------------------- */
@@ -131,6 +149,10 @@ a:hover {
 }
 .indent {
     margin-left: 1.25em;
+}
+
+.icons i,.icons svg {
+   color: #2759AE !important;
 }
 
 /* Headers

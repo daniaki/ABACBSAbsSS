@@ -2,7 +2,7 @@ from .base import *
 
 DEBUG = True
 USE_SOCIAL_AUTH = not DEBUG
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.compute.amazonaws.com', ]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ]
 
 # Loggers setup.
 LOGGING = {

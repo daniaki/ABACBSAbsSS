@@ -4,7 +4,7 @@ from core.models import TimeStampedModel
 
 class Gender(TimeStampedModel):
     """Gender selections associated with a user"""
-    type = models.CharField(
+    text = models.CharField(
         max_length=128,
         null=False,
         blank=False,
@@ -13,12 +13,12 @@ class Gender(TimeStampedModel):
     )
     
     def __str__(self):
-        return self.type
+        return self.text
 
 
 class State(TimeStampedModel):
     """States that a user may have residence in."""
-    name = models.CharField(
+    text = models.CharField(
         max_length=128,
         null=False,
         blank=False,
@@ -27,12 +27,12 @@ class State(TimeStampedModel):
     )
     
     def __str__(self):
-        return self.name
+        return self.text
 
 
 class CareerStage(TimeStampedModel):
     """Career stages that are selectable by a user."""
-    name = models.CharField(
+    text = models.CharField(
         max_length=128,
         null=False,
         blank=False,
@@ -40,15 +40,13 @@ class CareerStage(TimeStampedModel):
         unique=True,
     )
     
-    STUDENT = 'student'
-    
     def __str__(self):
-        return self.name
+        return self.text
 
 
 class AboriginalOrTorres(TimeStampedModel):
     """Custom options indicating Aboriginal or Torres."""
-    type = models.CharField(
+    text = models.CharField(
         max_length=128,
         null=False,
         blank=False,
@@ -57,6 +55,6 @@ class AboriginalOrTorres(TimeStampedModel):
     )
     
     def __str__(self):
-        return self.type
+        return self.text
 
 

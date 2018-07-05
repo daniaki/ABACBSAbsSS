@@ -126,6 +126,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
+                # Custom
+                "core.context_processors.user_groups",
 
                 # Social-auth context_processors
                 'social_django.context_processors.backends',
@@ -210,3 +213,8 @@ REST_FRAMEWORK = {
 DEFAULT_FROM_EMAIL = "admin@test.org"
 SERVER_EMAIL = "admin@test.org"
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Settings you may configure
+STUDENT_CATEGORY = 'COMBINE (students only)'
+STUDENT_STAGE = 'Student'

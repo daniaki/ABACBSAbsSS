@@ -11,7 +11,7 @@ class UserKwargsForm:
     def __init__(self, *args, **kwargs):
         if 'user' in kwargs:
             self.user = kwargs.pop('user')
-            if not isinstance(self.user, User):
+            if self.user is not None and not isinstance(self.user, User):
                 raise TypeError("`user` must be an instance "
                                 "of '{}'. Found '{}'.".format(
                     type(User).__name__, type(self.user).__name__,
