@@ -2,16 +2,31 @@
 
 {% block body %}
 
-  <h1>Your submissions</h1>
+  <h1>Your abstracts
+    <a class="hover-icon" href="{% url 'abstract:submit_abstract' %}">
+      <i class="fa fa-plus" style="font-size: 28px"></i>
+    </a>
+  </h1>
   {% if not request.user.abstracts.count %}
     <p class="text-muted">You have not submitted any abstracts. Submit one <a href="{% url 'abstract:submit_abstract' %}" style="text-transform: lowercase">now</a>.</p>
   {% else %}
     {% for abstract in request.user.abstracts.all %}
-      <div class="abstract-card">
-        <h4> {{ abstract.title }}</h4>
-        <p> {{ abstract.text }}</p>
-      </div>
       <hr>
+      <div class="abstract-card" id="{{ abstract.id }}">
+        <h4> {{ abstract.title }}
+          <a href="{% url 'abstract:edit_abstract' abstract.id %}">
+            <i class="fa fa-edit"></i>
+          </a>
+          <a href="{% url 'abstract:delete_abstract' abstract.id %}">
+            <i class="fa fa-trash"></i>
+          </a>
+        </h4>
+        <p> {{ abstract.text }} </p>
+        <p> <strong>Keywords:</strong> {{ abstract.keywords.all|join:', ' }}</p>
+        <p> <strong>Categories:</strong> {{ abstract.categories.all|join:', ' }}</p>
+        <p> <strong>Authors:</strong> {{ abstract.authors }}</p>
+        <p> <strong>Author affiliations:</strong> {{ abstract.author_affiliations }}</p>
+      </div>
     {% endfor %}
   {% endif %}
 

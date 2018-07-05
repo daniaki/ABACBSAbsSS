@@ -44,13 +44,17 @@
             <a class="nav-link" href="#">Profile <i class="fa fa-caret-down"></i></a>
             <ul class="nav-dropdown-content zero-pad-ul">
               <li><a class="nav-link" href="{% url 'account:edit_profile' %}">Settings</a></li>
-              <li><a class="nav-link" href="{% url 'account:profile' %}">Submissions</a></li>
+              {% if request.user.groups.first.name == SUBMITTER_GROUP %}
+                <li><a class="nav-link" href="{% url 'abstract:submit_abstract' %}">New submission</a></li>
+                <li><a class="nav-link" href="{% url 'account:profile' %}">Submissions</a></li>
+              {% endif %}
               <li><a class="nav-link" href="{% url 'account:logout' %}">Logout</a></li>
             </ul>
           </div>
         {% endif %}
       </div>
     </header>
+
 
     <!-- Header for screen width <= 768 -->
     <div id="mobile-header">
@@ -77,7 +81,10 @@
           {% else %}
             <li class="nav-link"><a class="hover-underline" href="">Profile</a></li>
               <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:edit_profile' %}">Settings</a></li>
-              <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:profile' %}">Submissions</a></li>
+              {% if request.user.groups.first.name == SUBMITTER_GROUP %}
+                <li class="nav-link indent"><a class="hover-underline" href="{% url 'abstract:submit_abstract' %}">New submission</a></li>
+                <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:profile' %}">Submissions</a></li>
+              {% endif %}
               <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:logout' %}">Logout</a></li>
           {% endif %}
         </ul>
@@ -85,6 +92,8 @@
     </div>
 
     <div class="container-fluid border-bottom header-border"></div>
+
+    {% include 'core/messages.html' %}
 
     <!-- Main content -->
     <div id="middle-content" class="container">
