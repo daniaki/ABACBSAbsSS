@@ -5,8 +5,6 @@ from factory.django import DjangoModelFactory
 
 from django.contrib.auth import get_user_model
 
-from demographic import models as demographic_models
-
 from .models import UserGroups
 
 
