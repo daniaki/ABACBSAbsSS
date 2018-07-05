@@ -32,14 +32,16 @@ class UserGroups(Enum):
     
     @classmethod
     def get_group(cls, item):
-        return Group.objects.get(name=item.value)
+        if isinstance(item, Enum):
+            return Group.objects.get(name=item.value)
+        return Group.objects.get(name=item)
     
     @classmethod
     def create_groups(cls):
         for group in cls:
             Group.objects.get_or_create(name=group.value)
             
-
+            
 class Profile(TimeStampedModel):
     """
     A Profile is associated with a user.
