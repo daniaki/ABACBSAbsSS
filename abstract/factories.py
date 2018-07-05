@@ -23,9 +23,9 @@ class PresentationCategoryFactory(DjangoModelFactory):
     """"""
     class Meta:
         model = models.PresentationCategory
-        django_get_or_create = ('name',)
+        django_get_or_create = ('text',)
     
-    name = factory.fuzzy.FuzzyChoice(['poster', 'oral', 'student'])
+    text = factory.fuzzy.FuzzyChoice(['Poster', 'Selected oral',])
     
 
 class AbstractFactory(DjangoModelFactory):

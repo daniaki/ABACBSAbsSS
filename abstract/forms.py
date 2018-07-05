@@ -1,8 +1,8 @@
+from django.conf import settings
 from django import forms
 from django.core.exceptions import ValidationError
 
 from core import mixins
-from demographic.models import CareerStage
 
 from . import models, fields
 
@@ -11,8 +11,8 @@ class AbstractForm(mixins.UserKwargsForm, forms.ModelForm):
     """Basic form for an abstract submission."""
     class Meta:
         model = models.Abstract
-        fields = ('text', 'title', 'contribution', 'authors',
-                  'author_affiliations', 'categories', 'keywords',)
+        fields = ('title', 'text', 'contribution', 'authors',
+                  'author_affiliations', 'keywords', 'categories')
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,24 +27,39 @@ class AbstractForm(mixins.UserKwargsForm, forms.ModelForm):
             ),
             help_text=self.fields['keywords'].help_text,
         )
-        self.fields['categories'] = fields.FlexibleModelMultipleChoiceField(
-            klass=models.PresentationCategory,
-            to_field_name='name',
+        self.fields['categories'] = forms.ModelMultipleChoiceField(
             label='Presentation category',
             required=True,
             queryset=models.PresentationCategory.objects.all(),
-            widget=forms.SelectMultiple(
-                attrs={"class": "select2 select2-token-select"}
-            ),
+            widget=forms.CheckboxSelectMultiple(),
             help_text=self.fields['categories'].help_text,
         )
         
+    def clean_authors(self):
+        return ', '.join([
+            x.strip() for x in
+            self.cleaned_data.get('authors', '').split(',')
+            if x.strip()
+        ])
+    
+    def clean_author_affiliations(self):
+        return ', '.join([
+            x.strip() for x in
+            self.cleaned_data.get('author_affiliations', '').split(',')
+            if x.strip()
+        ])
+        
     def clean_categories(self):
+        if self.user is None:
+            return self.cleaned_data.get('categories', None)
+        
         categories = self.cleaned_data.get('categories', [])
-        is_student = self.user.profile.career_stage.name.lower() == \
-                     CareerStage.STUDENT.lower()
-        applied_as_student = models.PresentationCategory.STUDENT_CATEGORY in \
-                             categories
+        is_student = str(self.user.profile.career_stage).lower() == \
+                     settings.STUDENT_STAGE.lower()
+        student_category = models.PresentationCategory.objects.get(
+            text=settings.STUDENT_CATEGORY)
+        applied_as_student = student_category in categories
+        
         if not is_student and applied_as_student:
             raise ValidationError(
                 "You must be a student to apply to for a student presentation."
@@ -62,17 +77,22 @@ class AbstractForm(mixins.UserKwargsForm, forms.ModelForm):
                 'author affiliations. Please separate entries with commas.')
             )
             self.add_error(
-                'authors',
+                'author_affiliations',
                 ('The number of authors affiliations must be the same as '
                 'the number of authors. Please separate entries with commas.')
             )
         return cleaned_data
+    
+    def _save_m2m(self):
+        for kw in self.cleaned_data.get('keywords', []):
+            kw.save()
+        return super()._save_m2m()
         
     def save(self, commit=True):
         if not self.user and self.instance.submitter is None:
             raise ValueError("A submitting user must be specified through"
                              "the `user` kwarg at form instantiation.")
         else:
-            if self.instance.submitter is not None:
+            if self.instance.submitter is None:
                 self.instance.submitter = self.user
         return super().save(commit=commit)
