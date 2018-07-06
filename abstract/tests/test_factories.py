@@ -30,7 +30,7 @@ class TestAbstractFactory(TestCase):
         
     def test_assigns_comment_for_each_reviewer(self):
         abstract = factories.AbstractFactory()
-        comments = factories.AbstractFactory.assign_comments(abstract)
+        comments = factories.AbstractFactory.assign_reviews(abstract)
         self.assertEqual(User.objects.count(), 2)  # No extra users created
         self.assertEqual(len(comments), 1)
         
@@ -41,12 +41,12 @@ class TestAbstractFactory(TestCase):
 
 class TestCommentFactory(TestCase):
     def test_assigns_first_reviewer(self):
-        comment = factories.CommentFactory()
+        comment = factories.ReviewFactory()
         self.assertEqual(User.objects.count(), 2)  # one submitter, one reviewer
         self.assertEqual(comment.reviewer, comment.abstract.reviewers.first())
         
     def test_assigns_scores(self):
-        comment = factories.CommentFactory()
+        comment = factories.ReviewFactory()
         self.assertGreaterEqual(comment.score_content, factories.MIN_SCORE)
         self.assertGreaterEqual(comment.score_interest, factories.MIN_SCORE)
         self.assertGreaterEqual(comment.score_contribution, factories.MIN_SCORE)
@@ -56,8 +56,8 @@ class TestCommentFactory(TestCase):
         self.assertLessEqual(comment.score_contribution, factories.MAX_SCORE)
     
     def test_gets_on_reviewer_and_abstract(self):
-        comment_a = factories.CommentFactory()
-        comment_b = factories.CommentFactory(abstract=comment_a.abstract,
-                                             reviewer=comment_a.reviewer)
+        comment_a = factories.ReviewFactory()
+        comment_b = factories.ReviewFactory(abstract=comment_a.abstract,
+                                            reviewer=comment_a.reviewer)
         self.assertEqual(comment_a.id, comment_b.id)
         

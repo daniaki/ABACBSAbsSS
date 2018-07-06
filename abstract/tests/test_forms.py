@@ -57,14 +57,6 @@ class TestAbstractForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('limited to', str(form.errors))
         
-    def test_new_save_requires_user(self):
-        data = self.mock_data()
-        form = forms.AbstractForm(user=self.user, data=data)
-        
-        self.assertTrue(form.is_valid())
-        abstract = form.save()
-        self.assertEqual(abstract.submitter, self.user)
-        
     def test_creates_new_keywords(self):
         data = self.mock_data()
         data['keywords'] = ['bioinformatics',]
@@ -132,3 +124,10 @@ class TestAbstractForm(TestCase):
         self.assertEqual(abstract.authors, authors)
         affil = 'A, A'
         self.assertEqual(abstract.author_affiliations, affil)
+        
+    def test_sets_user(self):
+        data = self.mock_data()
+        form = forms.AbstractForm(user=self.user, data=data)
+        self.assertTrue(form.is_valid())
+        abstract = form.save(commit=True)
+        self.assertIn(abstract, self.user.abstracts.all())

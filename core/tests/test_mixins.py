@@ -6,24 +6,25 @@ from account.factories import UserFactory
 from .. import mixins
 
 
-class MockForm(mixins.UserKwargsForm, forms.Form):
+class MockUserKwargsForm(mixins.UserKwargsMixin, forms.Form):
+    user_kwarg = 'user'
     field = forms.BooleanField()
-
-
+    
+    
 class TestMixins(TestCase):
     def test_kwarg_mixin_sets_user(self):
         user = UserFactory()
-        form = MockForm(user=user)
+        form = MockUserKwargsForm(user=user)
         self.assertEqual(form.user, user)
         
     def test_kwarg_mixin_sets_user_as_none_if_not_supplied(self):
-        form = MockForm(user=None)
+        form = MockUserKwargsForm(user=None)
         self.assertIsNone(form.user)
         
-        form = MockForm()
+        form = MockUserKwargsForm()
         self.assertIsNone(form.user)
         
     def test_error_not_none_or_user(self):
         with self.assertRaises(TypeError):
-            MockForm(user=[])
-        
+            MockUserKwargsForm(user=[])
+    
