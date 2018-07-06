@@ -5,7 +5,7 @@ from factory.django import DjangoModelFactory
 
 from django.contrib.auth import get_user_model
 
-from .models import UserGroups
+from . import models
 
 
 User = get_user_model()
@@ -47,7 +47,7 @@ class SubmitterFactory(UserFactory):
     def set_group(self, create, extracted, **kwargs):
         if not create:
             return
-        group = UserGroups.get_group(UserGroups.SUBMITTER)
+        group = models.UserGroups.get_group(models.UserGroups.SUBMITTER)
         group.user_set.add(self)
         return self
 
@@ -58,7 +58,7 @@ class ReviewerFactory(UserFactory):
     def set_group(self, create, extracted, **kwargs):
         if not create:
             return
-        group = UserGroups.get_group(UserGroups.REVIEWER)
+        group = models.UserGroups.get_group(models.UserGroups.REVIEWER)
         group.user_set.add(self)
         return self
     
@@ -69,7 +69,7 @@ class AssignerFactory(UserFactory):
     def set_group(self, create, extracted, **kwargs):
         if not create:
             return
-        group = UserGroups.get_group(UserGroups.ASSIGNER)
+        group = models.UserGroups.get_group(models.UserGroups.ASSIGNER)
         group.user_set.add(self)
         return self
 
@@ -80,6 +80,18 @@ class ConferenceChairFactory(UserFactory):
     def set_group(self, create, extracted, **kwargs):
         if not create:
             return
-        group = UserGroups.get_group(UserGroups.CONFERENCE_CHAIR)
+        group = models.UserGroups.get_group(models.UserGroups.CONFERENCE_CHAIR)
         group.user_set.add(self)
         return self
+
+
+class ScholarshipApplicationFactory(DjangoModelFactory):
+    """Creates a dummy scholarship application"""
+    class Meta:
+        model = models.ScholarshipApplication
+        django_get_or_create = ('submitter',)
+    
+    text = factory.faker.Faker('text', max_nb_chars=1000)
+    has_other_funding = True
+    other_funding = factory.faker.Faker('text', max_nb_chars=200)
+    submitter = factory.SubFactory(SubmitterFactory)

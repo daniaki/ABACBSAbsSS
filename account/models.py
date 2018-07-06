@@ -10,6 +10,7 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 
 from core.models import TimeStampedModel
+from abstract.validators import validate_200_words_or_less
 
 from .utilities import user_is_anonymous
 
@@ -190,8 +191,31 @@ class Profile(TimeStampedModel):
             return '{} {}'.format(
                 self.user.first_name.capitalize(),
                 self.user.last_name.capitalize()
-)
-
+            )
+        
+        
+class ScholarshipApplication(models.Model):
+    """A scholarship application model with reference to the submitting user."""
+    text = models.TextField(
+        verbose_name='Reason', null=False, blank=False, default=None,
+        help_text="Please explain why you are applying for this scholarship. "
+                  "This field is limited to 200 words or less.",
+        validators=[validate_200_words_or_less, ]
+    )
+    has_other_funding = models.BooleanField(
+        null=False, default=False, blank=True,
+        verbose_name="Do you have any other sources of funding?",
+    )
+    other_funding = models.TextField(
+        verbose_name='List of other funding sources', null=True,
+        blank=True, default=None,
+        help_text="Please list any additional sources of funding if applicable.",
+    )
+    submitter = models.OneToOneField(
+        to=User, on_delete=models.CASCADE, null=True, default=None,
+        related_name='scholarship_application',
+    )
+    
 
 # Post Save signals
 # -------------------------------------------------------------------------- #

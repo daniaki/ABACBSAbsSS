@@ -90,8 +90,8 @@ class Abstract(TimeStampedModel):
     reviewers: `models.ManyToManyField`
         Reviewers assigned to this abstract.
         
-    comments: `models.RelatedField`
-        The related field returning `Comment` instances associated with this
+    reviews: `models.RelatedField`
+        The related field returning `Review` instances associated with this
         abstract.
     """
     LIST_SEP = ','
@@ -142,6 +142,9 @@ class Abstract(TimeStampedModel):
                   'of all contributing authors including yourself '
                   '(comma separated).'
     )
+    accepted = models.BooleanField(
+        null=False, default=False, blank=True, verbose_name='Approve?'
+    )
     
     # Linked Fields
     # ----------------------------------------------------------------------- #
@@ -173,9 +176,9 @@ class Abstract(TimeStampedModel):
     # Properties
     # ----------------------------------------------------------------------- #
     @property
-    def has_comments(self):
-        if hasattr(self, 'comments'):
-            return self.comments.count() > 0
+    def has_reviews(self):
+        if hasattr(self, 'reviews'):
+            return self.reviews.count() > 0
         return False
     
     @property
@@ -184,7 +187,7 @@ class Abstract(TimeStampedModel):
 
     @property
     def score(self):
-        if self.has_comments:
+        if self.has_reviews:
             return (self.score_content +
                     self.score_contribution +
                     self.score_interest) / 3
@@ -192,27 +195,27 @@ class Abstract(TimeStampedModel):
     
     @property
     def score_content(self):
-        if self.has_comments:
+        if self.has_reviews:
             score = 0
-            for comment in self.comments.all():
+            for comment in self.reviews.all():
                 score += comment.score_content
             return score
         return None
     
     @property
     def score_contribution(self):
-        if self.has_comments:
+        if self.has_reviews:
             score = 0
-            for comment in self.comments.all():
+            for comment in self.reviews.all():
                 score += comment.score_contribution
             return score
         return None
     
     @property
     def score_interest(self):
-        if self.has_comments:
+        if self.has_reviews:
             score = 0
-            for comment in self.comments.all():
+            for comment in self.reviews.all():
                 score += comment.score_interest
             return score
         return None
@@ -223,9 +226,10 @@ class Abstract(TimeStampedModel):
         return self.reviewers.first()
 
 
-class Comment(TimeStampedModel):
+class Review(TimeStampedModel):
     """
-    A reviewer's comment associated with an `Abstract`.
+    A reviewer's review associated with an `Abstract` containing a score
+    and comment.
 
     Attributes
     ----------
@@ -257,7 +261,7 @@ class Comment(TimeStampedModel):
     
     text = models.TextField(
         null=False, default=None, blank=False,
-        verbose_name='Comment',
+        verbose_name='Review',
     )
     reviewer = models.ForeignKey(
         to=User, on_delete=models.CASCADE, related_name='%(class)ss',
@@ -282,4 +286,40 @@ class Comment(TimeStampedModel):
         verbose_name="Score based on the ability of the "
                      "abstract's contents to hold your interest.",
         validators=[MinValueValidator(MIN_SCORE), MaxValueValidator(MAX_SCORE)]
+    )
+
+
+class AbstractAssignment(models.Model):
+    """Represents an assignment of an abstract to a reviewer"""
+    STATUS_PENDING = 'pending'
+    STATUS_ACCEPTED = 'accepted'
+    STATUS_REJECTED = 'rejected'
+    STATUS_CHOICES = (
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_ACCEPTED, 'Accepted'),
+        (STATUS_REJECTED, 'Rejected'),
+    )
+    class Meta:
+        ordering = ('reviewer',)
+        unique_together = ('reviewer', 'abstract',)
+    
+    id = models.UUIDField(primary_key=True,
+                          default=uuid.uuid4, editable=False, unique=True)
+    
+    reviewer = models.ForeignKey(
+        to=User, on_delete=models.CASCADE, related_name='assignments',
+        related_query_name='assignment', null=False, default=None,
+    )
+    abstract = models.ForeignKey(
+        to=Abstract, on_delete=models.CASCADE, related_name='assignments',
+        related_query_name='assignment', null=False, blank=None,
+    )
+    status = models.CharField(
+        null=False, default=STATUS_PENDING, blank=True, max_length=24,
+        choices=STATUS_CHOICES, verbose_name='Status'
+    )
+    rejection_comment = models.TextField(
+        blank=True, default=None, null=True,
+        verbose_name="Reason",
+        help_text="Please give a reason for rejecting this review assignment."
     )

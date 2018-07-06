@@ -31,7 +31,7 @@ class SubmissionView(LoginRequiredMixin,
         return kwargs
     
     def get_success_url(self):
-        instance = self.get_object()
+        instance = self.object
         messages.success(
             self.request,
             "Submitted abstract with title <strong>'{}'</strong>.".format(
@@ -52,7 +52,6 @@ class EditSubmissionView(LoginRequiredMixin,
     context_object_name = 'instance'
     model = models.Abstract
     group_name = UserGroups.SUBMITTER
-    extra_context = {'id_updated': None}
     
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().submitter != request.user:
@@ -75,15 +74,16 @@ class EditSubmissionView(LoginRequiredMixin,
 
 
 class DeleteSubmissionView(LoginRequiredMixin,
-                         GroupRestrictedView,
-                         CompleteProfileRequired,
-                         DeleteView):
+                           GroupRestrictedView,
+                           CompleteProfileRequired,
+                           DeleteView):
     model = models.Abstract
     success_url = '/profile/'
     slug_field = 'id'
     pk_url_kwarg = 'id'
     context_object_name = 'instance'
     template_name = 'abstract/delete.html'
+    group_name = UserGroups.SUBMITTER
     
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().submitter != request.user:

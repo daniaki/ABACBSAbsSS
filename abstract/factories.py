@@ -5,8 +5,8 @@ from account import factories as user_factories
 
 from . import models
 
-MAX_SCORE = models.Comment.MAX_SCORE
-MIN_SCORE = models.Comment.MIN_SCORE
+MAX_SCORE = models.Review.MAX_SCORE
+MIN_SCORE = models.Review.MIN_SCORE
 
 
 class KeywordFactory(DjangoModelFactory):
@@ -62,19 +62,19 @@ class AbstractFactory(DjangoModelFactory):
         return self
     
     @classmethod
-    def assign_comments(cls, abstract):
-        comments = []
+    def assign_reviews(cls, abstract):
+        reviews = []
         for reviewer in abstract.reviewers.all():
-            comments.append(
-                CommentFactory(reviewer=reviewer, abstract=abstract)
+            reviews.append(
+                ReviewFactory(reviewer=reviewer, abstract=abstract)
             )
-        return comments
+        return reviews
         
     
-class CommentFactory(DjangoModelFactory):
+class ReviewFactory(DjangoModelFactory):
     """Creates a dummy comment with an assigned user and abstract"""
     class Meta:
-        model = models.Comment
+        model = models.Review
         django_get_or_create = ('reviewer', 'abstract',)
         
     text = factory.faker.Faker('text', max_nb_chars=1275)

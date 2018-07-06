@@ -7,8 +7,13 @@ from core import mixins
 from . import models, fields
 
 
-class AbstractForm(mixins.UserKwargsForm, forms.ModelForm):
+class AbstractForm(mixins.UserKwargsMixin,
+                   mixins.SetUserOnSaveMixin,
+                   forms.ModelForm):
     """Basic form for an abstract submission."""
+    user_kwarg = 'user'
+    user_field = 'submitter'
+    
     class Meta:
         model = models.Abstract
         fields = ('title', 'text', 'contribution', 'authors',
@@ -87,12 +92,3 @@ class AbstractForm(mixins.UserKwargsForm, forms.ModelForm):
         for kw in self.cleaned_data.get('keywords', []):
             kw.save()
         return super()._save_m2m()
-        
-    def save(self, commit=True):
-        if not self.user and self.instance.submitter is None:
-            raise ValueError("A submitting user must be specified through"
-                             "the `user` kwarg at form instantiation.")
-        else:
-            if self.instance.submitter is None:
-                self.instance.submitter = self.user
-        return super().save(commit=commit)
