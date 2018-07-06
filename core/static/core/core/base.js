@@ -36,6 +36,16 @@ function openORCID() {
   return false;
 }
 
+function confirmDelete() {
+  let yes = confirm(
+    "This action is final and cannot be undone. Would you like to proceed?"
+  );
+  if (yes) {
+    return window.location.assign('?delete=True')
+  }
+}
+
+
 // On Load ----------------------------------------------------------------- //
 $("document").ready(function() {
   // Initialise select2

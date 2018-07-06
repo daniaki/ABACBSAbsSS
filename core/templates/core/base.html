@@ -43,11 +43,12 @@
           <div class="nav-dropdown">
             <a class="nav-link" href="#">Profile <i class="fa fa-caret-down"></i></a>
             <ul class="nav-dropdown-content zero-pad-ul">
-              <li><a class="nav-link" href="{% url 'account:edit_profile' %}">Settings</a></li>
               {% if request.user.groups.first.name == SUBMITTER_GROUP %}
-                <li><a class="nav-link" href="{% url 'abstract:submit_abstract' %}">New submission</a></li>
-                <li><a class="nav-link" href="{% url 'account:profile' %}">Submissions</a></li>
+                <li><a class="nav-link" href="{% url 'account:profile' %}">Dashboard</a></li>
+                <li><a class="nav-link" href="{% url 'abstract:submit_abstract' %}">New abstract</a></li>
+                <li><a class="nav-link" href="{% url 'account:scholarship_application' %}">Travel scholarship</a></li>
               {% endif %}
+              <li><a class="nav-link" href="{% url 'account:edit_profile' %}">Settings</a></li>
               <li><a class="nav-link" href="{% url 'account:logout' %}">Logout</a></li>
             </ul>
           </div>
@@ -80,11 +81,12 @@
               <li class="nav-link indent"><a class="hover-underline" href="">Staff</a></li>
           {% else %}
             <li class="nav-link"><a class="hover-underline" href="">Profile</a></li>
-              <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:edit_profile' %}">Settings</a></li>
               {% if request.user.groups.first.name == SUBMITTER_GROUP %}
-                <li class="nav-link indent"><a class="hover-underline" href="{% url 'abstract:submit_abstract' %}">New submission</a></li>
-                <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:profile' %}">Submissions</a></li>
+                <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:profile' %}">Dashboard</a></li>
+                <li class="nav-link indent"><a class="hover-underline" href="{% url 'abstract:submit_abstract' %}">New abstract</a></li>
+                <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:scholarship_application' %}">Travel scholarship</a></li>
               {% endif %}
+              <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:edit_profile' %}">Settings</a></li>
               <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:logout' %}">Logout</a></li>
           {% endif %}
         </ul>

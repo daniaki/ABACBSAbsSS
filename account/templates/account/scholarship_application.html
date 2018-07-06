@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+
+{% block body %}
+
+  <div id='scholarship-wrapper' class="container">
+    <h1>Travel scholarship application</h1>
+    <p>
+      If you would like to apply for a travel scholarship, please fill out
+      and submit the form below. You may edit this application at any time by
+      re-visiting this page.
+    <p>
+    <form action="{% url 'account:scholarship_application' %}" method="post">
+      {% csrf_token %}
+      {% include 'core/bs4_form.html' %}
+      <br>
+      <button type="submit" class="btn btn-outline-dark">Save</button>
+      <a class="btn btn-outline-dark" href="{% url 'account:profile' %}">Cancel</a>
+      {% if request.user.scholarship_application %}
+        <button type="button" onclick="confirmDelete();" class="btn btn-outline-danger">Delete</button>
+      {% endif %}
+    </form>
+  </div>
+
+{% endblock %}

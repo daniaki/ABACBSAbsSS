@@ -3,16 +3,16 @@
 {% block body %}
 
   <div id='abstract-form-container' class="container">
-    <h1>Remove abstract?</h1>
+    <h1>Withdraw abstract?</h1>
     <br><br>
     <form id='abstract-form' action="{% url 'abstract:delete_abstract' instance.id %}" method="post">
       {% csrf_token %}
-      <p>Are you sure you want to remove your abstract titled
+      <p>Are you sure you want to withdraw your abstract titled
         <strong>"{{ instance.title }}"?</strong>
       </p>
       <br>
-      <button type="submit" class="btn btn-outline-danger">Delete</button>
       <a class="btn btn-outline-dark" href="{% url 'account:profile' %}">Cancel</a>
+      <button type="submit" class="btn btn-outline-danger">Withdraw</button>
     </form>
   </div>
 
