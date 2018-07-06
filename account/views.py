@@ -15,6 +15,11 @@ from .mixins import CompleteProfileRequired, GroupRestrictedView
 
 logger = logging.getLogger('django')
 
+reviewer_group = models.UserGroups.get_group(models.UserGroups.REVIEWER)
+assigner_group = models.UserGroups.get_group(models.UserGroups.ASSIGNER)
+chair_group = models.UserGroups.get_group(models.UserGroups.CONFERENCE_CHAIR)
+submitter_group = models.UserGroups.get_group(models.UserGroups.SUBMITTER)
+
 
 # Authentication views
 # --------------------------------------------------------------------------- #
@@ -71,28 +76,45 @@ class ProfileView(LoginRequiredMixin, CompleteProfileRequired, TemplateView):
     group. Also handles any ajax requests, usually for getting abstract data.
     """
     template_name = 'account/profile.html'
-    
-    def get_ajax(self):
-        return JsonResponse(data={})
+    users_group = None
     
     def get(self, request, *args, **kwargs):
-        if request.is_ajax():
-            return self.get_ajax()
+
         
-        user_groups = self.request.user.groups.all()
-        if models.UserGroups.get_group(models.UserGroups.REVIEWER) \
-                in user_groups:
+        if reviewer_group in self.request.user.groups.all():
             self.template_name = 'account/reviewer_profile.html'
-        elif models.UserGroups.get_group(models.UserGroups.ASSIGNER) \
-                in user_groups:
+            self.users_group = reviewer_group
+        elif assigner_group in self.request.user.groups.all():
             self.template_name = 'account/assigner_profile.html'
-        elif models.UserGroups.get_group(models.UserGroups.CONFERENCE_CHAIR) \
-                in user_groups:
+            self.users_group = assigner_group
+        elif chair_group in self.request.user.groups.all():
             self.template_name = 'account/chair_profile.html'
+            self.users_group = chair_group
         else:
             self.template_name = 'account/profile.html'
-        
+            self.users_group = submitter_group
+            
+        if request.is_ajax():
+            return self.get_ajax()
         return super().get(request, *args, **kwargs)
+
+    def get_ajax(self):
+        if self.users_group == assigner_group:
+            return self.get_assigner_ajax()
+        elif self.users_group == reviewer_group:
+            return self.get_reviewer_ajax()
+        elif self.users_group == chair_group:
+            return self.get_chair_ajax()
+        return JsonResponse(data={})
+    
+    def get_reviewer_ajax(self):
+        return JsonResponse(data={})
+    
+    def get_assigner_ajax(self):
+        return JsonResponse(data={})
+    
+    def get_chair_ajax(self):
+        return JsonResponse(data={})
     
     
 class ScholarshipApplicationView(LoginRequiredMixin,
