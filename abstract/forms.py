@@ -92,3 +92,17 @@ class AbstractForm(mixins.UserKwargsMixin,
         for kw in self.cleaned_data.get('keywords', []):
             kw.save()
         return super()._save_m2m()
+
+
+class ReviewForm(mixins.ExtraKwargsMixin,
+                 mixins.SetFieldsOnSaveMixin,
+                 forms.ModelForm):
+    """Form filled out by a reviewer which rates an abstract."""
+    extra_kwargs = ('reviewer', 'abstract',)
+    extra_fields = ('reviewer', 'abstract',)
+    
+    class Meta:
+        model = models.Review
+        fields = ('text', 'score_content',
+                  'score_contribution', 'score_interest',)
+    
