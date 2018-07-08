@@ -155,6 +155,13 @@ span.select2.select2-container.select2-container--default {
    color: #2759AE !important;
 }
 
+.hidden {
+  display: none;
+}
+.show {
+  display: block !important;
+}
+
 /* Headers
 --------------------------------------------------------------------------- */
 header {
