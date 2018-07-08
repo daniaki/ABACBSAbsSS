@@ -78,13 +78,18 @@ class AbstractForm(mixins.UserKwargsMixin,
         if len(authors.split(',')) != len(author_affiliations.split(',')):
             self.add_error(
                 'authors',
-                ('The number of authors must be the same as the number of '
-                'author affiliations. Please separate entries with commas.')
+                (
+                    'The number of authors must be the same as the number of '
+                    'author affiliations. Please separate entries with commas.'
+                )
             )
             self.add_error(
                 'author_affiliations',
-                ('The number of authors affiliations must be the same as '
-                'the number of authors. Please separate entries with commas.')
+                (
+                    'The number of authors affiliations must be the same as '
+                    'the number of authors. Please separate entries '
+                    'with commas.'
+                )
             )
         return cleaned_data
     
@@ -105,4 +110,13 @@ class ReviewForm(mixins.ExtraKwargsMixin,
         model = models.Review
         fields = ('text', 'score_content',
                   'score_contribution', 'score_interest',)
-    
+
+
+class RejectAssignmentForm(forms.ModelForm):
+    """
+    Form filled out by a reviewer which rejects an abstract. Requires
+    instance to be passed in.
+    """
+    class Meta:
+        model = models.Assignment
+        fields = ('rejection_comment',)
