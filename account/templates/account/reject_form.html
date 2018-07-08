@@ -1,0 +1,27 @@
+{% load form_tags %}
+
+<form class="hidden" id="{{ assignment.id }}-reject-form" v-bind:class="{'show': rejected, 'hidden': !rejected}">
+  <hr>
+  <h4>Reject assignment</h4>
+ 
+  <div class="alert alert-success" role="alert hidden" v-bind:class="{'show': rejectSuccessMessage, 'hidden': !rejectSuccessMessage}">
+    <h4 class="alert-heading">Success!</h4><hr>
+    <p>[[ rejectSuccessMessage ]]</p>
+  </div>
+
+  <div class="alert alert-danger hidden" role="alert" v-bind:class="{'show': rejectErrorMessage, 'hidden': !rejectErrorMessage}">
+    <h4 class="alert-heading">Error!</h4><hr>
+    <p>[[ rejectErrorMessage ]]</p>
+  </div>
+
+  <div class="form-group">
+    <label for="reject-{{ assignment.id }}-rejection-comment">{{ rejection_comment_label }}*</label>
+    <small class="form-text text-muted">{{ rejection_comment_help }}</small>
+    <textarea v-model="rejectionComment" class="form-control" id="reject-{{ assignment.id }}-text"
+              v-bind:class="{'is-invalid': rejectionCommentError}" rows="20"></textarea>
+    <p id="reject-{{ assignment.id }}-rejection-comment-error" class="invalid-feedback"
+       v-bind:class="{'show': rejectionCommentError, 'hidden': !rejectionCommentError}">[[ rejectionCommentError ]]</p>
+  </div>
+
+  <button v-on:click="submitRejectForm" class="btn btn-outline-danger" type="button">Save</button>
+</form>

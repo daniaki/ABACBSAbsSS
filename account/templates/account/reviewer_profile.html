@@ -1,13 +1,223 @@
-{% extends 'core/base.html' %}
+  {% extends 'core/base.html' %}
+{% load static %}
 
 {% block body %}
+  <h1> Assigned abstracts </h1>
+  {% if not request.user.assignments.count %}
+    <p class="text-muted">No abstracts have been assigned to you.</p>
+  {% else %}
+    {% for assignment in request.user.assignments.all %}
+      <div class="assignment" id="assignment-{{ assignment.id }}">
+        <hr>
+        <h4>{{ assignment.abstract.title }}</h4>
+        <small class="text-muted">Assignment reference: {{ assignment.id }}</small>
+        <br>
 
+        <br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox"
+                 v-model="accepted" v-bind:checked="accepted" v-on:click="accept">
+          <label class="form-check-label">Accept</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox"
+                 v-model="rejected" v-bind:checked="rejected" v-on:click="reject">
+          <label class="form-check-label">Reject</label>
+        </div>
+
+        <br><br>
+        <p>{{ assignment.abstract.text }}</p>
+        <p><strong>Keywords:</strong> {{ assignment.abstract.keywords.all|join:', ' }}</p>
+
+        {% include 'account/review_form.html' %}
+        {% include 'account/reject_form.html' %}
+      </div>
+    {% endfor %}
+  {% endif %}
 {% endblock %}
 
 
 {# Vue Component for interaction with abstracts #}
 {% block extra_scripts %}
   <script type="text/javascript">
+    {% for assignment in request.user.assignments.all %}
+      new Vue({
+        delimiters: ['[[', ']]'],
+        el: "#assignment-{{ assignment.id }}",
+        data: {
+          id: "{{ assignment.id }}",
+          status: "{{ assignment.status }}",
+          accepted: false,
+          rejected: false,
 
+          // Reject form variables
+          rejectionComment: "{{ assignment.rejection_comment|default:"" }}",
+          rejectionCommentError: "",
+
+          // Review form variables
+          reviewText: "{{ assignment.review.text|default:"" }}",
+          reviewTextError: "",
+          reviewScoreContent: "{{ assignment.review.score_content }}",
+          reviewScoreContentError: "",
+          reviewScoreContribution: "{{ assignment.review.score_contribution }}",
+          reviewScoreContributionError: "",
+          reviewScoreInterest: "{{ assignment.review.score_interest }}",
+          reviewScoreInterestError: "",
+
+          // Ajax statuses
+          hasErrors: false,
+          success: false,
+          rejectSuccessMessage: "",
+          rejectErrorMessage: "",
+          acceptSuccessMessage: "",
+          acceptErrorMessage: "",
+        },
+        mounted: function () {
+          if (this.status === "accepted") {
+           this.accepted = true;
+           this.rejected = false;
+          }
+          if (this.status  === "rejected") {
+           this.accepted = false;
+           this.rejected = true;
+          }
+        },
+        methods: {
+          disableForm: function (name) {
+            $("#" + this.id + "-" + name + "-form input").attr("disabled", "disabled");
+            $("#" + this.id + "-" + name + "-form textarea").attr("disabled", "disabled");
+            $("#" + this.id + "-" + name + "-form button").attr("disabled", "disabled");
+          },
+          enableForm: function (name) {
+            $("#" + this.id + "-" + name + "-form input").prop("disabled", false);
+            $("#" + this.id + "-" + name + "-form textarea").prop("disabled", false);
+            $("#" + this.id + "-" + name + "-form button").prop("disabled", false);
+          },
+          resetReviewForm() {
+            this.reviewScoreContent = "";
+            this.reviewScoreContribution = "";
+            this.reviewScoreInterest = "";
+            this.reviewText = "";
+            this.acceptSuccessMessage = "";
+          },
+          resetReviewFormErrors() {
+            this.reviewScoreContentError = "";
+            this.reviewScoreContributionError = "";
+            this.reviewScoreInterestError = "";
+            this.reviewTextError = "";
+            this.acceptErrorMessage = "";
+          },
+          resetRejectForm() {
+            this.rejectSuccessMessage = "";
+            this.rejectionComment = "";
+          },
+          resetRejectFormErrors() {
+            this.rejectErrorMessage = "";
+            this.rejectionCommentError = "";
+          },
+          submitRejectForm: function (event) {
+            data = {
+              id: this.id,
+              reject: this.rejected,
+              rejection_comment: this.rejectionComment,
+            };
+            window.CSRF_TOKEN = "{{ csrf_token }}";
+            let self = this;
+            this.disableForm('reject');
+
+            $.ajax({
+             url: window.location.pathname,
+             type: "POST",
+             data: data,
+             dataType: "json",
+             headers:{"X-CSRFToken": "{{ csrf_token }}"},
+             success: function (data) {
+               console.log(data);
+               if (data.error) {
+                 if (data.error.rejection_comment) {
+                   self.rejectionCommentError = data.error.rejection_comment[0].message;
+                 }
+               } else {
+                 self.rejectSuccessMessage = data.success;
+                 self.resetReviewForm();
+                 self.resetReviewFormErrors();
+                 self.resetRejectFormErrors();
+               }
+             },
+             error : function(xhr, errmsg, err) {
+               console.log(xhr.status + ": " + xhr.responseText);
+               self.rejectErrorMessage = xhr.status + " - " + err;
+               self.rejectSuccessMessage = "";
+             },
+            }).done(function() {
+              self.enableForm("reject");
+            }).fail(function() {
+              self.enableForm("reject");
+            });
+          },
+          submitAcceptForm: function (event) {
+           data = {
+              id: this.id,
+              accept: this.accepted,
+              text: this.reviewText,
+              score_content: this.reviewScoreContent,
+              score_contribution: this.reviewScoreContribution,
+              score_interest: this.reviewScoreInterest,
+            };
+
+           window.CSRF_TOKEN = "{{ csrf_token }}";
+           let self = this;
+           this.disableForm('review');
+
+           $.ajax({
+             url: window.location.pathname,
+             type: "POST",
+             data: data,
+             dataType: "json",
+             headers:{"X-CSRFToken": "{{ csrf_token }}"},
+             success: function (data) {
+               console.log(data);
+               if (data.error) {
+                 if (data.error.score_content) {
+                   self.reviewScoreContentError = data.error.score_content[0].message;
+                 }
+                 if (data.error.score_contribution) {
+                   self.reviewScoreContributionError = data.error.score_contribution[0].message;
+                 }
+                 if (data.error.score_interest) {
+                   self.reviewScoreInterestError = data.error.score_interest[0].message;
+                 }
+                 if (data.error.text) {
+                   self.reviewTextError = data.error.text[0].message;
+                 }
+               } else {
+                  self.acceptSuccessMessage = data.success;
+                  self.resetRejectForm();
+                  self.resetRejectFormErrors();
+                  self.resetReviewFormErrors();
+               }
+             },
+             error : function(xhr, errmsg, err) {
+               console.log(xhr.status + ": " + xhr.responseText);
+               self.acceptErrorMessage = xhr.status + " - " + err;
+               self.acceptSuccessMessage = "";
+             },
+           }).done(function() {
+             self.enableForm("review");
+           }).fail(function() {
+              self.enableForm("review");
+            });
+          },
+          accept: function (event) {
+            this.accepted = true;
+            this.rejected = false;
+          },
+          reject: function (event) {
+            this.accepted = false;
+            this.rejected = true;
+          }
+        }
+      });
+    {% endfor %}
   </script>
 {% endblock %}
