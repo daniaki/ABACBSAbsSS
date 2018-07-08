@@ -171,8 +171,7 @@ class Abstract(TimeStampedModel):
         to=User, related_name='assigned_%(class)ss',
         related_query_name='%(class)s', verbose_name='Assign reviewers',
     )
-    
-    
+
     # Properties
     # ----------------------------------------------------------------------- #
     @property
@@ -260,8 +259,9 @@ class Review(TimeStampedModel):
         ordering = ('reviewer',)
     
     text = models.TextField(
-        null=False, default=None, blank=False,
-        verbose_name='Review',
+        null=False, default=None, blank=False, verbose_name='Comments',
+        help_text="Please provide a few short comments justifying why "
+                  "you have given the scores above."
     )
     reviewer = models.ForeignKey(
         to=User, on_delete=models.CASCADE, related_name='%(class)ss',
@@ -272,24 +272,24 @@ class Review(TimeStampedModel):
         related_query_name='%(class)s', null=False, blank=None,
     )
     score_content = models.IntegerField(
-        null=False, blank=False, default=None,
-        verbose_name="Score based on the abstract's scientific content.",
+        null=False, blank=False, default=None, verbose_name="Content",
+        help_text="Score based on the abstract's scientific content.",
         validators=[MinValueValidator(MIN_SCORE), MaxValueValidator(MAX_SCORE)]
     )
     score_contribution = models.IntegerField(
-        null=False, blank=False, default=None,
-        verbose_name="Score based on the author's contribution to the work.",
+        null=False, blank=False, default=None, verbose_name="Contribution",
+        help_text="Score based on the author's contribution to the work.",
         validators=[MinValueValidator(MIN_SCORE), MaxValueValidator(MAX_SCORE)]
     )
     score_interest = models.IntegerField(
-        null=False, blank=False, default=None,
-        verbose_name="Score based on the ability of the "
-                     "abstract's contents to hold your interest.",
+        null=False, blank=False, default=None, verbose_name="Interest",
+        help_text="Score based on the ability of the "
+                  "abstract's contents to hold your interest.",
         validators=[MinValueValidator(MIN_SCORE), MaxValueValidator(MAX_SCORE)]
     )
 
 
-class AbstractAssignment(models.Model):
+class Assignment(models.Model):
     """Represents an assignment of an abstract to a reviewer"""
     STATUS_PENDING = 'pending'
     STATUS_ACCEPTED = 'accepted'
@@ -299,6 +299,7 @@ class AbstractAssignment(models.Model):
         (STATUS_ACCEPTED, 'Accepted'),
         (STATUS_REJECTED, 'Rejected'),
     )
+
     class Meta:
         ordering = ('reviewer',)
         unique_together = ('reviewer', 'abstract',)
@@ -307,19 +308,23 @@ class AbstractAssignment(models.Model):
                           default=uuid.uuid4, editable=False, unique=True)
     
     reviewer = models.ForeignKey(
-        to=User, on_delete=models.CASCADE, related_name='assignments',
-        related_query_name='assignment', null=False, default=None,
+        to=User, on_delete=models.CASCADE, related_name='%(class)ss',
+        related_query_name='%(class)s', null=False, default=None,
     )
     abstract = models.ForeignKey(
-        to=Abstract, on_delete=models.CASCADE, related_name='assignments',
-        related_query_name='assignment', null=False, blank=None,
+        to=Abstract, on_delete=models.CASCADE, related_name='%(class)ss',
+        related_query_name='%(class)s', null=False, blank=None,
     )
     status = models.CharField(
         null=False, default=STATUS_PENDING, blank=True, max_length=24,
         choices=STATUS_CHOICES, verbose_name='Status'
     )
     rejection_comment = models.TextField(
-        blank=True, default=None, null=True,
+        blank=False, default=None, null=True,
         verbose_name="Reason",
         help_text="Please give a reason for rejecting this review assignment."
+    )
+    review = models.ForeignKey(
+        to=Review, on_delete=models.SET_NULL, related_name='%(class)ss',
+        related_query_name='%(class)s', null=True, blank=None, default=None,
     )
