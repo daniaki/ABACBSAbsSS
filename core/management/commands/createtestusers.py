@@ -7,7 +7,7 @@ from django.db import transaction
 
 from account.factories import SubmitterFactory, ReviewerFactory, \
     AssignerFactory, ConferenceChairFactory
-from abstract.factories import AbstractFactory
+from abstract.factories import AbstractFactory, AssignmnetFactory
 from demographic.factories import CareerStageFactory
 
 User = get_user_model()
@@ -45,7 +45,10 @@ class Command(BaseCommand):
                 "Created user with username 'reviewer' "
                 "and password '{}'.\n".format(password))
             userb = ReviewerFactory(username="reviewer")
-            
+            assignment = AssignmnetFactory(
+                reviewer=userb, abstract=AbstractFactory(submitter=usera)
+            )
+
             sys.stdout.write(
                 "Created user with username 'assigner' "
                 "and password '{}'.\n".format(password))
