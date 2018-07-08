@@ -83,3 +83,13 @@ class ReviewFactory(DjangoModelFactory):
     score_interest = factory.fuzzy.FuzzyInteger(low=MIN_SCORE, high=MAX_SCORE)
     abstract = factory.SubFactory(AbstractFactory)
     reviewer = factory.SelfAttribute('abstract.first_reviewer')
+
+
+class AssignmnetFactory(DjangoModelFactory):
+    """Creates a dummy review assignment"""
+    class Meta:
+        model = models.Assignment
+        django_get_or_create = ('reviewer', 'abstract')
+
+    abstract = factory.SubFactory(AbstractFactory)
+    reviewer = factory.SelfAttribute('abstract.first_reviewer')
