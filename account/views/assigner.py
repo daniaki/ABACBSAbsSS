@@ -13,12 +13,13 @@ from .. import models, mixins
 logger = logging.getLogger('django')
 
 
-class ProfileView(LoginRequiredMixin, mixins.CompleteProfileRequired,
-                  mixins.GroupRestrictedView, mixins.AjaxView, TemplateView):
+class ProfileView(LoginRequiredMixin, mixins.GroupRestrictedView,
+                  mixins.AjaxView, TemplateView):
     """
     Profile view for assigners to assign abstracts to reviewers. Supports
     post AJAX.
     """
     template_name = 'account/assigner_profile.html'
-    users_group = models.UserGroups.ASSIGNER
+    group_names = (models.UserGroups.ASSIGNER,)
     http_method_names = ('get', 'post',)
+

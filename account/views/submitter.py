@@ -16,7 +16,7 @@ class ScholarshipApplicationView(LoginRequiredMixin,
     deletion functionality. Links the scholarship to the user's instance
     model.
     """
-    group_name = models.UserGroups.SUBMITTER
+    group_names = (models.UserGroups.SUBMITTER,)
     form_class = forms.ScholarshipApplicationForm
     success_url = '/profile/'
     template_name = 'account/scholarship_application.html'
@@ -61,7 +61,7 @@ class ProfileView(LoginRequiredMixin, CompleteProfileRequired,
     """
     success_url = '/profile/'
     template_name = 'account/profile.html'
-    group_name = models.UserGroups.SUBMITTER
+    group_names = (models.UserGroups.SUBMITTER,)
     http_method_names = ('get',)
 
 
@@ -69,15 +69,14 @@ class EditProfileView(LoginRequiredMixin, GroupRestrictedView, FormView):
     """
     Edit the profile settings of a user. Only viewable by a submitter.
     """
-    form_class = forms.ProfileForm
+    form_class = forms.SubmitterProfileForm
     success_url = '/profile/'
     template_name = 'account/edit_profile.html'
-    group_name = models.UserGroups.SUBMITTER
+    group_names = (models.UserGroups.SUBMITTER,)
 
     def form_valid(self, form):
         form.save(commit=True)
-        self.request.user.profile.completed_intial_login = True
-        self.request.user.save()
+        self.request.user.profile.set_profile_as_complete()
         return super().form_valid(form)
 
     def get_form_kwargs(self):

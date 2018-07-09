@@ -1,15 +1,14 @@
 import logging
 
 import django.contrib.auth.views as auth_views
-from django.views.generic import TemplateView
 from django.conf import settings
 from django.contrib import auth
-from django.shortcuts import render, redirect
 from django.http import Http404
-
-from .. import models
+from django.shortcuts import render, redirect
+from django.views.generic import TemplateView
 
 from . import submitter, reviewer, assigner, chair
+from .. import models
 
 logger = logging.getLogger('django')
 
@@ -54,16 +53,18 @@ def reset_password(request):
 
 
 # Profile views
-# --------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------- #
 class ProfileView(TemplateView):
     """
-    Profile view. Swaps out the template depending on the requesting user's
-    group. Also handles any ajax requests, usually for getting abstract data.
+    Profile view. Delegates to the correct function based on the user's group.
     """
     template_name = 'account/profile.html'
     http_method_names = ('get', 'post',)
 
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect("account:orcid_login")
+
         reviewer_group = models.UserGroups.get_group(
             models.UserGroups.REVIEWER)
         assigner_group = models.UserGroups.get_group(
@@ -81,5 +82,27 @@ class ProfileView(TemplateView):
             return assigner.ProfileView.as_view()(request)
         elif chair_group in self.request.user.groups.all():
             return chair.ProfileView.as_view()(request)
+        else:
+            raise Http404()
+
+
+class EditProfileView(TemplateView):
+    """
+    Edit Profile view. Delegates to the correct function based on the
+    user's group.
+    """
+    template_name = 'account/profile.html'
+    http_method_names = ('get', 'post',)
+
+    def dispatch(self, request, *args, **kwargs):
+        reviewer_group = models.UserGroups.get_group(
+            models.UserGroups.REVIEWER)
+        submitter_group = models.UserGroups.get_group(
+            models.UserGroups.SUBMITTER)
+
+        if submitter_group in self.request.user.groups.all():
+            return submitter.EditProfileView.as_view()(request)
+        elif reviewer_group in self.request.user.groups.all():
+            return reviewer.EditProfileView.as_view()(request)
         else:
             raise Http404()

@@ -20,5 +20,5 @@ class ProfileView(LoginRequiredMixin, mixins.CompleteProfileRequired,
     abstracts to accept.
     """
     template_name = 'account/assigner_profile.html'
-    users_group = models.UserGroups.CONFERENCE_CHAIR
+    users_group = (models.UserGroups.CONFERENCE_CHAIR,)
     http_method_names = ('get', 'post',)

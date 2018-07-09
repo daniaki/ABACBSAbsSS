@@ -1,26 +1,26 @@
 import logging
 
-from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
+from django.views.generic import TemplateView, FormView
 
 from abstract import forms as abstract_forms
 from abstract import models as abstract_models
 from abstract.models import Review, Assignment
-
-from .. import models, mixins
+from .. import models, mixins, forms
 
 logger = logging.getLogger('django')
 
 
-class ProfileView(LoginRequiredMixin, mixins.CompleteProfileRequired,
-                  mixins.GroupRestrictedView, mixins.AjaxView, TemplateView):
+class ProfileView(LoginRequiredMixin, mixins.GroupRestrictedView,
+                  mixins.CompleteProfileRequired, mixins.AjaxView,
+                  TemplateView):
     """
     Profile view. Swaps out the template depending on the requesting user's
     group. Also handles any ajax requests, usually for getting abstract data.
     """
     template_name = 'account/reviewer_profile.html'
-    users_group = models.UserGroups.REVIEWER
+    group_names = (models.UserGroups.REVIEWER,)
     http_method_names = ('get', 'post',)
 
     @staticmethod
@@ -110,3 +110,24 @@ class ProfileView(LoginRequiredMixin, mixins.CompleteProfileRequired,
             return self.error(
                 "Data is missing 'reject' or 'accept' keys.".format(
                     self.request.method))
+
+
+class EditProfileView(LoginRequiredMixin, mixins.GroupRestrictedView,
+                      FormView):
+    """
+    Edit the profile settings of a user. Only viewable by a submitter.
+    """
+    form_class = forms.ReviewerProfileForm
+    success_url = '/profile/'
+    template_name = 'account/edit_profile.html'
+    group_names = (models.UserGroups.REVIEWER,)
+
+    def form_valid(self, form):
+        form.save(commit=True)
+        self.request.user.profile.set_profile_as_complete()
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = self.request.user.profile
+        return kwargs
