@@ -16,7 +16,9 @@ class CompleteProfileRequired:
         
         is_submitter = models.UserGroups.get_group(
             models.UserGroups.SUBMITTER) in request.user.groups.all()
-        if not is_submitter:
+        is_reviewer = models.UserGroups.get_group(
+            models.UserGroups.REVIEWER) in request.user.groups.all()
+        if not (is_submitter or is_reviewer):
             return super().dispatch(request, *args, **kwargs)
         
         if not request.user.profile.is_complete:
@@ -27,15 +29,14 @@ class CompleteProfileRequired:
 class GroupRestrictedView:
     """Returns `HttpResponseForbidden` if the user is not in the
     specified group. Must be preceded by django's `LoginRequiredMixin`."""
-    group_name = None
+    group_names = None
     
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             raise Http404()
-        if self.group_name is None:
-            return super().dispatch(request, *args, **kwargs)
-        group = models.UserGroups.get_group(self.group_name)
-        if group not in request.user.groups.all():
+        groups = [models.UserGroups.get_group(g) for g in self.group_names]
+        allowed = any([g in request.user.groups.all() for g in groups])
+        if not allowed:
             raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
