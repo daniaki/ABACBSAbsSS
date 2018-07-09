@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.contrib.auth.mixins import PermissionDenied
 
 from . import models
@@ -38,3 +38,31 @@ class GroupRestrictedView:
         if group not in request.user.groups.all():
             raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
+
+
+class AjaxView:
+    """
+    Use this mixin in any view which supports an AJAX entry point.
+    """
+    @staticmethod
+    def error(payload, status_code=None):
+        response = JsonResponse(data={'error': payload})
+        if status_code:
+            response.status_code = status_code
+        return response
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            return self.get_ajax()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            return self.post_ajax()
+        return super().post(request, *args, **kwargs)
+
+    def get_ajax(self):
+        raise NotImplementedError()
+
+    def post_ajax(self):
+        raise NotImplementedError()
