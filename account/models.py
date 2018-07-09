@@ -84,7 +84,7 @@ class Profile(TimeStampedModel):
     )
     affiliation = models.CharField(
         max_length=64, null=True, blank=False,
-        default=None, verbose_name="Primary Affliation",
+        default=None, verbose_name="Primary Affiliation",
     )
     
     # Demographic fields
@@ -93,7 +93,9 @@ class Profile(TimeStampedModel):
         to='demographic.AboriginalOrTorres',
         null=True, blank=False,
         on_delete=models.PROTECT,
-        verbose_name='Do you identify as an Aboriginal or Torres Strait Islander?',
+        verbose_name=(
+            'Do you identify as an Aboriginal or Torres Strait Islander?'
+        ),
         related_name='associated_%(class)ss'
     )
     gender = models.ForeignKey(
@@ -117,6 +119,29 @@ class Profile(TimeStampedModel):
         verbose_name='State',
         related_name='associated_%(class)ss'
     )
+    keywords = models.ManyToManyField(
+        to='abstract.Keyword', related_name='%(class)ss',
+        related_query_name='%(class)s', verbose_name='Keywords', blank=False,
+        help_text=(
+            'Describe your expertise with a few keywords. You may enter '
+            'keywords that do not appear in this list by '
+            'pressing the Return/Enter on your keyboard.'
+        ),
+    )
+
+    def set_profile_as_complete(self):
+        self.completed_intial_login = True
+        self.save()
+        return self
+
+    def set_profile_as_incomplete(self):
+        self.completed_intial_login = False
+        self.save()
+        return self
+
+    @property
+    def group_names(self):
+        return set([g.name for g in self.user.groups.all()])
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         email = self.email or self.user.email
@@ -195,7 +220,8 @@ class Profile(TimeStampedModel):
         
         
 class ScholarshipApplication(models.Model):
-    """A scholarship application model with reference to the submitting user."""
+    """A scholarship application model with reference
+    to the submitting user."""
     text = models.TextField(
         verbose_name='Reason', null=False, blank=False, default=None,
         help_text="Please explain why you are applying for this scholarship. "
