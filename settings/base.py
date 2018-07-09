@@ -129,6 +129,7 @@ TEMPLATES = [
                 
                 # Custom
                 "core.context_processors.user_groups",
+                "core.context_processors.assignment_status",
 
                 # Social-auth context_processors
                 'social_django.context_processors.backends',
