@@ -2,7 +2,7 @@
 
 <form class="hidden" id="{{ assignment.id }}-reject-form" v-bind:class="{'show': rejected, 'hidden': !rejected}">
   <hr>
-  <h4>Reject assignment</h4>
+  <h4>Decline assignment</h4>
  
   <div class="alert alert-success" role="alert hidden" v-bind:class="{'show': rejectSuccessMessage, 'hidden': !rejectSuccessMessage}">
     <h4 class="alert-heading">Success!</h4><hr>
@@ -23,5 +23,5 @@
        v-bind:class="{'show': rejectionCommentError, 'hidden': !rejectionCommentError}">[[ rejectionCommentError ]]</p>
   </div>
 
-  <button v-on:click="submitRejectForm" class="btn btn-outline-danger" type="button">Save</button>
+  <button v-on:click="submitRejectForm" class="btn btn-outline-danger" type="button">Decline</button>
 </form>
