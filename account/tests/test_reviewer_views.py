@@ -3,6 +3,7 @@ import uuid
 
 import mock
 from django.test import RequestFactory
+from django.core.exceptions import PermissionDenied
 
 from abstract import factories as abstract_factories
 from abstract import models as abstract_models
@@ -11,7 +12,7 @@ from core.test import TestCase
 from .. import factories, views
 
 
-class TestProfileViewReviewerAjax(TestCase):
+class TestProfileView(TestCase):
     def setUp(self):
         super().setUp()
         self.assignment = abstract_factories.AssignmnetFactory()
@@ -35,6 +36,20 @@ class TestProfileViewReviewerAjax(TestCase):
             'score_interest': 7,
             'text': "You're gonna carry that weight.",
         }
+
+    def test_requires_compelete_profile(self):
+        request = self.factory.get('/profile/')
+        request.user = self.reviewer
+        self.reviewer.profile.set_profile_as_incomplete()
+        response = views.reviewer.ProfileView.as_view()(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_403_not_a_reviewer_profile(self):
+        request = self.factory.get('/profile/')
+        request.user = factories.SubmitterFactory()
+        request.user.profile.set_profile_as_complete()
+        with self.assertRaises(PermissionDenied):
+            views.reviewer.ProfileView.as_view()(request)
     
     @mock.patch('account.views.reviewer.ProfileView.post_ajax')
     def test_post_ajax_called_AJAX_post_request(self, patch):

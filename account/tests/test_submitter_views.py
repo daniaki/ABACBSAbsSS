@@ -75,23 +75,3 @@ class TestScholarshipApplicationView(TestMessageMixin, TestCase):
         response = account.views.submitter.ScholarshipApplicationView.as_view()(request)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(models.ScholarshipApplication.objects.count(), 0)
-
-
-class TestProfileView(TestCase):
-    def setUp(self):
-        super().setUp()
-        self.assignment = abstract_factories.AssignmnetFactory()
-        self.reviewer = self.assignment.reviewer
-        self.abstract = self.assignment.abstract
-        self.factory = RequestFactory()
-
-    @mock.patch('account.views.ProfileView.post')
-    def test_calls_post_when_post_method_received(self, patch):
-        request = self.factory.post('/profile/', data={})
-        request.user = self.reviewer
-        views.ProfileView.as_view()(request)
-        patch.assert_called()
-
-
-
-
