@@ -10,7 +10,7 @@
     {% else %}
       <h1>Hi, {{ request.user.profile.full_name }}!</h1>
       Almost done! We need to collect some additional information before you
-      can submit an abstract for review.
+      can can begin.
     {% endif %}
     <br><br>
     <form action="{% url 'account:edit_profile' %}" method="post">
