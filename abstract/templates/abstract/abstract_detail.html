@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+
+{% block body %}
+  <div id='{{ abstract.id }}-detail-container' class="container">
+
+  {% include 'abstract/abstract.html' %}
+
+  {% if ASSIGNER_GROUP in request.user.profile.group_names %}
+    <hr>
+    <a class="btn btn-outline-danger mt-1"
+       href="{% url 'abstract:abstract_summary' abstract.id %}?show_demographics=True">
+      Show demographics
+    </a>
+    <a class="btn btn-outline-danger mt-1"
+       href="{% url 'abstract:abstract_summary' abstract.id %}">
+      Hide demographics
+    </a>
+  {% endif %}
+</div>
+
+{% endblock %}

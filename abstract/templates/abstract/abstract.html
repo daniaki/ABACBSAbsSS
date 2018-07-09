@@ -1,0 +1,49 @@
+<div class="abstract-detail" id="{{ abstract.id }}-detail">
+  <h4>{{ abstract.title }}</h4>
+  <p>{{ abstract.text }}</p>
+  <p><strong>Submitted by:</strong> {{ abstract.submitter.profile.display_name }}</p>
+  <p><strong>Contribution:</strong> {{ abstract.contribution }}</p>
+  <p><strong>Authors:</strong> {{ abstract.authors }}</p>
+  <p><strong>Affiliation:</strong> {{ abstract.author_affiliations }}</p>
+  <p><strong>Categories:</strong> {{ abstract.categories.all|join:', ' }}</p>
+  <p><strong>Keywords:</strong> {{ abstract.keywords.all|join:', ' }}</p>
+</div>
+
+{% if show_demographics %}
+  <div class="abstract-demographics" id="{{ abstract.id }}-demographics">
+    <hr>
+    <h4>Demographic Information</h4>
+    <p><strong>Career stage:</strong> {{ abstract.submitter.profile.career_stage }}</p>
+    <p><strong>Gender:</strong> {{ abstract.submitter.profile.gender }}</p>
+    <p><strong>State:</strong> {{ abstract.submitter.profile.state }}</p>
+    <p><strong>Aboriginal or Torres Straight Islander:</strong> {{ abstract.submitter.profile.aboriginal_or_torres }}</p>
+  </div>
+{% endif %}
+
+<div id="{{ abstract.id }}-reviews" class="abstract-reviews">
+  <hr>
+  <h4>Review summary</h4>
+  {% if not abstract.assignments.count %}
+    <p class="text-muted">This abstract has not been assigned for review</p>
+  {% else %}
+    {% if abstract.reviews.count %}
+      {% for review in abstract.reviews.all %}
+        <div class="review-container indent">
+          <p><strong>Reviewer</strong> {{ review.reviewer.profile.full_name }}</p>
+          <p><strong>Status:</strong> {{ review.assignment.status|capfirst }}</p>
+          {% if review.assignment.status == DECLINED %}
+            <p><strong>Comment:</strong> {{ review.assignment.get_comment }}</p>
+          {% endif %}
+          {% if review.assignment.status == ACCEPTED %}
+            <p><strong>Content score</strong> {{ review.score_content }}</p>
+            <p><strong>Contribution score</strong> {{ review.score_contribution }}</p>
+            <p><strong>Interest score</strong> {{ review.score_interest }}</p>
+            <p><strong>Comments</strong> {{ review.text }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">This abstract has not beed reviewed</p>
+    {% endif %}
+  {% endif %}
+</div>

@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block body %}
+  <div id='{{ abstract.id }}-list-container' class="container">
+    {% if abstract_list.count %}
+      {% for abstract in abstract_list %}
+        {% include 'abstract/abstract.html' %}
+        <br><hr>
+      {% endfor %}
+      {% if ASSIGNER_GROUP in request.user.profile.group_names %}
+        <hr>
+        <a class="btn btn-outline-danger mt-1"
+           href="{% url 'abstract:abstract_list' %}?show_demographics=True">
+          Show demographics
+        </a>
+        <a class="btn btn-outline-danger mt-1"
+           href="{% url 'abstract:abstract_list' %}">
+          Hide demographics
+        </a>
+      {% endif %}
+    {% else %}
+      <p class="text-muted">No abstracts have been submitted</p>
+    {% endif %}
+  </div>
+
+{% endblock %}
