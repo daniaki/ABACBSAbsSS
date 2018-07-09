@@ -49,6 +49,9 @@
                 <li><a class="nav-link" href="{% url 'account:scholarship_application' %}">Travel scholarship</a></li>
                 <li><a class="nav-link" href="{% url 'account:edit_profile' %}">Settings</a></li>
               {% endif %}
+              {% if request.user.groups.first.name == REVIEWER_GROUP %}
+                <li><a class="nav-link" href="{% url 'account:edit_profile' %}">Settings</a></li>
+              {% endif %}
               <li><a class="nav-link" href="{% url 'account:logout' %}">Logout</a></li>
             </ul>
           </div>
@@ -85,6 +88,9 @@
               {% if request.user.groups.first.name == SUBMITTER_GROUP %}
                 <li class="nav-link indent"><a class="hover-underline" href="{% url 'abstract:submit_abstract' %}">New abstract</a></li>
                 <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:scholarship_application' %}">Travel scholarship</a></li>
+                <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:edit_profile' %}">Settings</a></li>
+              {% endif %}
+              {% if request.user.groups.first.name == REVIEWER_GROUP %}
                 <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:edit_profile' %}">Settings</a></li>
               {% endif %}
               <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:logout' %}">Logout</a></li>
