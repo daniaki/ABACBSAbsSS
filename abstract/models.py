@@ -322,7 +322,7 @@ class Assignment(models.Model):
     rejection_comment = models.TextField(
         blank=False, default=None, null=True,
         verbose_name="Reason",
-        help_text="Please give a reason for rejecting this review assignment."
+        help_text="Please give a reason for declining this review assignment."
     )
     review = models.ForeignKey(
         to=Review, on_delete=models.SET_NULL, related_name='%(class)ss',
