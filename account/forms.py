@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 
 from core.mixins import UserKwargsMixin, SetUserOnSaveMixin
+from abstract.fields import FlexibleModelMultipleChoiceField
+from abstract.models import Keyword
 
 from . import models
 
@@ -9,7 +11,7 @@ from . import models
 User = get_user_model()
 
 
-class ProfileForm(forms.ModelForm):
+class SubmitterProfileForm(forms.ModelForm):
     """
     Subclasses `ProfileForm` asking for several additional fields that
     should not be editable post registration.
@@ -31,6 +33,35 @@ class ProfileForm(forms.ModelForm):
             'state',
         )
         super().__init__(*args, **kwargs)
+
+
+class ReviewerProfileForm(forms.ModelForm):
+    """Profile form for reviewers"""
+    class Meta:
+        model = models.Profile
+        fields = (
+            'email', 'affiliation', 'state', 'career_stage',
+            'keywords',
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['keywords'] = FlexibleModelMultipleChoiceField(
+            klass=Keyword,
+            to_field_name='text',
+            label='Keywords',
+            required=True,
+            queryset=Keyword.objects.all(),
+            widget=forms.SelectMultiple(
+                attrs={"class": "select2 select2-token-select"}
+            ),
+            help_text=self.fields['keywords'].help_text,
+        )
+
+    def _save_m2m(self):
+        for kw in self.cleaned_data.get('keywords', []):
+            kw.save()
+        return super()._save_m2m()
 
 
 class ScholarshipApplicationForm(UserKwargsMixin,
