@@ -1,6 +1,7 @@
 import logging
 
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView, \
+    DetailView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.contrib import messages
@@ -23,7 +24,7 @@ class SubmissionView(LoginRequiredMixin,
     success_url = '/profile/'
     context_object_name = 'instance'
     model = models.Abstract
-    group_name = UserGroups.SUBMITTER
+    group_names = UserGroups.SUBMITTER
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -51,7 +52,7 @@ class EditSubmissionView(LoginRequiredMixin,
     pk_url_kwarg = 'id'
     context_object_name = 'instance'
     model = models.Abstract
-    group_name = UserGroups.SUBMITTER
+    group_names = UserGroups.SUBMITTER
     
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().submitter != request.user:
@@ -83,7 +84,7 @@ class DeleteSubmissionView(LoginRequiredMixin,
     pk_url_kwarg = 'id'
     context_object_name = 'instance'
     template_name = 'abstract/delete.html'
-    group_name = UserGroups.SUBMITTER
+    group_names = UserGroups.SUBMITTER
     
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().submitter != request.user:
@@ -98,3 +99,35 @@ class DeleteSubmissionView(LoginRequiredMixin,
                 instance.title
         ))
         return super().get_success_url()
+
+
+class AbstractDetailView(LoginRequiredMixin, GroupRestrictedView, DetailView):
+    model = models.Abstract
+    group_names = (UserGroups.ASSIGNER, UserGroups.CONFERENCE_CHAIR,)
+    template_name = 'abstract/abstract_detail.html'
+    slug_field = 'id'
+    pk_url_kwarg = 'id'
+    context_object_name = 'abstract'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if UserGroups.ASSIGNER.value \
+                in self.request.user.profile.group_names:
+            if self.request.GET.get("show_demographics", False):
+                context['show_demographics'] = True
+        return context
+
+
+class AbstractListView(LoginRequiredMixin, GroupRestrictedView, ListView):
+    model = models.Abstract
+    group_names = (UserGroups.ASSIGNER, UserGroups.CONFERENCE_CHAIR,)
+    template_name = 'abstract/abstract_list.html'
+    context_object_name = 'abstract_list'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if UserGroups.ASSIGNER.value \
+                in self.request.user.profile.group_names:
+            if self.request.GET.get("show_demographics", False):
+                context['show_demographics'] = True
+        return context

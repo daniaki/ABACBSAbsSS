@@ -324,7 +324,11 @@ class Assignment(models.Model):
         verbose_name="Reason",
         help_text="Please give a reason for declining this review assignment."
     )
-    review = models.ForeignKey(
-        to=Review, on_delete=models.SET_NULL, related_name='%(class)ss',
-        related_query_name='%(class)s', null=True, blank=None, default=None,
+    review = models.OneToOneField(
+        to=Review, on_delete=models.SET_NULL, related_name='%(class)s',
+        null=True, blank=None, default=None,
     )
+
+    @property
+    def get_comment(self):
+        return self.rejection_comment
