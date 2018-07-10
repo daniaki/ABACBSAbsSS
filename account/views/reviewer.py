@@ -1,5 +1,6 @@
 import logging
 
+from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views.generic import TemplateView, FormView
@@ -84,6 +85,17 @@ class ProfileView(LoginRequiredMixin, mixins.GroupRestrictedView,
                 assignment.review = None
                 if review:
                     review.delete()
+                    
+                # Notifies the assigner of the decline.
+                template_name = "account/assignment_declined_email.html"
+                message = render_to_string(template_name, {
+                    'assignment': assignment,
+                })
+                assignment.created_by.profile.email_user(
+                    subject="[ABACBSAbsSS] Review assignment declined",
+                    message=message,
+                )
+
                 return JsonResponse(
                     {'success': 'This review request has been declined.'})
 
@@ -104,6 +116,17 @@ class ProfileView(LoginRequiredMixin, mixins.GroupRestrictedView,
                 assignment.rejection_comment = None
                 assignment.status = abstract_models.Assignment.STATUS_ACCEPTED
                 assignment.save()
+                
+                # Notifies the assigner of the decline.
+                template_name = "account/assignment_accepted_email.html"
+                message = render_to_string(template_name, {
+                    'assignment': assignment,
+                })
+                assignment.created_by.profile.email_user(
+                    subject="[ABACBSAbsSS] Review assignment accepted",
+                    message=message,
+                )
+                
                 return JsonResponse({'success': 'Your review has been saved.'})
 
         else:
