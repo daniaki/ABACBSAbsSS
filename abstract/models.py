@@ -167,10 +167,6 @@ class Abstract(TimeStampedModel):
         related_query_name='%(class)s', verbose_name='Submitter',
         null=True, default=None,
     )
-    reviewers = models.ManyToManyField(
-        to=User, related_name='assigned_%(class)ss',
-        related_query_name='%(class)s', verbose_name='Assign reviewers',
-    )
 
     # Properties
     # ----------------------------------------------------------------------- #
@@ -196,8 +192,8 @@ class Abstract(TimeStampedModel):
     def score_content(self):
         if self.has_reviews:
             score = 0
-            for comment in self.reviews.all():
-                score += comment.score_content
+            for review in self.reviews.all():
+                score += review.score_content
             return score
         return None
     
@@ -205,8 +201,8 @@ class Abstract(TimeStampedModel):
     def score_contribution(self):
         if self.has_reviews:
             score = 0
-            for comment in self.reviews.all():
-                score += comment.score_contribution
+            for review in self.reviews.all():
+                score += review.score_contribution
             return score
         return None
     
@@ -214,15 +210,27 @@ class Abstract(TimeStampedModel):
     def score_interest(self):
         if self.has_reviews:
             score = 0
-            for comment in self.reviews.all():
-                score += comment.score_interest
+            for review in self.reviews.all():
+                score += review.score_interest
             return score
         return None
+       
+    @property
+    def reviewers(self):
+        """Returns the reviewers who have left a review for this abstract."""
+        return User.objects.filter(
+            pk__in=[r.reviewer.pk for r in self.reviews.all()]
+        )
     
     @property
-    def first_reviewer(self):
-        """READ: Used only in Factory method for SelfAttribute setting."""
-        return self.reviewers.first()
+    def assigned_reviewers(self):
+        """
+        Returns all reviewers assigned to this abstract including those
+        which are pending or have declined review.
+        """
+        return User.objects.filter(
+            pk__in=[a.reviewer.pk for a in self.assignments.all()]
+        )
 
 
 class Review(TimeStampedModel):
@@ -306,7 +314,10 @@ class Assignment(models.Model):
     
     id = models.UUIDField(primary_key=True,
                           default=uuid.uuid4, editable=False, unique=True)
-    
+    created_by = models.ForeignKey(
+        to=User, on_delete=models.CASCADE, related_name='created_%(class)ss',
+        related_query_name='created_%(class)s', null=False, default=None,
+    )
     reviewer = models.ForeignKey(
         to=User, on_delete=models.CASCADE, related_name='%(class)ss',
         related_query_name='%(class)s', null=False, default=None,
@@ -328,7 +339,7 @@ class Assignment(models.Model):
         to=Review, on_delete=models.SET_NULL, related_name='%(class)s',
         null=True, blank=None, default=None,
     )
-
+    
     @property
     def get_comment(self):
         return self.rejection_comment
