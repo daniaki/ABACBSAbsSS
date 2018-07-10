@@ -1,10 +1,18 @@
 from django.conf import settings
 from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
+from django.template.loader import render_to_string
 
 from core import mixins
 
+from account.models import UserGroups
+from abstract.models import Assignment
+
 from . import models, fields
+
+
+User = get_user_model()
 
 
 class AbstractForm(mixins.UserKwargsMixin,
@@ -120,3 +128,80 @@ class RejectAssignmentForm(forms.ModelForm):
     class Meta:
         model = models.Assignment
         fields = ('rejection_comment',)
+
+
+class AssingmentForm(mixins.ExtraKwargsMixin, forms.Form):
+    """Form to add/remove reviewers to an abstract."""
+    extra_kwargs = ('abstract', 'assigner',)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        reviewers = User.objects.filter(groups__name=UserGroups.REVIEWER.value)
+        self.fields['reviewers'] = forms.ModelMultipleChoiceField(
+            label='Reviewers',
+            help_text="Assign reviewers to or remove from this abstract.",
+            required=False,
+            queryset=reviewers,
+            choices=(
+                (r.id, '{} | {} | {} | Assigned to: {} | Reviewed: {}'.format(
+                    r.profile.full_name, r.profile.state,
+                    ', '.join(r.profile.keywords.all()),
+                    r.assignments.count(),
+                    r.reviews.count()
+                ))
+                for r in reviewers
+            ),
+        )
+        if not self.abstract:
+            raise AttributeError("`abstract` cannot be None.")
+        
+    def clean_reviewers(self):
+        qs = self.cleaned_data.get('reviewers', [])
+        reviewer_group = UserGroups.get_group(UserGroups.REVIEWER)
+        qs = [u for u in list(qs) if reviewer_group in u.groups.all()]
+        return qs
+    
+    def save(self):
+        removed = []
+        added = []
+        for user in self.abstract.assigned_reviewers:
+            if user not in self.cleaned_data.get('reviewers', []):
+                removed.append(user)
+        for user in self.cleaned_data.get('reviewers', []):
+            if user not in self.abstract.assigned_reviewers:
+                added.append(user)
+                
+        for user in removed:
+            template_name = "account/assignment_removed.html"
+            message = render_to_string(template_name, {
+                'abstract': self.abstract,
+                'reviewer': user
+            })
+            user.profile.email_user(
+                subject='[ABACBSAbsSS] Assignment removed.',
+                message=message,
+            )
+            if Assignment.objects.filter(
+                    abstract=self.abstract, reviewer=user).count():
+                assignment = Assignment.objects.get(
+                    abstract=self.abstract, reviewer=user)
+                if assignment.review:
+                    assignment.review.delete()
+                assignment.delete()
+        
+        for user in added:
+            Assignment.objects.create(
+                reviewer=user, abstract=self.abstract,
+                created_by=self.assigner
+            )
+            template_name = "account/assignment_added.html"
+            message = render_to_string(template_name, {
+                'abstract': self.abstract,
+                'reviewer': user
+            })
+            user.profile.email_user(
+                subject='[ABACBSAbsSS] Assignment added.',
+                message=message,
+            )
+        
+        return self.abstract
