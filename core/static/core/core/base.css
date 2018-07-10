@@ -59,6 +59,10 @@ span.select2.select2-container.select2-container--default {
     width: 100% !important;
 }
 
+body {
+  min-width: 440px;
+}
+
 
 /* Main
 --------------------------------------------------------------------------- */
@@ -321,4 +325,13 @@ footer a {
 	margin: 0 .5em 0 0;
 	padding: 0;
 	float: left;
+}
+
+/* Table */
+.page-item.active > .page-link {
+  background-color: #007ab1;
+}
+
+.table-wrapper {
+  overflow-x: scroll;
 }

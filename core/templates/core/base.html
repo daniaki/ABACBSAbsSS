@@ -30,7 +30,6 @@
       </a>
       <div class="header-nav">
         <a class="nav-link" href="{% url 'index:index' %}">Home</a>
-        <a class="nav-link" href="{% url 'index:index' %}">Guide</a>
         {% if not request.user.is_authenticated %}
           <div class="nav-dropdown">
             <a class="nav-link" href="#">Login <i class="fa fa-caret-down"></i></a>
@@ -76,7 +75,6 @@
         <hr>
         <ul class="zero-pad-ul">
           <li class="nav-link"><a class="hover-underline" href="{% url 'index:index' %}">Home</a></li>
-          <li class="nav-link"><a class="hover-underline" href="{% url 'index:index' %}">Guide</a></li>
 
           {% if not request.user.is_authenticated %}
             <li class="nav-link"><a class="hover-underline" href="">Login</a></li>
