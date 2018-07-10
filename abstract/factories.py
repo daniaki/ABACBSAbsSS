@@ -53,21 +53,19 @@ class AbstractFactory(DjangoModelFactory):
             return
         self.keywords.add(KeywordFactory())
         return self
-
-    @factory.post_generation
-    def assign_reviewers(self, created, extracted, *args, **kwargs):
-        if not created:
-            return
-        self.reviewers.add(user_factories.ReviewerFactory())
-        return self
-    
+   
     @classmethod
-    def assign_reviews(cls, abstract):
+    def assign_reviews(cls, abstract, n=3):
         reviews = []
-        for reviewer in abstract.reviewers.all():
-            reviews.append(
-                ReviewFactory(reviewer=reviewer, abstract=abstract)
-            )
+        assigner = user_factories.AssignerFactory()
+        for _ in range(n):
+            reviewer = user_factories.ReviewerFactory()
+            r = ReviewFactory(abstract=abstract, reviewer=reviewer)
+            a = AssignmnetFactory(abstract=abstract,
+                                  reviewer=reviewer, created_by=assigner)
+            a.review = r
+            a.save()
+            reviews.append(r)
         return reviews
         
     
@@ -82,7 +80,7 @@ class ReviewFactory(DjangoModelFactory):
     score_contribution = factory.fuzzy.FuzzyInteger(low=MIN_SCORE, high=MAX_SCORE)
     score_interest = factory.fuzzy.FuzzyInteger(low=MIN_SCORE, high=MAX_SCORE)
     abstract = factory.SubFactory(AbstractFactory)
-    reviewer = factory.SelfAttribute('abstract.first_reviewer')
+    reviewer = factory.SubFactory(user_factories.ReviewerFactory)
 
 
 class AssignmnetFactory(DjangoModelFactory):
@@ -92,4 +90,5 @@ class AssignmnetFactory(DjangoModelFactory):
         django_get_or_create = ('reviewer', 'abstract')
 
     abstract = factory.SubFactory(AbstractFactory)
-    reviewer = factory.SelfAttribute('abstract.first_reviewer')
+    reviewer = factory.SubFactory(user_factories.ReviewerFactory)
+    created_by = factory.SubFactory(user_factories.AssignerFactory)

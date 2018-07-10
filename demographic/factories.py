@@ -30,7 +30,7 @@ class CareerStageFactory(DjangoModelFactory):
 
 class AboriginalOrTorresFactory(DjangoModelFactory):
     class Meta:
-        model = models.Gender
+        model = models.AboriginalOrTorres
         django_get_or_create = ('text',)
     
     text = factory.fuzzy.FuzzyChoice(['No', 'Yes', 'Prefer not say',])
