@@ -4,6 +4,7 @@ import uuid
 import mock
 from django.test import RequestFactory
 from django.core.exceptions import PermissionDenied
+from django.core import mail
 
 from abstract import factories as abstract_factories
 from abstract import models as abstract_models
@@ -19,6 +20,7 @@ class TestProfileView(TestCase):
         self.reviewer = self.assignment.reviewer
         self.abstract = self.assignment.abstract
         self.factory = RequestFactory()
+        self.reviewer.profile.set_profile_as_complete()
 
     def mock_reject_form_data(self):
         return {
@@ -149,6 +151,18 @@ class TestProfileView(TestCase):
         request.user = self.reviewer
         views.reviewer.ProfileView.as_view()(request)
         self.assertEqual(abstract_models.Review.objects.count(), 0)
+        
+    def test_decline_sends_assigner_email(self):
+        data = self.mock_reject_form_data()
+        request = self.factory.post(
+            '/profile/', data=data,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+        )
+        request.user = self.reviewer
+        self.assertEqual(len(mail.outbox), 0)
+        views.reviewer.ProfileView.as_view()(request)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("declined", mail.outbox[0].subject)
 
     # Accept
     # --------------------------------------------------------------------- #
@@ -286,3 +300,15 @@ class TestProfileView(TestCase):
         response = views.reviewer.ProfileView.as_view()(request)
         self.assignment.refresh_from_db()
         self.assertIsNone(self.assignment.rejection_comment)
+
+    def test_accept_sends_assigner_email(self):
+        data = self.mock_accept_form_data()
+        request = self.factory.post(
+            '/profile/', data=data,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+        )
+        request.user = self.reviewer
+        self.assertEqual(len(mail.outbox), 0)
+        views.reviewer.ProfileView.as_view()(request)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("accepted", mail.outbox[0].subject)

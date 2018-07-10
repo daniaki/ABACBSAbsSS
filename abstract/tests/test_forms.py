@@ -1,8 +1,9 @@
 from django.conf import settings
+from django.core import mail
 
 from core.test import TestCase
 
-from account.factories import UserFactory
+from account.factories import UserFactory, ReviewerFactory, AssignerFactory
 
 from demographic.factories import CareerStageFactory
 
@@ -10,7 +11,6 @@ from .. import factories, models, forms
 
 
 class TestAbstractForm(TestCase):
-    
     @staticmethod
     def mock_data():
         factories.PresentationCategoryFactory(
@@ -131,3 +131,85 @@ class TestAbstractForm(TestCase):
         self.assertTrue(form.is_valid())
         abstract = form.save(commit=True)
         self.assertIn(abstract, self.user.abstracts.all())
+
+
+class TestAssignmentForm(TestCase):
+    
+    def setUp(self):
+        super().setUp()
+        self.abstract = factories.AbstractFactory()
+        self.assigner = AssignerFactory()
+        
+    def test_creates_assignments_and_mails_user(self):
+        reviewer = ReviewerFactory()
+        data = {'reviewers': [reviewer.id]}
+        form = forms.AssingmentForm(
+            data=data, assigner=self.assigner, abstract=self.abstract)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(models.Assignment.objects.count(), 0)
+        form.save()
+        self.assertEqual(models.Assignment.objects.count(), 1)
+        self.assertEqual(self.abstract.assigned_reviewers.count(), 1)
+        self.assertEqual(self.abstract.reviewers.count(), 0)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("You have been assigned", mail.outbox[0].body)
+        
+    def test_deletes_assignments_and_mails_user(self):
+        reviewer = ReviewerFactory()
+        data = {'reviewers': []}
+        factories.AssignmnetFactory(
+            reviewer=reviewer, created_by=self.assigner, abstract=self.abstract)
+        form = forms.AssingmentForm(
+            data=data, assigner=self.assigner, abstract=self.abstract)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(models.Assignment.objects.count(), 1)
+        form.save()
+        self.assertEqual(models.Assignment.objects.count(), 0)
+        self.assertEqual(self.abstract.assigned_reviewers.count(), 0)
+        self.assertEqual(self.abstract.reviewers.count(), 0)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("has been rescinded.", mail.outbox[0].body)
+    
+    def test_invalid_choice_non_reviewer(self):
+        data = {'reviewers': [AssignerFactory().id]}
+        form = forms.AssingmentForm(
+            data=data, assigner=self.assigner, abstract=self.abstract)
+        self.assertFalse(form.is_valid())
+        
+    def test_deletes_review_when_deleting_assignment(self):
+        reviewer = ReviewerFactory()
+        data = {'reviewers': []}
+        
+        assignment = factories.AssignmnetFactory(
+            reviewer=reviewer, created_by=self.assigner, abstract=self.abstract)
+        review = factories.ReviewFactory(reviewer=reviewer, abstract=self.abstract)
+        assignment.review = review
+        assignment.save()
+        
+        form = forms.AssingmentForm(
+            data=data, assigner=self.assigner, abstract=self.abstract)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(models.Review.objects.count(), 1)
+        form.save()
+        self.assertEqual(models.Review.objects.count(), 0)
+        
+    def test_does_not_add_remove_existing(self):
+        reviewer = ReviewerFactory()
+        data = {'reviewers': [reviewer.id]}
+    
+        assignment = factories.AssignmnetFactory(
+            reviewer=reviewer, created_by=self.assigner, abstract=self.abstract)
+        review = factories.ReviewFactory(
+            reviewer=reviewer, abstract=self.abstract)
+        assignment.review = review
+        assignment.save()
+    
+        form = forms.AssingmentForm(
+            data=data, assigner=self.assigner, abstract=self.abstract)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(models.Review.objects.count(), 1)
+        self.assertEqual(models.Assignment.objects.count(), 1)
+        form.save()
+        self.assertEqual(models.Review.objects.count(), 1)
+        self.assertEqual(models.Assignment.objects.count(), 1)
+        self.assertEqual(len(mail.outbox), 0)
