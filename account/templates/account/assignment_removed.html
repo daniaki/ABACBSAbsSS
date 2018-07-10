@@ -1,0 +1,9 @@
+{% autoescape off %}
+{% if reviewer.first_name %}
+Hi {{ reviewer.first_name }},
+{% else %}
+Hi,
+{% endif %}
+Your assignment to review the abstract titled <strong>{{ abstract.title }}</strong> has been rescinded.
+
+{% endautoescape %}

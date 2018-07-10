@@ -1,0 +1,9 @@
+{% autoescape off %}
+{% if reviewer.first_name %}
+Hi {{ reviewer.first_name }},
+{% else %}
+Hi,
+{% endif %}
+You have been assigned to review the abstract titled <strong>{{ abstract.title }}</strong>. You can accept or decline this assignment from your profile.
+
+{% endautoescape %}

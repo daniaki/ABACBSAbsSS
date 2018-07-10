@@ -1,0 +1,10 @@
+{% autoescape off %}
+{% if assignment.created_by.first_name %}
+Hi {{ assignment.created_by.first_name }},
+{% else %}
+Hi,
+{% endif %}
+{{ assignment.reviewer.profile.full_name|default:"Name missing" }} has accepted your request to review the assignment titled <strong>"{{ assignment.abstract.title }}"</strong> (abstract id: {{ assignment.abstract.id }}).
+
+Assignment id: {{ assignment.id }}
+{% endautoescape %}
