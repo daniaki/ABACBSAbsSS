@@ -22,28 +22,40 @@
 
 <div id="{{ abstract.id }}-reviews" class="abstract-reviews">
   <hr>
-  <h4>Review summary</h4>
+  <h4>Assignment summary</h4>
+  <br>
   {% if not abstract.assignments.count %}
     <p class="text-muted">This abstract has not been assigned for review</p>
   {% else %}
-    {% if abstract.reviews.count %}
-      {% for review in abstract.reviews.all %}
-        <div class="review-container indent">
-          <p><strong>Reviewer</strong> {{ review.reviewer.profile.full_name }}</p>
-          <p><strong>Status:</strong> {{ review.assignment.status|capfirst }}</p>
-          {% if review.assignment.status == DECLINED %}
-            <p><strong>Comment:</strong> {{ review.assignment.get_comment }}</p>
-          {% endif %}
-          {% if review.assignment.status == ACCEPTED %}
-            <p><strong>Content score</strong> {{ review.score_content }}</p>
-            <p><strong>Contribution score</strong> {{ review.score_contribution }}</p>
-            <p><strong>Interest score</strong> {{ review.score_interest }}</p>
-            <p><strong>Comments</strong> {{ review.text }}</p>
-          {% endif %}
-        </div>
-      {% endfor %}
-    {% else %}
-      <p class="text-muted">This abstract has not beed reviewed</p>
-    {% endif %}
+    <div class="container">
+      <table id="review-table" class="table table-hover">
+        <thead>
+          <th>Username</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Content</th>
+          <th>Contribution</th>
+          <th>Interest</th>
+          <th>Review comment</th>
+          <th>Reason declining</th>
+        </thead>
+        <tbody>
+          {% for assignment in abstract.assignments.all %}
+            <tr>
+              <td>{{ assignment.reviewer.username }}</td>
+              <td>{{ assignment.reviewer.profile.full_name }}</td>
+              <td>{{ assignment.status|capfirst }}</td>
+              <td>{{ assignment.review.score_content|default:'-' }}</td>
+              <td>{{ assignment.review.score_contribution|default:'-' }} </td>
+              <td>{{ assignment.review.score_interest|default:'-' }} </td>
+              <td class="markdown">{{ assignment.review.text|default:'-' }}</td>
+              <td class="markdown">{{ assignment.get_comment|default:'-' }} </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   {% endif %}
 </div>
+
+

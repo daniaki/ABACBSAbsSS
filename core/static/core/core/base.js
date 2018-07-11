@@ -48,6 +48,7 @@ function confirmDelete() {
 
 // On Load ----------------------------------------------------------------- //
 $("document").ready(function() {
+  
   // Initialise select2
   $(".select2").select2();
   $(".select2-token-select").select2({
@@ -90,4 +91,14 @@ $("document").ready(function() {
   $(".nav-dropdown").mouseleave(function() {
     $(".nav-dropdown .nav-dropdown-content").hide();
   });
+  
+  
+  // Convert marked elements to markdown
+  let converter = new showdown.Converter();
+  let rowColumns = $(".markdown");
+  console.log(rowColumns);
+  for (let i=0; i < rowColumns.length; i++) {
+    rowColumns[i].innerHTML = converter.makeHtml(rowColumns[i].innerHTML);
+  }
+  
 });

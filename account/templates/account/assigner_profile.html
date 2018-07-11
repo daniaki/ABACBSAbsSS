@@ -2,7 +2,8 @@
 
 
 {% block body %}
-  <h1>Abstracts</h1>
+  <h1>Abstracts</h1><br>
+  <p>Below is a table of currently submitted abstracts and their assigned reviewers.</p>
   {% if object_list.count %}
     <div class="container">
       <table id="abstract-table" class="table table-hover">
@@ -18,14 +19,14 @@
         <tbody>
           {% for abstract in object_list.all %}
             <tr>
-              <td>{{ abstract.title }}</td>
+              <td><a href="{% url 'abstract:abstract_summary' abstract.id %}">{{ abstract.title }}</a></td>
               <td>{{ abstract.state|default:"-" }}</td>
               <td>{{ abstract.keywords.all|join:', '|default:"-" }}</td>
               <td>{{ abstract.pending_reviewers|join:', '|default:"-" }} </td>
               <td>{{ abstract.accepted_reviewers|join:', '|default:"-" }} </td>
               <td>{{ abstract.declined_reviewers|join:', '|default:"-" }} </td>
               <td>
-                <a href="{% url 'abstract:assign_reviewer' abstract.id %}"
+                <a href="{% url 'account:assign_reviewers' abstract.id %}"
                    class="btn btn-outline-dark">Edit
                 </a>
               </td>
@@ -44,7 +45,10 @@
 {% block extra_scripts %}
 <script type="text/javascript">
   $("document").ready(function() {
-    let table = $("#abstract-table").DataTable();
+    let table = $("#abstract-table").DataTable({
+      responsive: true,
+      paging: false,
+    });
   });
 </script>
 {% endblock %}

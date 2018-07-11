@@ -3,6 +3,10 @@
 <form class="hidden" id="{{ assignment.id }}-reject-form" v-bind:class="{'show': rejected, 'hidden': !rejected}">
   <hr>
   <h4>Decline</h4>
+  <p class="text-muted">Please fill in in the form below regarding your reason for declining this review assignment.
+    You may edit this comment at any time. Basic markdown is supported. Click the 'Preview' to see your
+    rendered markdown.
+  </p>
  
   <div class="alert alert-success" role="alert hidden" v-bind:class="{'show': rejectSuccessMessage, 'hidden': !rejectSuccessMessage}">
     <h4 class="alert-heading">Success!</h4><hr>
@@ -24,4 +28,6 @@
   </div>
 
   <button v-on:click="submitRejectForm" class="btn btn-outline-danger" type="button">Decline</button>
+  <button v-on:click="previewRejectMarkdown" class="btn btn-outline-dark" type="button">Preview</button>
+
 </form>

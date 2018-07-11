@@ -1,7 +1,30 @@
-  {% extends 'core/base.html' %}
+{% extends 'core/base.html' %}
 {% load static %}
 
 {% block body %}
+
+  <!-- Markdown Preview -->
+  <div id="markdown-modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Markdown preview</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="markdown-body" class="markdown">
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <h1> Assigned abstracts </h1>
   {% if not request.user.assignments.count %}
     <p class="text-muted">No abstracts have been assigned to you.</p>
@@ -51,11 +74,11 @@
           rejected: false,
 
           // Reject form variables
-          rejectionComment: "{{ assignment.rejection_comment|default:"" }}",
+          rejectionComment: "{{ assignment.rejection_comment|default:""|escapejs }}",
           rejectionCommentError: "",
 
           // Review form variables
-          reviewText: "{{ assignment.review.text|default:"" }}",
+          reviewText: "{{ assignment.review.text|default:""|escapejs }}",
           reviewTextError: "",
           reviewScoreContent: "{{ assignment.review.score_content }}",
           reviewScoreContentError: "",
@@ -83,16 +106,19 @@
           }
         },
         methods: {
+
           disableForm: function (name) {
             $("#" + this.id + "-" + name + "-form input").attr("disabled", "disabled");
             $("#" + this.id + "-" + name + "-form textarea").attr("disabled", "disabled");
             $("#" + this.id + "-" + name + "-form button").attr("disabled", "disabled");
           },
+
           enableForm: function (name) {
             $("#" + this.id + "-" + name + "-form input").prop("disabled", false);
             $("#" + this.id + "-" + name + "-form textarea").prop("disabled", false);
             $("#" + this.id + "-" + name + "-form button").prop("disabled", false);
           },
+
           resetReviewForm() {
             this.reviewScoreContent = "";
             this.reviewScoreContribution = "";
@@ -100,6 +126,7 @@
             this.reviewText = "";
             this.acceptSuccessMessage = "";
           },
+
           resetReviewFormErrors() {
             this.reviewScoreContentError = "";
             this.reviewScoreContributionError = "";
@@ -107,14 +134,17 @@
             this.reviewTextError = "";
             this.acceptErrorMessage = "";
           },
+
           resetRejectForm() {
             this.rejectSuccessMessage = "";
             this.rejectionComment = "";
           },
+
           resetRejectFormErrors() {
             this.rejectErrorMessage = "";
             this.rejectionCommentError = "";
           },
+
           submitRejectForm: function (event) {
             data = {
               id: this.id,
@@ -155,6 +185,7 @@
               self.enableForm("reject");
             });
           },
+
           submitAcceptForm: function (event) {
            data = {
               id: this.id,
@@ -208,14 +239,37 @@
               self.enableForm("review");
             });
           },
+
           accept: function (event) {
             this.accepted = true;
             this.rejected = false;
           },
+
           reject: function (event) {
             this.accepted = false;
             this.rejected = true;
+          },
+
+          previewMarkdown: function (event, type) {
+            let md = document.getElementById('markdown-body');
+            let modal = $("#markdown-modal");
+            let converter = new showdown.Converter();
+            if (type === 'accepted') {
+              md.innerHTML = converter.makeHtml(this.reviewText);
+            } else {
+              md.innerHTML = converter.makeHtml(this.rejectionComment);
+            }
+            modal.modal("show");
+          },
+
+          previewReviewMarkdown: function (event) {
+            this.previewMarkdown(event, 'accepted');
+          },
+
+          previewRejectMarkdown: function (event) {
+            this.previewMarkdown(event, 'rejected');
           }
+
         }
       });
     {% endfor %}
