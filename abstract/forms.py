@@ -3,6 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
+from django.utils.text import mark_safe
 
 from core import mixins
 
@@ -133,7 +134,15 @@ class RejectAssignmentForm(forms.ModelForm):
 class AssingmentForm(mixins.ExtraKwargsMixin, forms.Form):
     """Form to add/remove reviewers to an abstract."""
     extra_kwargs = ('abstract', 'assigner',)
-    
+
+    def label_from_instance(self, obj):
+        return '{uname} | {name} | {state} | {kws}'.format(
+            uname=obj.username,
+            name=obj.profile.full_name,
+            state=obj.profile.state.text,
+            kws=', '.join([kw.text for kw in obj.profile.keywords.all()]),
+        )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         reviewers = User.objects.filter(groups__name=UserGroups.REVIEWER.value)
@@ -142,19 +151,17 @@ class AssingmentForm(mixins.ExtraKwargsMixin, forms.Form):
             help_text="Assign reviewers to or remove from this abstract.",
             required=False,
             queryset=reviewers,
-            choices=(
-                (r.id, '{} | {} | {} | Assigned to: {} | Reviewed: {}'.format(
-                    r.profile.full_name, r.profile.state,
-                    ', '.join(r.profile.keywords.all()),
-                    r.assignments.count(),
-                    r.reviews.count()
-                ))
-                for r in reviewers
-            ),
+            widget=forms.SelectMultiple(
+                attrs={"class": "select2 select2-token-select"},
+            )
         )
         if not self.abstract:
             raise AttributeError("`abstract` cannot be None.")
-        
+        if not self.assigner:
+            raise AttributeError("`reviewer` cannot be None.")
+
+        self.fields['reviewers'].label_from_instance = self.label_from_instance
+
     def clean_reviewers(self):
         qs = self.cleaned_data.get('reviewers', [])
         reviewer_group = UserGroups.get_group(UserGroups.REVIEWER)
