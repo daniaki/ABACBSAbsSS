@@ -217,6 +217,24 @@ class Profile(TimeStampedModel):
                 self.user.first_name.capitalize(),
                 self.user.last_name.capitalize()
             )
+
+    @property
+    def declined_assignments(self):
+        from abstract.models import Assignment
+        return self.user.assignments.filter(
+            status=Assignment.STATUS_REJECTED)
+
+    @property
+    def pending_assignments(self):
+        from abstract.models import Assignment
+        return self.user.assignments.filter(
+            status=Assignment.STATUS_PENDING)
+
+    @property
+    def accepted_assignments(self):
+        from abstract.models import Assignment
+        return self.user.assignments.filter(
+            status=Assignment.STATUS_ACCEPTED)
         
         
 class ScholarshipApplication(models.Model):

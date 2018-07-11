@@ -232,6 +232,36 @@ class Abstract(TimeStampedModel):
             pk__in=[a.reviewer.pk for a in self.assignments.all()]
         )
 
+    @property
+    def pending_assignments(self):
+        return self.assignments.filter(status=Assignment.STATUS_PENDING)
+
+    @property
+    def declined_assignments(self):
+        return self.assignments.filter(status=Assignment.STATUS_REJECTED)
+
+    @property
+    def accepted_assignments(self):
+        return self.assignments.filter(status=Assignment.STATUS_ACCEPTED)
+
+    @property
+    def pending_reviewers(self):
+        return User.objects.filter(
+            pk__in=[a.reviewer.pk for a in self.pending_assignments]
+        )
+
+    @property
+    def declined_reviewers(self):
+        return User.objects.filter(
+            pk__in=[a.reviewer.pk for a in self.declined_assignments]
+        )
+
+    @property
+    def accepted_reviewers(self):
+        return User.objects.filter(
+            pk__in=[a.reviewer.pk for a in self.accepted_assignments]
+        )
+
 
 class Review(TimeStampedModel):
     """
