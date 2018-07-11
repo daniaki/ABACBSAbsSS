@@ -17,5 +17,5 @@ urlpatterns = [
     path('profile/', views.ProfileView.as_view(), name="profile"),
     path('profile/settings/', views.EditProfileView.as_view(), name="edit_profile"),
     path('profile/scholarship/', views.submitter.ScholarshipApplicationView.as_view(), name="scholarship_application"),
-    path('profile/assign/<slug:id>/', views.assigner.AssignView.as_view(), name="assign_reviewer"),
+    path('profile/assign/<slug:id>/', views.assigner.assign_reviewers_view, name="assign_reviewers"),
 ]
