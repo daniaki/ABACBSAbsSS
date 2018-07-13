@@ -248,19 +248,19 @@ class Abstract(TimeStampedModel):
     def pending_reviewers(self):
         return User.objects.filter(
             pk__in=[a.reviewer.pk for a in self.pending_assignments]
-        )
+        ).order_by('first_name')
 
     @property
     def declined_reviewers(self):
         return User.objects.filter(
             pk__in=[a.reviewer.pk for a in self.declined_assignments]
-        )
+        ).order_by('first_name')
 
     @property
     def accepted_reviewers(self):
         return User.objects.filter(
             pk__in=[a.reviewer.pk for a in self.accepted_assignments]
-        )
+        ).order_by('first_name')
 
 
 class Review(TimeStampedModel):

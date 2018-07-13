@@ -103,7 +103,8 @@ class DeleteSubmissionView(LoginRequiredMixin,
 
 class AbstractDetailView(LoginRequiredMixin, GroupRestrictedView, DetailView):
     model = models.Abstract
-    group_names = (UserGroups.ASSIGNER, UserGroups.CONFERENCE_CHAIR,)
+    group_names = (UserGroups.ASSIGNER,
+                   UserGroups.CONFERENCE_CHAIR,)
     template_name = 'abstract/abstract_detail.html'
     slug_field = 'id'
     pk_url_kwarg = 'id'
@@ -111,22 +112,7 @@ class AbstractDetailView(LoginRequiredMixin, GroupRestrictedView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if UserGroups.ASSIGNER.value \
-                in self.request.user.profile.group_names:
-            if self.request.GET.get("show_demographics", False):
-                context['show_demographics'] = True
-        return context
-
-
-class AbstractListView(LoginRequiredMixin, GroupRestrictedView, ListView):
-    model = models.Abstract
-    group_names = (UserGroups.ASSIGNER, UserGroups.CONFERENCE_CHAIR,)
-    template_name = 'abstract/abstract_list.html'
-    context_object_name = 'abstract_list'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if UserGroups.ASSIGNER.value \
+        if UserGroups.CONFERENCE_CHAIR.value \
                 in self.request.user.profile.group_names:
             if self.request.GET.get("show_demographics", False):
                 context['show_demographics'] = True

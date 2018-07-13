@@ -136,11 +136,13 @@ class AssingmentForm(mixins.ExtraKwargsMixin, forms.Form):
     extra_kwargs = ('abstract', 'assigner',)
 
     def label_from_instance(self, obj):
+        state = obj.profile.state
         return '{uname} | {name} | {state} | {kws}'.format(
             uname=obj.username,
             name=obj.profile.full_name,
-            state=obj.profile.state.text,
-            kws=', '.join([kw.text for kw in obj.profile.keywords.all()]),
+            state='Unknown state' if not state else state.text,
+            kws=', '.join([kw.text for kw in obj.profile.keywords.all()]) \
+                or 'No keywords',
         )
 
     def __init__(self, *args, **kwargs):

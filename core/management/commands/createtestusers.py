@@ -28,9 +28,9 @@ class Command(BaseCommand):
             password = "1234qwer"
             
             sys.stdout.write(
-                "Created user with username 'student' "
+                "Created user with username 'submitter' "
                 "and password '{}'.\n".format(password))
-            usera = SubmitterFactory(username="student")
+            usera = SubmitterFactory(username="submitter")
             
             profile = usera.profile
             profile.completed_intial_login = True
