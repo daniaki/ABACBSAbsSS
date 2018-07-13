@@ -312,3 +312,30 @@ class TestProfileView(TestCase):
         views.reviewer.ProfileView.as_view()(request)
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn("accepted", mail.outbox[0].subject)
+
+
+class TestReviewerView(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.factory = RequestFactory()
+        self.user = factories.ReviewerFactory()
+        self.user.profile.set_profile_as_complete()
+        self.view = views.reviewer.ProfileView.as_view()
+    
+    def test_works(self):
+        request = self.factory.get('/profile/')
+        request.user = self.user
+        response = self.view(request)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_permission_denied_non_reviewer(self):
+        request = self.factory.get('/profile/')
+        with self.assertRaises(PermissionDenied):
+            request.user = factories.SubmitterFactory()
+            self.view(request)
+        with self.assertRaises(PermissionDenied):
+            request.user = factories.AssignerFactory()
+            self.view(request)
+        with self.assertRaises(PermissionDenied):
+            request.user = factories.ConferenceChairFactory()
+            self.view(request)

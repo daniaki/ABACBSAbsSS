@@ -208,3 +208,60 @@ class TestDeleteSubmissionView(TestMessageMixin, TestCase):
         self.assertEqual(models.Abstract.objects.count(), 1)
         views.DeleteSubmissionView.as_view()(request, id=self.abstract.id)
         self.assertEqual(models.Abstract.objects.count(), 0)
+
+
+class TestAbstractDetailView(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.factory = RequestFactory()
+        self.chair = a_factories.ConferenceChairFactory()
+        self.submitter = a_factories.SubmitterFactory()
+        self.submitter.profile.set_profile_as_complete()
+        self.reviewer = a_factories.ReviewerFactory()
+        self.reviewer.profile.set_profile_as_complete()
+        self.abstract = factories.AbstractFactory(submitter=self.submitter)
+        self.path = reverse('abstract:abstract_summary',
+                            kwargs={'id': self.abstract.id})
+        
+    def test_demographic_buttons_visible_for_chairs(self):
+        request = self.factory.get(self.path)
+        request.user = self.chair
+        response = views.AbstractDetailView.as_view()(request,
+                                                      id=self.abstract.id)
+        self.assertContains(response, 'Show demographics')
+        
+    def test_demographics_hidden_for_non_chair(self):
+        request = self.factory.get(self.path)
+        request.user = self.reviewer
+        response = views.AbstractDetailView.as_view()(request,
+                                                      id=self.abstract.id)
+        self.assertNotContains(response, 'Show demographics')
+        
+    def test_demographics_hidden_GET_non_chair(self):
+        request = self.factory.get(
+            self.path, data={'show_demographics': 'True'})
+        request.user = self.reviewer
+        response = views.AbstractDetailView.as_view()(request,
+                                                      id=self.abstract.id)
+        self.assertNotContains(response, 'Demographic Information')
+        
+    def test_demographics_shown_GET_chair(self):
+        request = self.factory.get(
+            self.path, data={'show_demographics': 'True'})
+        request.user = self.chair
+        response = views.AbstractDetailView.as_view()(request,
+                                                      id=self.abstract.id)
+        self.assertContains(response, 'Demographic Information')
+        
+    def test_permission_denied_submitter(self):
+        request = self.factory.get(self.path)
+        request.user = self.submitter
+        with self.assertRaises(PermissionDenied):
+            views.AbstractDetailView.as_view()(request, id=self.abstract.id)
+            
+    def test_permission_denied_reviewer(self):
+        request = self.factory.get(self.path)
+        request.user = self.reviewer
+        with self.assertRaises(PermissionDenied):
+            views.AbstractDetailView.as_view()(request, id=self.abstract.id)
+    

@@ -1,5 +1,8 @@
 from core.test import TestCase
 
+from abstract.factories import KeywordFactory
+from abstract.models import Keyword
+from demographic import factories as d_factories
 
 from .. import factories, forms
 
@@ -54,3 +57,110 @@ class TestScholarshipAppForm(TestCase):
         data['text'] = ' '.join(['a'] * 200)
         form = forms.ScholarshipApplicationForm(user=user, data=data)
         self.assertTrue(form.is_valid())
+
+
+class TestReviewerProfileForm(TestCase):
+    def mock_data(self):
+        return {
+            'affiliation': 'New Donk City',
+            'state': self.state.id,
+            'career_stage': self.stage.id,
+            'keywords': [self.keyword.text,],
+            'email': 'person@gmail.com'
+        }
+    
+    def setUp(self):
+        super().setUp()
+        self.stage = d_factories.CareerStageFactory()
+        self.gender = d_factories.GenderFactory()
+        self.aot = d_factories.AboriginalOrTorresFactory()
+        self.state = d_factories.StateFactory()
+        self.keyword = KeywordFactory()
+        self.reviewer = factories.ReviewerFactory()
+        
+    def test_invalid_no_affiliation(self):
+        data = self.mock_data()
+        data.pop('affiliation')
+        form = forms.ReviewerProfileForm(data=data, instance=self.reviewer)
+        self.assertFalse(form.is_valid())
+        
+    def test_invalid_no_state(self):
+        data = self.mock_data()
+        data.pop('state')
+        form = forms.ReviewerProfileForm(data=data, instance=self.reviewer)
+        self.assertFalse(form.is_valid())
+        
+    def test_invalid_no_stage(self):
+        data = self.mock_data()
+        data.pop('career_stage')
+        form = forms.ReviewerProfileForm(data=data, instance=self.reviewer)
+        self.assertFalse(form.is_valid())
+        
+    def test_invalid_no_keywords(self):
+        data = self.mock_data()
+        data.pop('keywords')
+        form = forms.ReviewerProfileForm(data=data, instance=self.reviewer)
+        self.assertFalse(form.is_valid())
+        
+    def test_created_new_kws(self):
+        data = self.mock_data()
+        kw = data['keywords'][0]
+        data['keywords'] = [kw,]
+        
+        self.keyword.delete()
+        form = forms.ReviewerProfileForm(data=data, instance=self.reviewer)
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertEqual(Keyword.objects.count(), 1)
+        self.assertEqual(Keyword.objects.first().text, kw)
+
+
+class TestSubmitterProfileForm(TestCase):
+    def mock_data(self):
+        return {
+            'email': 'person@gmail.com',
+            'affiliation': 'New Donk City',
+            'state': self.state.id,
+            'gender': self.gender.id,
+            'career_stage': self.stage.id,
+            'aboriginal_or_torres': self.aot.id
+        }
+    
+    def setUp(self):
+        super().setUp()
+        self.stage = d_factories.CareerStageFactory()
+        self.gender = d_factories.GenderFactory()
+        self.aot = d_factories.AboriginalOrTorresFactory()
+        self.state = d_factories.StateFactory()
+        self.keyword = KeywordFactory()
+        self.user = factories.SubmitterFactory()
+    
+    def test_invalid_no_affiliation(self):
+        data = self.mock_data()
+        data.pop('affiliation')
+        form = forms.SubmitterProfileForm(data=data, instance=self.user)
+        self.assertFalse(form.is_valid())
+    
+    def test_invalid_no_state(self):
+        data = self.mock_data()
+        data.pop('state')
+        form = forms.SubmitterProfileForm(data=data, instance=self.user)
+        self.assertFalse(form.is_valid())
+    
+    def test_invalid_no_stage(self):
+        data = self.mock_data()
+        data.pop('career_stage')
+        form = forms.SubmitterProfileForm(data=data, instance=self.user)
+        self.assertFalse(form.is_valid())
+    
+    def test_invalid_no_gender(self):
+        data = self.mock_data()
+        data.pop('gender')
+        form = forms.SubmitterProfileForm(data=data, instance=self.user)
+        self.assertFalse(form.is_valid())
+        
+    def test_invalid_no_aot(self):
+        data = self.mock_data()
+        data.pop('aboriginal_or_torres')
+        form = forms.ReviewerProfileForm(data=data, instance=self.user)
+        self.assertFalse(form.is_valid())

@@ -213,3 +213,69 @@ class TestAssignmentForm(TestCase):
         self.assertEqual(models.Review.objects.count(), 1)
         self.assertEqual(models.Assignment.objects.count(), 1)
         self.assertEqual(len(mail.outbox), 0)
+
+
+class TestRejectAssignmentForm(TestCase):
+    def test_invalid_no_comment(self):
+        form = forms.RejectAssignmentForm(data={})
+        self.assertFalse(form.is_valid())
+        
+        form = forms.RejectAssignmentForm(data={'rejection_comment': " "})
+        self.assertFalse(form.is_valid())
+    
+    
+class TestReviewForm(TestCase):
+    @staticmethod
+    def mock_data():
+        return {
+            'text': "Hello",
+            'score_content': 1,
+            'score_contribution': 1,
+            'score_interest': 1,
+        }
+    
+    def test_invalid_no_text(self):
+        data = self.mock_data()
+        data.pop('text')
+        form = forms.ReviewForm(data=data)
+        self.assertFalse(form.is_valid())
+        
+        data['text'] = " "
+        form = forms.ReviewForm(data=data)
+        self.assertFalse(form.is_valid())
+        
+    def test_invalid_score_content_less_than_min(self):
+        data = self.mock_data()
+        data['score_content'] = models.Review.MIN_SCORE - 1
+        form = forms.ReviewForm(data=data)
+        self.assertFalse(form.is_valid())
+        
+    def test_invalid_score_contribution_less_than_min(self):
+        data = self.mock_data()
+        data['score_contribution'] = models.Review.MIN_SCORE - 1
+        form = forms.ReviewForm(data=data)
+        self.assertFalse(form.is_valid())
+        
+    def test_invalid_score_interest_less_than_min(self):
+        data = self.mock_data()
+        data['score_interest'] = models.Review.MIN_SCORE - 1
+        form = forms.ReviewForm(data=data)
+        self.assertFalse(form.is_valid())
+
+    def test_invalid_score_content_greater_than_max(self):
+        data = self.mock_data()
+        data['score_content'] = models.Review.MAX_SCORE + 1
+        form = forms.ReviewForm(data=data)
+        self.assertFalse(form.is_valid())
+
+    def test_invalid_score_contribution_greater_than_max(self):
+        data = self.mock_data()
+        data['score_contribution'] = models.Review.MAX_SCORE + 1
+        form = forms.ReviewForm(data=data)
+        self.assertFalse(form.is_valid())
+
+    def test_invalid_score_interest_greater_than_max(self):
+        data = self.mock_data()
+        data['score_interest'] = models.Review.MAX_SCORE + 1
+        form = forms.ReviewForm(data=data)
+        self.assertFalse(form.is_valid())

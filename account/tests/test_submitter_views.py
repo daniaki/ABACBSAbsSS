@@ -75,3 +75,38 @@ class TestScholarshipApplicationView(TestMessageMixin, TestCase):
         response = account.views.submitter.ScholarshipApplicationView.as_view()(request)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(models.ScholarshipApplication.objects.count(), 0)
+
+
+class SubmitterView(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.factory = RequestFactory()
+        self.user = factories.SubmitterFactory()
+        self.user.profile.set_profile_as_complete()
+        self.view = views.submitter.ProfileView.as_view()
+    
+    def test_works(self):
+        request = self.factory.get('/profile/')
+        request.user = self.user
+        response = self.view(request)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_permission_denied_non_submitter(self):
+        request = self.factory.get('/profile/')
+        with self.assertRaises(PermissionDenied):
+            request.user = factories.ReviewerFactory()
+            request.user.profile.set_profile_as_complete()
+            self.view(request)
+        with self.assertRaises(PermissionDenied):
+            request.user = factories.AssignerFactory()
+            self.view(request)
+        with self.assertRaises(PermissionDenied):
+            request.user = factories.ConferenceChairFactory()
+            self.view(request)
+            
+    def test_requires_completed_profile(self):
+        request = self.factory.get('/profile/')
+        request.user = self.user
+        self.user.profile.set_profile_as_incomplete()
+        response = self.view(request)
+        self.assertEqual(response.status_code, 302)
