@@ -29,7 +29,9 @@ class ProfileView(LoginRequiredMixin, mixins.GroupRestrictedView,
     http_method_names = ('get', 'post',)
     extra_context = {
         'reviewers':
-            User.objects.filter(groups__name=models.UserGroups.REVIEWER.value)
+            User.objects.filter(
+                groups__name=models.UserGroups.REVIEWER.value
+            ).order_by('first_name')
     }
     
 
@@ -48,7 +50,6 @@ def assign_reviewers_view(request, id):
         initial={'reviewers': [r.id for r in abstract.assigned_reviewers]}
     )
     if request.method == 'POST':
-        print(request.POST)
         form = abstract_forms.AssingmentForm(
             data=request.POST, abstract=abstract, assigner=request.user,
             initial={'reviewers': [r.id for r in abstract.assigned_reviewers]}
