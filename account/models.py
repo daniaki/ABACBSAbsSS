@@ -160,10 +160,6 @@ class Profile(TimeStampedModel):
             )
             
     @property
-    def user_group(self):
-        return self.user.groups.first()
-    
-    @property
     def is_complete(self):
         return self.completed_intial_login
             
@@ -206,35 +202,7 @@ class Profile(TimeStampedModel):
         """
         if self.is_anon:
             return None
-        if not self.user.last_name:
-            if not self.user.first_name:
-                return self.user.username
-            else:
-                # support for mononyms
-                return self.user.first_name.capitalize()
-        else:
-            return '{} {}'.format(
-                self.user.first_name.capitalize(),
-                self.user.last_name.capitalize()
-            )
-
-    @property
-    def declined_assignments(self):
-        from abstract.models import Assignment
-        return self.user.assignments.filter(
-            status=Assignment.STATUS_REJECTED)
-
-    @property
-    def pending_assignments(self):
-        from abstract.models import Assignment
-        return self.user.assignments.filter(
-            status=Assignment.STATUS_PENDING)
-
-    @property
-    def accepted_assignments(self):
-        from abstract.models import Assignment
-        return self.user.assignments.filter(
-            status=Assignment.STATUS_ACCEPTED)
+        return self.user.get_full_name()
         
         
 class ScholarshipApplication(models.Model):
