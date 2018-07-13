@@ -1,12 +1,13 @@
 {% extends 'core/base.html' %}
+{% load user_tags %}
 
 
 {% block body %}
   <h1>Abstracts</h1><br>
   <p>Below is a table of currently submitted abstracts and their assigned reviewers.</p>
   {% if object_list.count %}
-    <div class="container">
-      <table id="abstract-table" class="table table-hover">
+    <div class="container-fluid">
+      <table id="abstract-table" class="table table-hover display" style="width:100%">
         <thead>
           <th>Title</th>
           <th>State</th>
@@ -22,9 +23,18 @@
               <td><a href="{% url 'abstract:abstract_summary' abstract.id %}">{{ abstract.title }}</a></td>
               <td>{{ abstract.state|default:"-" }}</td>
               <td>{{ abstract.keywords.all|join:', '|default:"-" }}</td>
-              <td>{{ abstract.pending_reviewers|join:', '|default:"-" }} </td>
-              <td>{{ abstract.accepted_reviewers|join:', '|default:"-" }} </td>
-              <td>{{ abstract.declined_reviewers|join:', '|default:"-" }} </td>
+              <td>
+                {% users_full_name abstract.pending_reviewers as pending_reviewers %}
+                {{ pending_reviewers|join:', '|default:"-" }}
+              </td>
+              <td>
+                {% users_full_name abstract.accepted_reviewers as accepted_reviewers %}
+                {{ accepted_reviewers|join:', '|default:"-" }}
+              </td>
+              <td>
+                {% users_full_name abstract.declined_reviewers as declined_reviewers %}
+                {{ declined_reviewers|join:', '|default:"-" }}
+              </td>
               <td>
                 <a href="{% url 'account:assign_reviewers' abstract.id %}"
                    class="btn btn-outline-dark">Edit

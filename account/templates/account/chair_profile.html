@@ -1,0 +1,117 @@
+{% extends 'core/base.html' %}
+
+{% block body %}
+  <div class="{% if show_demographics %}container-fluid{% else %}container{% endif %}">
+    <h1>Abstracts</h1>
+    <p>Below is a summary of all abstracts. Click an abstract's row to mark an it
+      as included in the conference, 'Save' to save these changes to the database, or 'Show plots'
+      for a preview of what the updated demographic statistics will look like.
+    </p>
+  </div>
+  <br>
+  <div id='{{ abstract.id }}-list-container' class="{% if show_demographics %}container-fluid{% else %}container{% endif %}">
+    {% if abstract_list.count %}
+      <table id="abstract-table" class="table table-hover display" style="width:100%">
+        <thead>
+          <th style="min-width: 200px">Title</th>
+          <th>Submitter</th>
+          <th>Keywords</th>
+          <th>Categories</th>
+          {% if show_demographics %}
+            <th>Career stage</th>
+            <th>Gender</th>
+            <th>Aboriginal/Torres</th>
+            <th>State</th>
+          {% endif %}
+          <th>Reviews</th>
+          <th>Score</th>
+        </thead>
+        <tbody>
+          {% for abstract in abstract_list.all %}
+            <tr data-attribute="{{ abstract.id }}" {% if abstract.approved %}class="selected-row"{% endif %}>
+              <td><a href="{% url 'abstract:abstract_summary' abstract.id %}">{{ abstract.title }}</a></td>
+              <td>{{ abstract.submitter.profile.display_name }}</td>
+              <td>{{ abstract.keywords.all|join:", "|default:"-" }}</td>
+              <td>{{ abstract.categories.all|join:", "|default:"-" }}</td>
+              {% if show_demographics %}
+                <td>{{ abstract.submitter.profile.career_stage.text|default:"-" }} </td>
+                <td>{{ abstract.submitter.profile.gender.text|default:"-" }} </td>
+                <td>{{ abstract.submitter.profile.aboriginal_or_torres.text|default:"-" }} </td>
+                <td>{{ abstract.submitter.profile.state.text|default:"-" }} </td>
+              {% endif %}
+              <td>{{ abstract.reviews.count|default:"-" }} </td>
+              <td>{{ abstract.score|stringformat:"#.3g"|default:"-" }} </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-muted">No abstracts have been submitted</p>
+    {% endif %}
+  </div>
+
+  <div class="container">
+    <hr>
+    <div class="row">
+      <div class="col-6">
+        <a id="selectedRows" class="btn btn-outline-dark mt-1">Toggle selected</a>
+        <a id="unselectedRows" class="btn btn-outline-dark mt-1">Toggle unselected</a>
+        <a id="showPlots" class="btn btn-outline-dark mt-1">Show plots</a>
+      </div>
+      <div class="col-6 text-right">
+        <a href="" class="btn btn-outline-danger mt-1">Save</a>
+        {% if CHAIR_GROUP in request.user.profile.group_names %}
+          <a class="btn btn-outline-danger mt-1"
+             href="{% url 'account:profile' %}?show_demographics=True">
+            Show demographics
+          </a>
+          <a class="btn btn-outline-danger mt-1"
+             href="{% url 'account:profile' %}">
+            Hide demographics
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script type="text/javascript">
+  $("document").ready(function() {
+    let table = $("#abstract-table").DataTable({
+      responsive: true,
+      paging: false,
+    });
+
+    $('#abstract-table tbody').on( 'click', 'tr', function () {
+        $(this).toggleClass('selected-row');
+    } );
+
+    $('#selectedRows').click( function () {
+      let rows = $('tr');
+      for (let i=0; i < rows.length; i++) {
+        let row = $(rows[i]);
+        if (!row.hasClass('selected-row')) {
+          if (!row.children().is('th')) {
+            row.toggleClass("hidden");
+          }
+        }
+      }
+    });
+
+    $('#unselectedRows').click( function () {
+      let rows = $('tr');
+      for (let i=0; i < rows.length; i++) {
+        let row = $(rows[i]);
+        if (row.hasClass('selected-row')) {
+          if (!row.children().is('th')) {
+            row.toggleClass("hidden")
+          }
+        }
+      }
+    });
+
+  });
+</script>
+{% endblock %}

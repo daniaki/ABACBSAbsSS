@@ -6,7 +6,7 @@
   {% include 'abstract/abstract.html' %}
   <br>
 
-  {% if ASSIGNER_GROUP in request.user.profile.group_names %}
+  {% if CHAIR_GROUP in request.user.profile.group_names %}
     <hr>
     <a class="btn btn-outline-danger mt-1"
        href="{% url 'abstract:abstract_summary' abstract.id %}?show_demographics=True">
@@ -19,4 +19,16 @@
   {% endif %}
 </div>
 
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script type="text/javascript">
+  $("document").ready(function() {
+    let table = $("#review-table").DataTable({
+      responsive: true,
+      paging: false,
+    });
+  });
+</script>
 {% endblock %}

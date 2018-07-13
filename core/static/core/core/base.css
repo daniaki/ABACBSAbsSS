@@ -166,6 +166,10 @@ body {
   display: block !important;
 }
 
+.selected-row {
+  background-color: #acbad4 !important;
+}
+
 /* Headers
 --------------------------------------------------------------------------- */
 header {
