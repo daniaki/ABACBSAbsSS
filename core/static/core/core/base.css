@@ -80,8 +80,8 @@ body {
 /* Logos
 --------------------------------------------------------------------------- */
 #header-logo {
-  width: 42px;
-  height: 42px;
+  width: 54x;
+  height: 54px;
   display: inline-block;
 }
 #combine-logo {
@@ -170,11 +170,25 @@ body {
   background-color: #acbad4 !important;
 }
 
+.modal-full {
+  min-width: 100%;
+  margin: 0;
+  padding: 5px
+
+}
+.modal-full .modal-content {
+  min-height: 100vh;
+}
+
+.margin {
+  margin: 10px
+}
+
 /* Headers
 --------------------------------------------------------------------------- */
 header {
 	background-color: #fff;
-	height: 80px;
+	height: 90px;
 	padding: 10px 80px;
 	position: relative;
 	z-index: 100;

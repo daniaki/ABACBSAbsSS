@@ -3,16 +3,23 @@
 jQuery, $;
 
 
-$("document").ready(function() {
+function plotDemographics(abstracts) {
+  let data = {'abstracts': []};
+  if (abstracts !== undefined) {
+    data.abstracts = abstracts;
+  }
+  console.log(data);
   $.ajax({
     url: window.location.pathname,
     type: 'GET',
+    data: data,
     success: function (data) {
       // Create pie chart for `gender`, `stage` and 'aot'
       let keyList = ['gender', 'stage', 'aot'];
       for(let i=0; i < keyList.length; i++) {
         let type = keyList[i];
         console.log(type);
+        console.log(data);
         let plotData = [{values: [], labels: [], type: 'pie'}];
         for (let key in data[type]) {
           if (data[type].hasOwnProperty(key)) {
@@ -44,8 +51,14 @@ $("document").ready(function() {
 
         let layout = {
           title: title,
+          yaxis: {
+            automargin: true,
+          },
+          xaxis: {
+            automargin: true,
+          }
         };
-        console.log(plotData);
+        // console.log(plotData);
         Plotly.newPlot(id, plotData, layout);
       }
 
@@ -61,7 +74,15 @@ $("document").ready(function() {
           console.log(data);
         }
       }
-      let layout = {title: 'State',};
+      let layout = {
+        title: 'State',
+        yaxis: {
+          automargin: true,
+        },
+        xaxis: {
+          automargin: true,
+        }
+      };
       console.log(plotData);
       Plotly.newPlot('state-plot', plotData, layout);
 
@@ -70,12 +91,15 @@ $("document").ready(function() {
       console.log(xhr.status + ": " + xhr.responseText);
     }
   });
+}
 
+
+$("document").ready(function() {
+  plotDemographics();
   window.onresize = function() {
     Plotly.Plots.resize('stage-plot');
     Plotly.Plots.resize('state-plot');
     Plotly.Plots.resize('gender-plot');
     Plotly.Plots.resize('aot-plot');
   };
-
 });
