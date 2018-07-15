@@ -3,18 +3,74 @@
 
 {% block body %}
 
-  <h1>How to submit</h1>
-  <p>Just do it.</p>
+  <img src="{% static "core/core/large_logo.svg" %}" style="position: relative; left: -30px">
+  <hr>
+
+  <h1>Abstract submission guide</h1>
+  <ol>
+    <li>Log in via <a href="{% url 'account:orcid_login' %}">ORCID</a></li>
+    <li>
+      Once completed you will be directed to your profile settings page.
+      You will need to provide us with a few extra details before proceeding.
+    </li>
+    <li>
+      Once completed, you will be redirected to your dashboard. Click the
+      <strong><i class="fa fa-plus""></i></strong> sign
+      next to <strong>'Your abstracts'</strong> to begin a new submission.
+    </li>
+    <li>
+      A submission consists of several required fields:
+        <ul>
+          <li>Title (limited to 30 words or less).</li>
+          <li>Abstract content (limited to 250 words or less).</li>
+          <li>Your contribution to the research described (limited to 100 words or less).</li>
+          <li>All contributing authors including yourself.</li>
+          <li>The primary affiliations of all contributing authors.</li>
+          <li>Keywords you wish to associate with the abstract.</li>
+          <li>One or more presentation catorgies you wish to apply under.</li>
+        </ul>
+    </li>
+    <li>
+      Upon submitting a new abstract you will be redirected to your dashboard. Here
+      you can edit (<i class="fa fa-edit"></i>) or delete (<i class="fa fa-trash"></i>)
+      existing abstracts up until the deadline.
+    </li>
+  </ol>
+  <hr>
+
+  <h1>Travel scholarship application guide</h1>
+  <ol>
+    <li>
+      You can apply for a travel scholarship at any time by
+      opening the profile menu in the top right (or sidebar for mobile users)
+      and clicking on <a href="{% url 'account:scholarship_application' %}">Travel Scholarship</a>.
+    </li>
+    <li>
+      You will need to fill in a few required fields:
+        <ul>
+          <li>Reason for application (limited to 200 words or less).</li>
+          <li>Indication of other external sources of funding.</li>
+          <li>If applicable, details of your other external sources of funding.</li>
+        </ul>
+    </li>
+    <li>
+      Upon successfull submission to your dashboard. You can revist the scholarship
+      application page at any time to edit or delete your application up until the
+      deadline.
+    </li>
+  </ol>
+
 
   <hr>
 
   <h1>Demographic Information</h1>
   <p>
     The plots below show the demographic information relating to four
-    categories: the applicant's identified gender, career stage, state of residence
-    and whether they indentify as an Aboriginal or Torres Straight Islander.
+    categories: the applicant's identified <strong>gender</strong>,
+    <strong>career stage</strong>, <strong>state of residence</strong>
+    and whether they indentify as an <strong>Aboriginal or Torres Straight Islander</strong>.
 
-    This information is collected on a per-abstract basis.
+    This information is collected on a <strong>per-abstract basis</strong>.
   </p>
   <div class="container" id="plots">
     <div class="row">
