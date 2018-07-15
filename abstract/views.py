@@ -24,7 +24,7 @@ class SubmissionView(LoginRequiredMixin,
     success_url = '/profile/'
     context_object_name = 'instance'
     model = models.Abstract
-    group_names = UserGroups.SUBMITTER
+    group_names = (UserGroups.SUBMITTER,)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -52,7 +52,7 @@ class EditSubmissionView(LoginRequiredMixin,
     pk_url_kwarg = 'id'
     context_object_name = 'instance'
     model = models.Abstract
-    group_names = UserGroups.SUBMITTER
+    group_names = (UserGroups.SUBMITTER,)
     
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().submitter != request.user:
@@ -84,7 +84,7 @@ class DeleteSubmissionView(LoginRequiredMixin,
     pk_url_kwarg = 'id'
     context_object_name = 'instance'
     template_name = 'abstract/delete.html'
-    group_names = UserGroups.SUBMITTER
+    group_names = (UserGroups.SUBMITTER,)
     
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().submitter != request.user:
