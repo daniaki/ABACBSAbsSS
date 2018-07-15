@@ -1,6 +1,11 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block body %}
+
+  <!-- Plot modal -->
+  {% include 'account/plot_modal.html' %}
+
   <div class="{% if show_demographics %}container-fluid{% else %}container{% endif %}">
     <h1>Abstracts</h1>
     <p>Below is a summary of all abstracts. Click an abstract's row to mark an it
@@ -28,7 +33,7 @@
         </thead>
         <tbody>
           {% for abstract in abstract_list.all %}
-            <tr data-attribute="{{ abstract.id }}" {% if abstract.approved %}class="selected-row"{% endif %}>
+            <tr data-attribute="{{ abstract.id }}" {% if abstract.accepted %}class="selected-row"{% endif %}>
               <td><a href="{% url 'abstract:abstract_summary' abstract.id %}">{{ abstract.title }}</a></td>
               <td>{{ abstract.submitter.profile.display_name }}</td>
               <td>{{ abstract.keywords.all|join:", "|default:"-" }}</td>
@@ -54,12 +59,12 @@
     <hr>
     <div class="row">
       <div class="col-6">
-        <a id="selectedRows" class="btn btn-outline-dark mt-1">Toggle selected</a>
-        <a id="unselectedRows" class="btn btn-outline-dark mt-1">Toggle unselected</a>
-        <a id="showPlots" class="btn btn-outline-dark mt-1">Show plots</a>
+        <a id="selected-rows" class="btn btn-outline-dark mt-1">Toggle selected</a>
+        <a id="unselected-rows" class="btn btn-outline-dark mt-1">Toggle unselected</a>
+        <a id="show-plots" class="btn btn-outline-dark mt-1">Show plots</a>
       </div>
       <div class="col-6 text-right">
-        <a href="" class="btn btn-outline-danger mt-1">Save</a>
+        <a id='save-selected' href="" class="btn btn-outline-danger mt-1">Save</a>
         {% if CHAIR_GROUP in request.user.profile.group_names %}
           <a class="btn btn-outline-danger mt-1"
              href="{% url 'account:profile' %}?show_demographics=True">
@@ -77,6 +82,8 @@
 
 
 {% block extra_scripts %}
+<script src="{% static 'core/plotly/plotly-latest.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'core/core/plots.js' %}" type="text/javascript"></script>
 <script type="text/javascript">
   $("document").ready(function() {
     let table = $("#abstract-table").DataTable({
@@ -88,7 +95,7 @@
         $(this).toggleClass('selected-row');
     } );
 
-    $('#selectedRows').click( function () {
+    $('#selected-rows').click( function () {
       let rows = $('tr');
       for (let i=0; i < rows.length; i++) {
         let row = $(rows[i]);
@@ -100,7 +107,7 @@
       }
     });
 
-    $('#unselectedRows').click( function () {
+    $('#unselected-rows').click( function () {
       let rows = $('tr');
       for (let i=0; i < rows.length; i++) {
         let row = $(rows[i]);
@@ -112,6 +119,54 @@
       }
     });
 
+    $("#show-plots").click( function() {
+      let abstracts = [];
+      let rows = $('tr');
+      for (let i=0; i < rows.length; i++) {
+        let row = $(rows[i]);
+        if (row.hasClass('selected-row')) {
+          if (!row.children().is('th')) {
+            abstracts.push(row.attr('data-attribute'));
+          }
+        }
+      }
+      plotDemographics(abstracts);
+      Plotly.Plots.resize('stage-plot');
+      Plotly.Plots.resize('state-plot');
+      Plotly.Plots.resize('gender-plot');
+      Plotly.Plots.resize('aot-plot');
+      $("#plot-modal").modal('toggle');
+    });
+
+    $("#save-selected").click( function(e) {
+      e.preventDefault();
+      let abstracts = [];
+      let rows = $('tr');
+      for (let i=0; i < rows.length; i++) {
+        let row = $(rows[i]);
+        if (row.hasClass('selected-row')) {
+          if (!row.children().is('th')) {
+            abstracts.push(row.attr('data-attribute'));
+          }
+        }
+      }
+      data = {'abstracts': abstracts}
+      console.log(data);
+      $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: data,
+        dataType: "json",
+        headers:{"X-CSRFToken": "{{ csrf_token }}"},
+        success: function (data) {
+          console.log('Saved: ' + abstracts);
+          window.location.assign(window.location.pathname);
+        },
+        error : function(xhr, errmsg, err) {
+          console.log(xhr.status + ": " + xhr.responseText);
+        }
+      });
+    });
   });
 </script>
 {% endblock %}
