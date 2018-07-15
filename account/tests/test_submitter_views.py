@@ -34,6 +34,7 @@ class TestScholarshipApplicationView(TestMessageMixin, TestCase):
     def test_restricted_to_submitter(self):
         request = self.factory.get(self.path)
         request.user = factories.ReviewerFactory()
+        request.user.profile.set_profile_as_complete()
         with self.assertRaises(PermissionDenied):
             response = account.views.submitter.ScholarshipApplicationView.as_view()(request)
             self.assertEqual(response.status_code, 403)

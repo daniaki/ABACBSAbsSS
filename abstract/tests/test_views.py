@@ -166,6 +166,7 @@ class TestDeleteSubmissionView(TestMessageMixin, TestCase):
     def test_restricted_to_submitter(self):
         request = self.factory.get(self.path)
         request.user = a_factories.ReviewerFactory()
+        request.user.profile.set_profile_as_complete()
         self.abstract.submitter = request.user
         self.abstract.save()
         with self.assertRaises(PermissionDenied):
@@ -232,7 +233,7 @@ class TestAbstractDetailView(TestCase):
         
     def test_demographics_hidden_for_non_chair(self):
         request = self.factory.get(self.path)
-        request.user = self.reviewer
+        request.user = a_factories.AssignerFactory()
         response = views.AbstractDetailView.as_view()(request,
                                                       id=self.abstract.id)
         self.assertNotContains(response, 'Show demographics')
@@ -240,7 +241,7 @@ class TestAbstractDetailView(TestCase):
     def test_demographics_hidden_GET_non_chair(self):
         request = self.factory.get(
             self.path, data={'show_demographics': 'True'})
-        request.user = self.reviewer
+        request.user = a_factories.AssignerFactory()
         response = views.AbstractDetailView.as_view()(request,
                                                       id=self.abstract.id)
         self.assertNotContains(response, 'Demographic Information')

@@ -1,13 +1,16 @@
+import json
+
 from django.test import RequestFactory
 from django.core.exceptions import PermissionDenied
 
+from demographic.factories import GenderFactory
 from abstract.factories import AbstractFactory
-from core.test import TestCase
+from core.test import TestCase, TestMessageMixin
 
 from .. import factories, views
 
 
-class TestProfileView(TestCase):
+class TestProfileView(TestCase, TestMessageMixin):
     def setUp(self):
         super().setUp()
         self.factory = RequestFactory()
@@ -71,16 +74,78 @@ class TestProfileView(TestCase):
         self.assertContains(response, 'Career stage')
 
     def test_POST_approves_selected(self):
-        self.fail()
+        data = {'abstracts[]': [self.abstract.id]}
+        abstract = AbstractFactory()
+        request = self.create_request('post',
+            path=self.path, data=data,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        request.user = self.user
+        self.assertFalse(self.abstract.accepted)
+        response = json.loads(self.view(request).content)
+
+        self.assertIn('success', response)
+        self.abstract.refresh_from_db()
+        abstract.refresh_from_db()
+        self.assertTrue(self.abstract.accepted)
+        self.assertFalse(abstract.accepted)
 
     def test_POST_revokes_approved_unselected(self):
-        self.fail()
+        data = {'abstracts[]': [self.abstract.id]}
+
+        abstract = AbstractFactory()
+        abstract.accepted = True
+        abstract.save()
+
+        request = self.create_request('post',
+            path=self.path, data=data,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        request.user = self.user
+        self.assertFalse(self.abstract.accepted)
+        self.assertTrue(abstract.accepted)
+        response = json.loads(self.view(request).content)
+
+        self.assertIn('success', response)
+        self.abstract.refresh_from_db()
+        abstract.refresh_from_db()
+        self.assertTrue(self.abstract.accepted)
+        self.assertFalse(abstract.accepted)
         
     def test_POST_invalid_when_invalid_abstract_id_posted(self):
-        self.fail()
-    
+        data = {'abstracts[]': [self.abstract.id]}
+        self.abstract.delete()
+        request = self.create_request('post',
+            path=self.path, data=data,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        request.user = self.user
+        response = json.loads(self.view(request).content)
+        self.assertIn('error', response)
+
     def test_GET_ajax_plot_data(self):
-        self.fail()
+        data = {'abstracts[]': [self.abstract.id]}
         
+        profile = self.abstract.submitter.profile
+        demographic = GenderFactory()
+        profile.gender = demographic
+        profile.save()
+        
+        request = self.create_request('get',
+            path=self.path, data=data,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        request.user = self.user
+        response = json.loads(self.view(request).content)
+        self.assertEqual(response['gender'][demographic.text], 1)
+               
     def test_GET_ajax_returns_error_invalid_abstract_id(self):
-        self.fail()
+        data = {'abstracts[]': [self.abstract.id]}
+        self.abstract.delete()
+        request = self.create_request('get',
+            path=self.path, data=data,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        request.user = self.user
+        response = json.loads(self.view(request).content)
+        self.assertIn('error', response)
