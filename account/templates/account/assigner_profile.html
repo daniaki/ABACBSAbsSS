@@ -6,7 +6,7 @@
   <h1>Abstracts</h1><br>
   <p>Below is a table of currently submitted abstracts and their assigned reviewers.</p>
   {% if object_list.count %}
-    <div class="container-fluid">
+    <div class="table-responsive">
       <table id="abstract-table" class="table table-hover display" style="width:100%">
         <thead>
           <th>Title</th>
@@ -56,7 +56,6 @@
 <script type="text/javascript">
   $("document").ready(function() {
     let table = $("#abstract-table").DataTable({
-      responsive: true,
       paging: false,
     });
   });

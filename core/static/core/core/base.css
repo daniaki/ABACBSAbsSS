@@ -8,6 +8,8 @@ link: #b0aca9/rgba(31,31,31,.4);
 link-hover: #1c1c1c
 logo-red: #dd0c15
 logo-blue: #007ab1
+bootstrap-green: #5CB85C
+bootstrap-red: #d9534f
 
 Fonts
 europa
@@ -63,6 +65,14 @@ body {
   min-width: 440px;
 }
 
+.btn-outline-dark:hover {
+  color: white !important;
+}
+
+.selected-row a {
+  color: #1c1c1c !important;
+}
+
 
 /* Main
 --------------------------------------------------------------------------- */
@@ -80,7 +90,7 @@ body {
 /* Logos
 --------------------------------------------------------------------------- */
 #header-logo {
-  width: 54x;
+  width: 54px;
   height: 54px;
   display: inline-block;
 }
@@ -182,6 +192,25 @@ body {
 
 .margin {
   margin: 10px
+}
+
+.hover-div {
+  padding-top: 15px;
+  padding-left: 20px;
+  transition: 100ms;
+  border-radius: 8px;
+}
+.border-review {
+  border: 1px solid #007ab1;
+}
+.border-decline {
+  border: 1px solid #dd0c15;
+}
+.border-review:hover {
+  background-color: rgba(130, 184, 113, 0.25);
+}
+.border-decline:hover {
+  background-color: rgba(217, 83, 79, 0.25);
 }
 
 /* Headers

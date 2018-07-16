@@ -7,14 +7,24 @@
   {% include 'account/plot_modal.html' %}
 
   <div class="{% if show_demographics %}container-fluid{% else %}container{% endif %}">
-    <h1>Abstracts</h1>
+    <h1>
+      Abstracts
+      <a href="{% url 'account:download_abstracts' %}" class="pl-2">
+        <i class="icon fa fa-download" style="font-size: 32px"
+           data-toggle="tooltip" title="Download all abstracts in a tsv file."></i>
+      </a>
+      <a href="{% url 'account:download_scholarships' %}" class="pl-1">
+        <i class="icon far fa-money-bill-alt" style="font-size: 32px"
+           data-toggle="tooltip" title="Download all travel scholarship applications in a tsv file."></i>
+      </a>
+    </h1>
     <p>Below is a summary of all abstracts. Click an abstract's row to mark an it
       as included in the conference, 'Save' to save these changes to the database, or 'Show plots'
       for a preview of what the updated demographic statistics will look like.
     </p>
   </div>
   <br>
-  <div id='{{ abstract.id }}-list-container' class="{% if show_demographics %}container-fluid{% else %}container{% endif %}">
+  <div id='{{ abstract.id }}-list-container' class="table-responsive">
     {% if abstract_list.count %}
       <table id="abstract-table" class="table table-hover display" style="width:100%">
         <thead>
@@ -61,10 +71,12 @@
       <div class="col-6">
         <a id="selected-rows" class="btn btn-outline-dark mt-1">Toggle selected</a>
         <a id="unselected-rows" class="btn btn-outline-dark mt-1">Toggle unselected</a>
-        <a id="show-plots" class="btn btn-outline-dark mt-1">Show plots</a>
+        <a id="show-plots" class="btn btn-outline-dark mt-1" data-toggle="tooltip"
+           title="Show demographics plots for selected rows.">Show plots</a>
       </div>
       <div class="col-6 text-right">
-        <a id='save-selected' href="" class="btn btn-outline-danger mt-1">Save</a>
+        <a id='save-selected' href="" class="btn btn-outline-danger mt-1" data-toggle="tooltip"
+           title="Approve abstracts in selected rows.">Save</a>
         {% if CHAIR_GROUP in request.user.profile.group_names %}
           <a class="btn btn-outline-danger mt-1"
              href="{% url 'account:profile' %}?show_demographics=True">
@@ -87,7 +99,6 @@
 <script type="text/javascript">
   $("document").ready(function() {
     let table = $("#abstract-table").DataTable({
-      responsive: true,
       paging: false,
     });
 

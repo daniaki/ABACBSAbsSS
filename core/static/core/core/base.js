@@ -48,7 +48,6 @@ function confirmDelete() {
 
 // On Load ----------------------------------------------------------------- //
 $("document").ready(function() {
-  
   // Initialise select2
   $(".select2").select2();
   $(".select2-token-select").select2({
