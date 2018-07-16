@@ -21,4 +21,5 @@ urlpatterns = [
 
     path('profile/download/abstracts/', views.chair.DownloadAbstracts.as_view(), name="download_abstracts"),
     path('profile/download/scholarships/', views.chair.DownloadScholarshipApplications.as_view(), name="download_scholarships"),
+    path('profile/scholarships/', views.chair.ScholarshipListView.as_view(), name="scholarships"),
 ]

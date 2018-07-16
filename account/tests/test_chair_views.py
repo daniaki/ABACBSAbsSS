@@ -227,3 +227,34 @@ class TestDownloadViews(TestCase):
         self.assertEqual(dict_['applicant'], self.profile.display_name)
         self.assertEqual(dict_['reason'], self.scholarship.text)
         self.assertEqual(dict_['other_funding'], self.scholarship.other_funding)
+
+
+class TestScholarshipListView(TestCase, TestMessageMixin):
+    def setUp(self):
+        super().setUp()
+        self.factory = RequestFactory()
+        self.user = factories.ConferenceChairFactory()
+        self.view = views.chair.ScholarshipListView.as_view()
+        self.app = factories.ScholarshipApplicationFactory()
+        self.path = '/profile/scholarships'
+
+    def test_does_not_require_compelete_profile(self):
+        request = self.factory.get(self.path)
+        request.user = self.user
+        self.user.profile.set_profile_as_incomplete()
+        response = self.view(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_403_not_a_reviewer_profile(self):
+        request = self.factory.get('/profile/')
+        request.user = factories.SubmitterFactory()
+        request.user.profile.set_profile_as_complete()
+        with self.assertRaises(PermissionDenied):
+            self.view(request)
+
+    def test_works(self):
+        request = self.factory.get(self.path)
+        request.user = self.user
+        response = self.view(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.app.text[0:10])

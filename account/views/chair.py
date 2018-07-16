@@ -15,6 +15,19 @@ from .. import models, mixins
 logger = logging.getLogger('django')
 
 
+class ScholarshipListView(LoginRequiredMixin, mixins.GroupRestrictedView,
+                          ListView):
+    """
+    Profile view for Chairs to assign abstracts to reviewers and select
+    abstracts to accept.
+    """
+    model = models.ScholarshipApplication
+    group_names = (models.UserGroups.CONFERENCE_CHAIR,)
+    template_name = 'account/scholarships.html'
+    http_method_names = ('get',)
+    queryset = models.ScholarshipApplication.objects.all()
+
+
 class ProfileView(LoginRequiredMixin, mixins.GroupRestrictedView,
                   mixins.AjaxView, ListView):
     """
