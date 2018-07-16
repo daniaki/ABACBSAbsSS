@@ -15,7 +15,7 @@
     You can use the form below to add/remove reviewers to this abstract.
   </p>
   {% if reviewers.count %}
-    <div class="container full-width">
+    <div class="table-responsive">
       <table id="reviewers-table" class="table table-hover display" style="width:100%">
         <thead>
           <th>Username</th>
@@ -35,9 +35,9 @@
               <td>{{ reviewer.profile.state.text|default:"-" }}</td>
               <td>{{ reviewer.profile.keywords.all|join:', '|default:"-" }}</td>
               <td>{{ reviewer.assignments.count }} </td>
-              <td>{{ reviewer.profile.pending_assignments.count }} </td>
-              <td>{{ reviewer.profile.accepted_assignments.count }} </td>
-              <td>{{ reviewer.profile.declined_assignments.count }} </td>
+              <td>{{ reviewer.profile.pending_assignments.count|default:"0" }} </td>
+              <td>{{ reviewer.profile.accepted_assignments.count|default:"0" }} </td>
+              <td>{{ reviewer.profile.declined_assignments.count|default:"0" }} </td>
             </tr>
           {% endfor %}
         </tbody>
@@ -61,7 +61,6 @@
 <script type="text/javascript">
   $("document").ready(function() {
     let table = $("#reviewers-table").DataTable({
-      responsive: true,
       paging: false,
     });
   });

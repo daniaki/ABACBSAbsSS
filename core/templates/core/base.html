@@ -51,6 +51,9 @@
               {% if request.user.groups.first.name == REVIEWER_GROUP %}
                 <li><a class="nav-link" href="{% url 'account:edit_profile' %}">Settings</a></li>
               {% endif %}
+              {% if request.user.groups.first.name == CHAIR_GROUP %}
+                <li><a class="nav-link" href="{% url 'account:scholarships' %}">Scholarships</a></li>
+              {% endif %}
               <li><a class="nav-link" href="{% url 'account:logout' %}">Logout</a></li>
             </ul>
           </div>
@@ -90,6 +93,9 @@
               {% endif %}
               {% if request.user.groups.first.name == REVIEWER_GROUP %}
                 <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:edit_profile' %}">Settings</a></li>
+              {% endif %}
+              {% if request.user.groups.first.name == CHAIR_GROUP %}
+                <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:scholarships' %}">Scholarships</a></li>
               {% endif %}
               <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:logout' %}">Logout</a></li>
           {% endif %}

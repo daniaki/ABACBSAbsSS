@@ -207,10 +207,10 @@ body {
   border: 1px solid #dd0c15;
 }
 .border-review:hover {
-  background-color: rgba(130, 184, 113, 0.25);
+  background-color: #f2f2f2;
 }
 .border-decline:hover {
-  background-color: rgba(217, 83, 79, 0.25);
+  background-color: #f2f2f2;
 }
 
 /* Headers

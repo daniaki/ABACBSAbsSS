@@ -28,7 +28,7 @@
   {% if not abstract.assignments.count %}
     <p class="text-muted">This abstract has not been assigned for review</p>
   {% else %}
-    <div class="container">
+    <div class="table-responsive">
       <table id="review-table" class="table table-hover display" style="width:100%">
         <thead>
           <th>Username</th>
@@ -72,7 +72,7 @@
               <i class="align-self-start mr-3 fa fa-times" style="font-size: 34px; color: #dd0c15"></i>
             {% endif %}
             <div class="media-body">
-              <h5 class="mt-0">{{ assignment.reviewer.profile.full_name }}</h5>
+              <h5 class="mt-2">{{ assignment.reviewer.profile.full_name }}</h5>
               {% if assignment.review %}
                 <div class="border-review hover-div">
                   <p class="markdown">{{ assignment.review.text|default:'-' }}</p>

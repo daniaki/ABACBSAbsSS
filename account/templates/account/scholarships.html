@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+
+{% block body %}
+  <div class="container">
+    <h2>Scholarship applications</h2>
+    <p>Below is a summary of all scholarship applications that have been received.</p>
+    <br>
+    {% if not object_list.count %}
+      <p class="text-muted">No applications have been recieved.</p>
+    {% else %}
+      <div class="table-responsive">
+        <table id="apps-table" class="table table-hover display" style="width:100%">
+          <thead>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Reason</th>
+            <th>Other Funding</th>
+          </thead>
+          <tbody>
+            {% for app in object_list.all %}
+              <tr>
+                <td>{{ app.submitter.profile.display_name }}</td>
+                <td>{{ app.submitter.profile.email }}</td>
+                <td>{{ app.text }} </td>
+                <td>{{ app.other_funding }} </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script type="text/javascript">
+  $("document").ready(function() {
+    let table = $("#apps-table").DataTable();
+  });
+</script>
+{% endblock %}
