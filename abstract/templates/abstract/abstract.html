@@ -1,5 +1,5 @@
 <div class="abstract-detail" id="{{ abstract.id }}-detail">
-  <h4>{{ abstract.title }}</h4>
+  <h2>{{ abstract.title }}</h2>
   <p>{{ abstract.text }}</p>
   <p><strong>Submitted by:</strong> {{ abstract.submitter.profile.display_name }}</p>
   <p><strong>Contribution:</strong> {{ abstract.contribution }}</p>
@@ -7,6 +7,7 @@
   <p><strong>Affiliation:</strong> {{ abstract.author_affiliations }}</p>
   <p><strong>Categories:</strong> {{ abstract.categories.all|join:', ' }}</p>
   <p><strong>Keywords:</strong> {{ abstract.keywords.all|join:', ' }}</p>
+  <p><strong>Overall score:</strong> {{ abstract.score|stringformat:"#.3g"|default:'-' }}</p>
 </div>
 
 {% if show_demographics %}
@@ -22,7 +23,7 @@
 
 <div id="{{ abstract.id }}-reviews" class="abstract-reviews">
   <hr>
-  <h4>Assignment summary</h4>
+  <h2>Assignment summary</h2>
   <br>
   {% if not abstract.assignments.count %}
     <p class="text-muted">This abstract has not been assigned for review</p>
@@ -36,8 +37,6 @@
           <th>Content</th>
           <th>Contribution</th>
           <th>Interest</th>
-          <th>Review comment</th>
-          <th>Reason declining</th>
         </thead>
         <tbody>
           {% for assignment in abstract.assignments.all %}
@@ -48,8 +47,6 @@
               <td>{{ assignment.review.score_content|default:'-' }}</td>
               <td>{{ assignment.review.score_contribution|default:'-' }} </td>
               <td>{{ assignment.review.score_interest|default:'-' }} </td>
-              <td class="markdown">{{ assignment.review.text|default:'-' }}</td>
-              <td class="markdown">{{ assignment.get_comment|default:'-' }} </td>
             </tr>
           {% endfor %}
         </tbody>
@@ -58,4 +55,40 @@
   {% endif %}
 </div>
 
-
+<div id="{{ abstract.id }}-reviews" class="abstract-reviews">
+  <hr>
+  <h2>Comments</h2>
+  <br>
+  {% if not abstract.assignments.count %}
+    <p class="text-muted">This abstract has not been assigned for review</p>
+  {% else %}
+    <div class="container">
+      {% for assignment in abstract.assignments.all %}
+        {% if assignment.review or assignment.rejection_comment %}
+          <div class="media">
+            {% if assignment.review %}
+              <i class="align-self-start mr-3 fa fa-check" style="font-size: 34px; color: #007ab1"></i>
+            {% else %}
+              <i class="align-self-start mr-3 fa fa-times" style="font-size: 34px; color: #dd0c15"></i>
+            {% endif %}
+            <div class="media-body">
+              <h5 class="mt-0">{{ assignment.reviewer.profile.full_name }}</h5>
+              {% if assignment.review %}
+                <div class="border-review hover-div">
+                  <p class="markdown">{{ assignment.review.text|default:'-' }}</p>
+                </div>
+              {% else %}
+                <div class="border-decline hover-div">
+                  <p class="markdown">{{ assignment.get_comment|default:'-' }} </p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% if forloop.counter < abstract.assignments.count %}
+        <hr>
+      {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
