@@ -1,8 +1,9 @@
+import csv
 import logging
 
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.db import transaction
 from django.contrib import messages
 
@@ -70,3 +71,107 @@ class ProfileView(LoginRequiredMixin, mixins.GroupRestrictedView,
             messages.success(self.request, "Selection updated.")
 
         return JsonResponse(data={'success': "Abstracts updated!"})
+
+
+class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
+                        TemplateView):
+    """
+    Download a tsv of all abstracts.
+    """
+    group_names = (models.UserGroups.CONFERENCE_CHAIR,)
+    http_method_names = ('get',)
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='text/tsv')
+        response['Content-Disposition'] = \
+            'attachment; filename="abstracts.tsv"'
+        columns = [
+            'title',
+            'content',
+            'contribution',
+            'authors',
+            'affiliations',
+            'keywords',
+            'categories',
+            'submitter',
+            'affiliation',
+            'career_stage',
+            'gender',
+            'state',
+            'aboriginal/torres',
+            'accepted',
+            'score',
+        ]
+        abstracts = abstract_models.Abstract.objects.all()
+        writer = csv.DictWriter(
+            response, delimiter='\t', fieldnames=columns,
+            quoting=csv.QUOTE_MINIMAL
+        )
+        writer.writeheader()
+        dict_rows = []
+        for abstract in abstracts:
+            abstract = abstract  # type: abstract_models.Abstract
+            submitter = abstract.submitter
+            profile = submitter.profile
+            row = {
+                'title': abstract.title.replace('\n', ' '),
+                'content': abstract.text.replace('\n', ' '),
+                'contribution': abstract.contribution.replace('\n', ' '),
+                'authors': abstract.authors,
+                'affiliations': abstract.author_affiliations,
+                'keywords': ','.join([x.text for x in abstract.keywords.all()]),
+                'categories': ','.join([x.text for x in abstract.categories.all()]),
+                'submitter': profile.display_name,
+                'affiliation': profile.affiliation,
+                'career_stage': profile.career_stage.text,
+                'gender': profile.gender.text,
+                'state': profile.state.text,
+                'aboriginal/torres': profile.aboriginal_or_torres.text,
+                'accepted': abstract.accepted,
+                'score': abstract.score,
+            }
+            dict_rows.append(row)
+
+        writer.writerows(dict_rows)
+        return response
+    
+    
+class DownloadScholarshipApplications(LoginRequiredMixin,
+                                      mixins.GroupRestrictedView, TemplateView):
+    """
+    Profile view for Chairs to assign abstracts to reviewers and select
+    abstracts to accept.
+    """
+    group_names = (models.UserGroups.CONFERENCE_CHAIR,)
+    http_method_names = ('get',)
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = \
+            'attachment; filename="scholarship_applications.tsv"'
+
+        columns = [
+            'applicant',
+            'reason',
+            'other_funding',
+        ]
+        applications = models.ScholarshipApplication.objects.all()
+        writer = csv.DictWriter(
+            response, delimiter='\t', fieldnames=columns,
+            quoting=csv.QUOTE_MINIMAL
+        )
+        writer.writeheader()
+
+        dict_rows = []
+        for application in applications:
+            application = application  # type: models.ScholarshipApplication
+            submitter = application.submitter
+            profile = submitter.profile
+            row = {
+                'applicant': profile.display_name,
+                'reason': application.text,
+                'other_funding': application.other_funding
+            }
+            dict_rows.append(row)
+        writer.writerows(dict_rows)
+        return response

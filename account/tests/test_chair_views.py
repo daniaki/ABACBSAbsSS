@@ -1,9 +1,14 @@
+import io
+import csv
 import json
 
 from django.test import RequestFactory
 from django.core.exceptions import PermissionDenied
 
-from demographic.factories import GenderFactory
+from demographic.factories import (
+    GenderFactory, CareerStageFactory,
+    StateFactory, AboriginalOrTorresFactory
+)
 from abstract.factories import AbstractFactory
 from core.test import TestCase, TestMessageMixin
 
@@ -149,3 +154,76 @@ class TestProfileView(TestCase, TestMessageMixin):
         request.user = self.user
         response = json.loads(self.view(request).content)
         self.assertIn('error', response)
+
+
+class TestDownloadViews(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.factory = RequestFactory()
+        self.user = factories.ConferenceChairFactory()
+        self.abstract = AbstractFactory()
+        self.submitter = self.abstract.submitter
+        self.profile = self.submitter.profile
+
+        self.profile.gender = GenderFactory()
+        self.profile.career_stage = CareerStageFactory()
+        self.profile.state = StateFactory()
+        self.profile.aboriginal_or_torres = AboriginalOrTorresFactory()
+        self.profile.affiliation = 'django'
+        self.profile.save()
+
+        self.scholarship = factories.ScholarshipApplicationFactory(
+            submitter=self.submitter
+        )
+
+        self.path = '/profile/'
+
+    def test_403_not_a_reviewer_profile(self):
+        request = self.factory.get('/profile/download/abstracts')
+        request.user = factories.SubmitterFactory()
+        request.user.profile.set_profile_as_complete()
+        with self.assertRaises(PermissionDenied):
+            views.chair.DownloadAbstracts.as_view()(request)
+        with self.assertRaises(PermissionDenied):
+            views.chair.DownloadScholarshipApplications.as_view()(request)
+
+    def test_download_abstract_tsv(self):
+        request = self.factory.get('/profile/download/abstracts')
+        request.user = self.user
+        response = views.chair.DownloadAbstracts.as_view()(request)
+
+        string = response.content.decode('utf-8')
+        handle = io.StringIO(string)
+        reader = csv.DictReader(
+            handle, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
+        dict_ = list(reader)[0]
+        self.assertEqual(dict_['title'], self.abstract.title.replace('\n', ' '))
+        self.assertEqual(dict_['content'], self.abstract.text.replace('\n', ' '))
+        self.assertEqual(dict_['contribution'], self.abstract.contribution.replace('\n', ' '))
+        self.assertEqual(dict_['authors'], self.abstract.authors)
+        self.assertEqual(dict_['affiliations'], self.abstract.author_affiliations)
+        self.assertEqual(dict_['keywords'], ','.join([x.text for x in self.abstract.keywords.all()]))
+        self.assertEqual(dict_['categories'], ','.join([x.text for x in self.abstract.categories.all()]))
+        self.assertEqual(dict_['submitter'], self.profile.display_name)
+        self.assertEqual(dict_['affiliation'], self.profile.affiliation)
+        self.assertEqual(dict_['career_stage'], self.profile.career_stage.text)
+        self.assertEqual(dict_['gender'], self.profile.gender.text)
+        self.assertEqual(dict_['state'], self.profile.state.text)
+        self.assertEqual(dict_['aboriginal/torres'], self.profile.aboriginal_or_torres.text)
+        self.assertEqual(dict_['accepted'], str(self.abstract.accepted))
+        self.assertEqual(dict_['score'], '')
+
+    def test_download_scholarship_tsv(self):
+        request = self.factory.get('/profile/download/scholarships')
+        request.user = self.user
+        response = views.chair.DownloadScholarshipApplications.as_view()(request)
+
+        string = response.content.decode('utf-8')
+        handle = io.StringIO(string)
+        reader = csv.DictReader(
+            handle, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
+        dict_ = list(reader)[0]
+
+        self.assertEqual(dict_['applicant'], self.profile.display_name)
+        self.assertEqual(dict_['reason'], self.scholarship.text)
+        self.assertEqual(dict_['other_funding'], self.scholarship.other_funding)
