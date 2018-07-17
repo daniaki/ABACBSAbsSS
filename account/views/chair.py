@@ -136,10 +136,10 @@ class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
                 'categories': ','.join([x.text for x in abstract.categories.all()]),
                 'submitter': profile.display_name,
                 'affiliation': profile.affiliation,
-                'career_stage': profile.career_stage.text,
-                'gender': profile.gender.text,
-                'state': profile.state.text,
-                'aboriginal/torres': profile.aboriginal_or_torres.text,
+                'career_stage': None if not profile.career_stage else profile.career_stage.text,
+                'gender': None if not profile.gender else profile.gender.text,
+                'state': None if not profile.state else profile.state.text,
+                'aboriginal/torres': None if not profile.aboriginal_or_torres else profile.aboriginal_or_torres.text,
                 'accepted': abstract.accepted,
                 'score': abstract.score,
             }
@@ -165,6 +165,8 @@ class DownloadScholarshipApplications(LoginRequiredMixin,
 
         columns = [
             'applicant',
+            'email',
+            'career_stage',
             'reason',
             'other_funding',
         ]
@@ -182,6 +184,8 @@ class DownloadScholarshipApplications(LoginRequiredMixin,
             profile = submitter.profile
             row = {
                 'applicant': profile.display_name,
+                'email': profile.email,
+                'career_stage': profile.career_stage.text,
                 'reason': application.text,
                 'other_funding': application.other_funding
             }

@@ -13,6 +13,7 @@
           <thead>
             <th>Name</th>
             <th>Email</th>
+            <th>Career stage</th>
             <th>Reason</th>
             <th>Other Funding</th>
           </thead>
@@ -20,7 +21,11 @@
             {% for app in object_list.all %}
               <tr>
                 <td>{{ app.submitter.profile.display_name }}</td>
-                <td>{{ app.submitter.profile.email }}</td>
+                <td><a href="mailto:{{ app.submitter.profile.email }}"
+                       style="text-transform: none !important;" >
+                  {{ app.submitter.profile.email }}
+                </a></td>
+                <td>{{ app.submitter.profile.career_stage }}</td>
                 <td>{{ app.text }} </td>
                 <td>{{ app.other_funding }} </td>
               </tr>
