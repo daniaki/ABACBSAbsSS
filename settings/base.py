@@ -211,8 +211,8 @@ REST_FRAMEWORK = {
 
 
 # DEBUG email server, set to something proper when DEBUG = FALSE
-DEFAULT_FROM_EMAIL = "admin@test.org"
-SERVER_EMAIL = "admin@test.org"
+DEFAULT_FROM_EMAIL = "committee@abacbs.org"
+SERVER_EMAIL = "committee@abacbs.org"
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
