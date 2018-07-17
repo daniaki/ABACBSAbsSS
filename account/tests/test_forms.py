@@ -164,3 +164,25 @@ class TestSubmitterProfileForm(TestCase):
         data.pop('aboriginal_or_torres')
         form = forms.ReviewerProfileForm(data=data, instance=self.user)
         self.assertFalse(form.is_valid())
+
+
+class TestPasswordResetForm(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.user = factories.ReviewerFactory()
+        
+    def test_invalid_email(self):
+        form = forms.PasswordResetForm(data={'email': "email@email.com"})
+        self.assertFalse(form.is_valid())
+        self.assertIsNone(form.profile)
+        
+    def test_valid_email(self):
+        form = forms.PasswordResetForm(data={'email': self.user.profile.email})
+        self.assertTrue(form.is_valid())
+        self.assertIsNotNone(form.profile)
+        
+    def test_filters_out_submitters(self):
+        user = factories.SubmitterFactory()
+        form = forms.PasswordResetForm(data={'email': user.profile.email})
+        self.assertFalse(form.is_valid())
+        self.assertIsNone(form.profile)

@@ -11,7 +11,7 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('login/orcid/', views.login_with_orcid, name='orcid_login'),
     path('login/staff/', views.staff_login, name='staff_login'),
-    path('login/reset/', views.reset_password, name="reset_password"),
+    path('login/reset/', views.ResetPassword.as_view(), name="reset_password"),
 
     # ------ Profile
     path('profile/', views.ProfileView.as_view(), name="profile"),

@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+
+
+{% block body %}
+
+  <div id='login-block' class="container">
+    <h1>Password reset</h1>
+    <br><br>
+    <form action="{% url 'account:reset_password' %}" method="post">
+      {% csrf_token %}
+      {% include 'core/bs4_form.html' %}
+      <button type="submit" class="btn btn-outline-dark">Reset</button>
+    </form>
+  </div>
+
+{% endblock %}

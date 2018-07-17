@@ -2,8 +2,9 @@ import mock
 
 from django.test import RequestFactory
 from django.http import Http404
+from django.core import mail
 
-from core.test import TestCase
+from core.test import TestCase, TestMessageMixin
 
 from .. import views, factories
 
@@ -46,3 +47,30 @@ class TestProfileView(TestCase):
         request.user = factories.UserFactory()
         with self.assertRaises(Http404):
             views.ProfileView.as_view()(request)
+
+
+class TestPasswordResetForm(TestCase, TestMessageMixin):
+    def setUp(self):
+        super().setUp()
+        self.factory = RequestFactory()
+        self.user = factories.UserFactory()
+    
+    def test_invalid_email(self):
+        old_pw = self.user.password
+        data={'email': "email@email.com"}
+        request = self.create_request('post', path='/login/reset/', data=data)
+        response = views.ResetPassword.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 0)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.password, old_pw)
+    
+    def test_valid_email(self):
+        old_pw = self.user.password
+        data={'email': self.user.profile.email}
+        request = self.create_request('post', path='/login/reset/', data=data)
+        response = views.ResetPassword.as_view()(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        self.user.refresh_from_db()
+        self.assertNotEqual(self.user.password, old_pw)

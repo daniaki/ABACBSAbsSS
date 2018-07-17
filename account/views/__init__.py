@@ -2,13 +2,13 @@ import logging
 
 import django.contrib.auth.views as auth_views
 from django.conf import settings
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.http import Http404
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 
 from . import submitter, reviewer, assigner, chair
-from .. import models
+from .. import models, mixins, forms, utilities
 
 logger = logging.getLogger('django')
 
@@ -46,10 +46,6 @@ def logout(request):
 
 def orcid_login_error(request):
     return render(request, "account/orcid_error.html")
-
-
-def reset_password(request):
-    return auth_views.LoginView.as_view()(request)
 
 
 # Profile views
@@ -106,3 +102,17 @@ class EditProfileView(TemplateView):
             return reviewer.EditProfileView.as_view()(request)
         else:
             raise Http404()
+
+
+class ResetPassword(FormView):
+    form_class = forms.PasswordResetForm
+    template_name = 'registration/reset.html'
+    success_url = '/login/reset/'
+    
+    def form_valid(self, form):
+        utilities.reset_password(form.profile)
+        messages.success(
+            self.request, "A new password has been sent to your email address."
+        )
+        return super().form_valid(form)
+    
