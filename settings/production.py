@@ -42,5 +42,5 @@ REPLY_TO_EMAIL = get_secret('reply_to_email')
 # Optional SMTP authentication information for EMAIL_HOST
 EMAIL_HOST_USER = get_secret('email_host_user')
 EMAIL_HOST_PASSWORD = get_secret('email_host_password')
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True

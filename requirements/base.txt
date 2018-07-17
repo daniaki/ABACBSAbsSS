@@ -1,6 +1,4 @@
 django==2.0
-djangorestframework
-djangorestframework-filters
 social-auth-app-django
 factory-boy
 Faker
