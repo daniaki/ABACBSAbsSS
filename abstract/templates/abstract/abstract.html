@@ -43,7 +43,13 @@
             <tr>
               <td>{{ assignment.reviewer.username }}</td>
               <td>{{ assignment.reviewer.profile.full_name }}</td>
-              <td>{{ assignment.status|capfirst }}</td>
+              <td>
+                {% if assignment.status == DECLINED %}
+                  Declined
+                {% else %}
+                  {{ assignment.status|capfirst }}
+                {% endif %}
+              </td>
               <td>{{ assignment.review.score_content|default:'-' }}</td>
               <td>{{ assignment.review.score_contribution|default:'-' }} </td>
               <td>{{ assignment.review.score_interest|default:'-' }} </td>

@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 
 from core.models import TimeStampedModel
 from abstract.validators import validate_200_words_or_less
+from abstract.models import Assignment
 
 from .utilities import user_is_anonymous
 
@@ -203,7 +204,22 @@ class Profile(TimeStampedModel):
         if self.is_anon:
             return None
         return self.user.get_full_name()
-        
+
+    @property
+    def declined_assignments(self):
+        return self.user.assignments.filter(
+            status=Assignment.STATUS_REJECTED)
+
+    @property
+    def pending_assignments(self):
+        return self.user.assignments.filter(
+            status=Assignment.STATUS_PENDING)
+
+    @property
+    def accepted_assignments(self):
+        return self.user.assignments.filter(
+            status=Assignment.STATUS_ACCEPTED)
+    
         
 class ScholarshipApplication(models.Model):
     """A scholarship application model with reference
