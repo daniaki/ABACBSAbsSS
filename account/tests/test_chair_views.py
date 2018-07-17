@@ -227,6 +227,8 @@ class TestDownloadViews(TestCase):
         self.assertEqual(dict_['applicant'], self.profile.display_name)
         self.assertEqual(dict_['reason'], self.scholarship.text)
         self.assertEqual(dict_['other_funding'], self.scholarship.other_funding)
+        self.assertEqual(dict_['email'], self.profile.email)
+        self.assertEqual(dict_['career_stage'], self.profile.career_stage.text)
 
 
 class TestScholarshipListView(TestCase, TestMessageMixin):
