@@ -192,7 +192,7 @@ class TestDownloadViews(TestCase):
         request.user = self.user
         response = views.chair.DownloadAbstracts.as_view()(request)
 
-        string = response.content.decode('utf-8').decode('utf-8')
+        string = response.content.decode('utf-8')
         handle = io.StringIO(string)
         reader = csv.DictReader(
             handle, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
@@ -218,7 +218,7 @@ class TestDownloadViews(TestCase):
         request.user = self.user
         response = views.chair.DownloadScholarshipApplications.as_view()(request)
 
-        string = response.content.decode('utf-8').decode('utf-8')
+        string = response.content.decode('utf-8')
         handle = io.StringIO(string)
         reader = csv.DictReader(
             handle, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
