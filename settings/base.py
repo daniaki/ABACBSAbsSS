@@ -187,6 +187,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = str(BASE_DIR / 'static/')
+STATICFILES_DIRS = (STATIC_ROOT,)
 
 
 # Redirect to home URL after login (Default redirects to /profile/)
