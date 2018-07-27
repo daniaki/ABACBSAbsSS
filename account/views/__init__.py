@@ -21,8 +21,9 @@ __all__ = [
     'staff_login',
     'logout',
     'orcid_login_error',
-    'reset_password',
+    'ResetPassword',
     'ProfileView',
+    'EditProfileView',
 ]
 
 
@@ -40,8 +41,7 @@ def staff_login(request):
 
 
 def logout(request):
-    auth.logout(request)
-    return redirect("account:profile")
+    return auth.logout(request)
 
 
 def orcid_login_error(request):
