@@ -87,7 +87,7 @@ class TestProfileView(TestCase, TestMessageMixin):
         )
         request.user = self.user
         self.assertFalse(self.abstract.accepted)
-        response = json.loads(self.view(request).content)
+        response = json.loads(self.view(request).content.decode('utf-8'))
 
         self.assertIn('success', response)
         self.abstract.refresh_from_db()
@@ -109,7 +109,7 @@ class TestProfileView(TestCase, TestMessageMixin):
         request.user = self.user
         self.assertFalse(self.abstract.accepted)
         self.assertTrue(abstract.accepted)
-        response = json.loads(self.view(request).content)
+        response = json.loads(self.view(request).content.decode('utf-8'))
 
         self.assertIn('success', response)
         self.abstract.refresh_from_db()
@@ -125,7 +125,7 @@ class TestProfileView(TestCase, TestMessageMixin):
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
         request.user = self.user
-        response = json.loads(self.view(request).content)
+        response = json.loads(self.view(request).content.decode('utf-8'))
         self.assertIn('error', response)
 
     def test_GET_ajax_plot_data(self):
@@ -141,7 +141,7 @@ class TestProfileView(TestCase, TestMessageMixin):
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
         request.user = self.user
-        response = json.loads(self.view(request).content)
+        response = json.loads(self.view(request).content.decode('utf-8'))
         self.assertEqual(response['gender'][demographic.text], 1)
                
     def test_GET_ajax_returns_error_invalid_abstract_id(self):
@@ -152,7 +152,7 @@ class TestProfileView(TestCase, TestMessageMixin):
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
         request.user = self.user
-        response = json.loads(self.view(request).content)
+        response = json.loads(self.view(request).content.decode('utf-8'))
         self.assertIn('error', response)
 
 
@@ -192,7 +192,7 @@ class TestDownloadViews(TestCase):
         request.user = self.user
         response = views.chair.DownloadAbstracts.as_view()(request)
 
-        string = response.content.decode('utf-8')
+        string = response.content.decode('utf-8').decode('utf-8')
         handle = io.StringIO(string)
         reader = csv.DictReader(
             handle, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
@@ -218,7 +218,7 @@ class TestDownloadViews(TestCase):
         request.user = self.user
         response = views.chair.DownloadScholarshipApplications.as_view()(request)
 
-        string = response.content.decode('utf-8')
+        string = response.content.decode('utf-8').decode('utf-8')
         handle = io.StringIO(string)
         reader = csv.DictReader(
             handle, delimiter='\t', quoting=csv.QUOTE_MINIMAL)

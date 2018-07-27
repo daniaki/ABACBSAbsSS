@@ -70,7 +70,7 @@ class TestProfileView(TestCase):
         )
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertIn('Invalid assignment id', data['error'])
 
     def test_error_missing_assignment_id(self):
@@ -80,7 +80,7 @@ class TestProfileView(TestCase):
         )
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertIn('Invalid assignment id', data['error'])
 
     def test_error_missing_reject_or_accept(self):
@@ -92,7 +92,7 @@ class TestProfileView(TestCase):
         )
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertIn(
             "Data is missing 'reject' or 'accept' keys",
             data['error']
@@ -109,7 +109,7 @@ class TestProfileView(TestCase):
         )
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertIn(
             'This field is required',
             data['error']['rejection_comment'][0]['message']
@@ -126,7 +126,7 @@ class TestProfileView(TestCase):
                          abstract_models.Assignment.STATUS_PENDING)
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertIn(
             'This review request has been declined.',
             data['success']
@@ -176,7 +176,7 @@ class TestProfileView(TestCase):
         )
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertIn(
             'This field is required',
             data['error']['text'][0]['message']
@@ -196,7 +196,7 @@ class TestProfileView(TestCase):
         )
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertIn(
             'Ensure this value is less than or equal to {}'.format(max_),
             data['error']['score_content'][0]['message']
@@ -212,7 +212,7 @@ class TestProfileView(TestCase):
         )
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertIn(
             'Ensure this value is greater than or equal to {}'.format(min_),
             data['error']['score_content'][0]['message']
@@ -228,7 +228,7 @@ class TestProfileView(TestCase):
                          abstract_models.Assignment.STATUS_PENDING)
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
-        r_data = json.loads(response.content)
+        r_data = json.loads(response.content.decode('utf-8'))
         self.assertIn(
             'Your review has been saved.',
             r_data['success']
@@ -268,7 +268,7 @@ class TestProfileView(TestCase):
                          abstract_models.Assignment.STATUS_PENDING)
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
-        r_data = json.loads(response.content)
+        r_data = json.loads(response.content.decode('utf-8'))
         self.assertIn(
             'Your review has been saved.',
             r_data['success']

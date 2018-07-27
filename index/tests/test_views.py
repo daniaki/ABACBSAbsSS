@@ -25,7 +25,7 @@ class TestIndexGETAjax(TestCase):
         profile.save()
         
         response = views.index(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(data['gender'][demographic.text], 1)
 
     def test_counts_stage(self):
@@ -37,7 +37,7 @@ class TestIndexGETAjax(TestCase):
         profile.save()
     
         response = views.index(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(data['stage'][demographic.text], 1)
 
     def test_counts_state(self):
@@ -49,7 +49,7 @@ class TestIndexGETAjax(TestCase):
         profile.save()
     
         response = views.index(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(data['state'][demographic.text], 1)
 
     def test_counts_aot(self):
@@ -61,5 +61,5 @@ class TestIndexGETAjax(TestCase):
         profile.save()
     
         response = views.index(request)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(data['aot'][demographic.text], 1)
