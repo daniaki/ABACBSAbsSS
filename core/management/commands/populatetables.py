@@ -7,7 +7,7 @@ from demographic import models
 from abstract import models as abstract_models
 from account.models import UserGroups
 
-BASE_DIR = Path()
+BASE_DIR = Path().cwd()
 DATA_DIR = BASE_DIR / 'data'
 
 
@@ -18,7 +18,7 @@ class Command(BaseCommand):
         UserGroups.create_groups()
         
         sys.stdout.write("Creating states.\n")
-        with open(DATA_DIR / 'states.txt') as fp:
+        with open(str(DATA_DIR / 'states.txt')) as fp:
             states = [
                 x.strip() for x in fp.readlines() if x.strip()]
             for state in states:
@@ -31,7 +31,7 @@ class Command(BaseCommand):
                     sys.stdout.write("\t{} already exists.\n".format(state))
 
         sys.stdout.write("Creating genders.\n")
-        with open(DATA_DIR / 'genders.txt') as fp:
+        with open(str(DATA_DIR / 'genders.txt')) as fp:
             genders = [
                 x.strip() for x in fp.readlines() if x.strip()]
             for gender in genders:
@@ -44,7 +44,7 @@ class Command(BaseCommand):
                     sys.stdout.write("\t{} already exists.\n".format(gender))
 
         sys.stdout.write("Creating career stages.\n")
-        with open(DATA_DIR / 'career_stages.txt') as fp:
+        with open(str(DATA_DIR / 'career_stages.txt')) as fp:
             stages = [
                 x.strip() for x in fp.readlines() if x.strip()]
             for stage in stages:
@@ -57,7 +57,7 @@ class Command(BaseCommand):
                     sys.stdout.write("\t{} already exists.\n".format(stage))
 
         sys.stdout.write("Creating Aboriginal/Torres options.\n")
-        with open(DATA_DIR / 'aboriginal_torres.txt') as fp:
+        with open(str(DATA_DIR / 'aboriginal_torres.txt')) as fp:
             options = [
                 x.strip() for x in fp.readlines() if x.strip()]
             for option in options:
@@ -70,7 +70,7 @@ class Command(BaseCommand):
                     sys.stdout.write("\tOption {} already exists.\n".format(option))
 
         sys.stdout.write("Creating keywords.\n")
-        with open(DATA_DIR / 'keywords.txt') as fp:
+        with open(str(DATA_DIR / 'keywords.txt')) as fp:
             keywords = [
                 x.strip() for x in fp.readlines() if x.strip()]
             for keyword in keywords:
@@ -83,7 +83,7 @@ class Command(BaseCommand):
                     sys.stdout.write("\t{} already exists.\n".format(keyword))
                     
         sys.stdout.write("Creating presentation categories.\n")
-        with open(DATA_DIR / 'categories.txt') as fp:
+        with open(str(DATA_DIR / 'categories.txt')) as fp:
             categories = [
                 x.strip() for x in fp.readlines() if x.strip()]
             for category in categories:

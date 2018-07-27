@@ -20,14 +20,14 @@ from django.core.exceptions import ImproperlyConfigured
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = Path()
+BASE_DIR = Path().cwd()
 SETTINGS_DIR = BASE_DIR / "settings"
 DATA_DIR = BASE_DIR / "data"
 LOG_DIR = BASE_DIR / "logs"
 
 # Read the secrets file
 try:
-    with open(SETTINGS_DIR / "secrets.json", 'rt') as handle:
+    with open(str(SETTINGS_DIR / "secrets.json"), 'rt') as handle:
         secrets = json.load(handle)
 except FileNotFoundError:
     raise FileNotFoundError("You must create a 'secrets.json' file in the "
@@ -148,7 +148,7 @@ WSGI_APPLICATION = 'ABACBSAbsSS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
 

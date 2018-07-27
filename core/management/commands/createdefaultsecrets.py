@@ -7,8 +7,8 @@ from pathlib import Path
 
 from django.core.management.base import BaseCommand
 
-BASE_DIR = Path()
-SETTINGS_DIR = BASE_DIR / "settings"
+BASE_DIR = Path().cwd()
+SETTINGS_DIR = str(BASE_DIR / "settings")
 
 
 class Command(BaseCommand):
