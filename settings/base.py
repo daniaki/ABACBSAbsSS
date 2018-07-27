@@ -190,7 +190,7 @@ STATIC_ROOT = str(BASE_DIR / 'static/')
 
 # Redirect to home URL after login (Default redirects to /profile/)
 LOGIN_REDIRECT_URL = 'account:profile'
-LOGOUT_REDIRECT_URL = 'account:profile'
+LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = 'account:orcid_login'
 
 
