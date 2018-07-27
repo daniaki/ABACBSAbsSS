@@ -20,7 +20,7 @@ from django.core.exceptions import ImproperlyConfigured
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = Path().cwd()
+BASE_DIR = Path(str(Path(__file__)).replace('settings/base.py', ''))
 SETTINGS_DIR = BASE_DIR / "settings"
 DATA_DIR = BASE_DIR / "data"
 LOG_DIR = BASE_DIR / "logs"
