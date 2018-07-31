@@ -50,54 +50,37 @@ class AbstractForm(mixins.UserKwargsMixin,
         )
         
     def clean_authors(self):
-        return ', '.join([
+        return '; '.join([
             x.strip() for x in
-            self.cleaned_data.get('authors', '').split(',')
+            self.cleaned_data.get('authors', '').split('\n')
             if x.strip()
         ])
     
     def clean_author_affiliations(self):
-        return ', '.join([
+        return '; '.join([
             x.strip() for x in
-            self.cleaned_data.get('author_affiliations', '').split(',')
+            self.cleaned_data.get('author_affiliations', '').split('\n')
             if x.strip()
         ])
-        
-    def clean_categories(self):
-        if self.user is None:
-            return self.cleaned_data.get('categories', None)
-        
-        categories = self.cleaned_data.get('categories', [])
-        is_student = str(self.user.profile.career_stage).lower() == \
-                     settings.STUDENT_STAGE.lower()
-        student_category = models.PresentationCategory.objects.get(
-            text=settings.STUDENT_CATEGORY)
-        applied_as_student = student_category in categories
-        
-        if not is_student and applied_as_student:
-            raise ValidationError(
-                "You must be a student to apply to for a student presentation."
-            )
-        return self.cleaned_data.get('categories')
-           
+
     def clean(self):
         cleaned_data = super().clean()
         authors = cleaned_data.get('authors', '')
         author_affiliations = cleaned_data.get('author_affiliations', '')
-        if len(authors.split(',')) != len(author_affiliations.split(',')):
+        if len(authors.split(';')) != len(author_affiliations.split(';')):
             self.add_error(
                 'authors',
                 (
                     'The number of authors must be the same as the number of '
-                    'author affiliations. Please separate entries with commas.'
+                    'author affiliations. Each author must start on a new line.'
                 )
             )
             self.add_error(
                 'author_affiliations',
                 (
                     'The number of authors affiliations must be the same as '
-                    'the number of authors. Please separate entries '
-                    'with commas.'
+                    'the number of authors. Each affiliation must start on a '
+                    'new line.'
                 )
             )
         return cleaned_data
