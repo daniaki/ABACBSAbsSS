@@ -14,6 +14,15 @@ def index(request):
     return render(request, "index/index.html", {})
 
 
+def plots(request):
+    if request.is_ajax():
+        abstracts = Abstract.objects.all()
+        data = compute_statistics(abstracts)
+        return JsonResponse(data=data)
+
+    return render(request, "index/plots.html", {})
+
+
 def handler403(request, exception=None, template_name='core/403.html'):
     response = render(
         request, template_name, context={})

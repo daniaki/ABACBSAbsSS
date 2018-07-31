@@ -1,0 +1,42 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block body %}
+  <h1 id="demographic-plots">Demographic Information</h1>
+  <p>
+    The plots below show the demographic information relating to four
+    categories: the applicant's identified <strong>gender</strong>,
+    <strong>career stage</strong>, <strong>state of residence</strong>
+    and whether they indentify as an <strong>Aboriginal or Torres Straight Islander</strong>.
+
+    This information is collected on a <strong>per-abstract basis</strong>.
+  </p>
+  <div class="container" id="plots">
+    <div class="row">
+      <div class="col">
+        <div id="gender-plot"></div>
+      </div>
+
+      <div class="col">
+        <div id="stage-plot"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div id="aot-plot"></div>
+      </div>
+
+      <div class="col">
+        <div id="state-plot"></div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+  <script src="{% static 'core/plotly/plotly-latest.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'core/core/plots.js' %}" type="text/javascript"></script>
+{% endblock %}
