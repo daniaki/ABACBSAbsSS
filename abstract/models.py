@@ -125,22 +125,22 @@ class Abstract(TimeStampedModel):
     contribution = models.TextField(
         null=False, default=None, blank=False,
         verbose_name='Your contribution',
-        help_text='Please describe your contribution to the work '
-                  'described in your abstract using 100 words or less.',
+        help_text='Please describe your contribution to the research '
+                  'detailed in your abstract using 100 words or less.',
         validators = [validators.validate_100_words_or_less, ]
     )
     authors = models.TextField(
         null=False, default=None, blank=True,
         verbose_name='Contributing authors',
         help_text='Please list all contributing authors '
-                  'including yourself (comma separated).'
+                  'including yourself (new line separated).'
     )
     author_affiliations = models.TextField(
         null=False, default=None, blank=True,
         verbose_name='Contributing author affiliations',
         help_text='Please list the primary affiliations '
                   'of all contributing authors including yourself '
-                  '(comma separated).'
+                  '(new line separated).'
     )
     accepted = models.BooleanField(
         null=False, default=False, blank=True, verbose_name='Approve?'
@@ -157,9 +157,9 @@ class Abstract(TimeStampedModel):
     keywords = models.ManyToManyField(
         to='abstract.Keyword', related_name='%(class)ss',
         related_query_name='%(class)s', verbose_name='Keywords',
-        help_text='Please assign a few keywords to your abstract. You may enter'
-                  ' keywords that do not appear in this list by '
-                  'pressing the Return/Enter on your keyboard.',
+        help_text='Please assign a few keywords to your abstract. You may '
+                  'enter keywords that do not appear in this list by '
+                  'pressing Return/Enter on your keyboard.',
         blank=False,
     )
     submitter = models.ForeignKey(
