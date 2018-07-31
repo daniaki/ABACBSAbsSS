@@ -20,7 +20,7 @@ from django.core.exceptions import ImproperlyConfigured
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = Path(str(Path(__file__)).replace('settings/base.py', ''))
+BASE_DIR = Path(str(Path(__file__))).parents[1]
 SETTINGS_DIR = BASE_DIR / "settings"
 DATA_DIR = BASE_DIR / "data"
 LOG_DIR = BASE_DIR / "logs"
@@ -213,8 +213,3 @@ REST_FRAMEWORK = {
 DEFAULT_FROM_EMAIL = "committee@abacbs.org"
 SERVER_EMAIL = "committee@abacbs.org"
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-
-# Settings you may configure
-STUDENT_CATEGORY = 'COMBINE (students only)'
-STUDENT_STAGE = 'Student'
