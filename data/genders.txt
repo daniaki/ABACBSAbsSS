@@ -1,6 +1,4 @@
 Male
 Female
-Transgender
-Intersex
-Other
+Transgender/Intersex/Other
 Prefer not to say
