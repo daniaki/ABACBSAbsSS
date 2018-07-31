@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.core import mail
 
 from core.test import TestCase
@@ -13,19 +12,17 @@ from .. import factories, models, forms
 class TestAbstractForm(TestCase):
     @staticmethod
     def mock_data():
-        factories.PresentationCategoryFactory(
-            text=settings.STUDENT_CATEGORY)
-        category = factories.PresentationCategoryFactory(
-            text='poster')
+        factories.PresentationCategoryFactory()
+        category = factories.PresentationCategoryFactory()
         kw = factories.KeywordFactory()
         return {
-            "keywords": [kw.text,],
-            "categories": [category,],
+            "keywords": [kw.text, ],
+            "categories": [category, ],
             "text": 'Hello, world!',
             "title": 'A test abstract',
             "contribution": "I don't feel so good...",
-            "authors": 'Tony Stark,Spider-man',
-            "author_affiliations": 'The Avengers,The Avengers',
+            "authors": 'Tony Stark\nSpider-man',
+            "author_affiliations": 'The Avengers\nThe, Avengers',
         }
     
     def setUp(self):
@@ -77,23 +74,10 @@ class TestAbstractForm(TestCase):
         self.assertEqual(models.Keyword.objects.count(), 1)
         self.assertEqual(data['keywords'], [
             str(kw) for kw in abstract.keywords.all()])
-        
-    def test_cannot_select_student_if_not_student(self):
-        stage = CareerStageFactory(text='Postdoc')
-        profile = self.user.profile
-        profile.career_stage = stage
-        profile.save()
-    
-        data = self.mock_data()
-        data['categories'] = [factories.PresentationCategoryFactory(
-            text=settings.STUDENT_CATEGORY),]
-        form = forms.AbstractForm(user=self.user, data=data)
-        self.assertFalse(form.is_valid())
-        self.assertIn("must be a student", str(form.errors))
-    
+
     def test_author_and_affiliations_not_same_legnth(self):
         data = self.mock_data()
-        data['authors'] = "A,B"
+        data['authors'] = "A\nB"
         data['author_affiliations'] = "A"
         form = forms.AbstractForm(user=self.user, data=data)
         self.assertFalse(form.is_valid())
@@ -101,28 +85,28 @@ class TestAbstractForm(TestCase):
         
     def test_clean_authors_and_affiliations_removes_whitespace(self):
         data = self.mock_data()
-        data['authors'] = "A, B "
-        data['author_affiliations'] = "A , A"
+        data['authors'] = "A\n B "
+        data['author_affiliations'] = "A \n A"
         form = forms.AbstractForm(user=self.user, data=data)
         self.assertTrue(form.is_valid())
         abstract = form.save()
         
-        authors = 'A, B'
+        authors = 'A; B'
         self.assertEqual(abstract.authors, authors)
-        affil = 'A, A'
+        affil = 'A; A'
         self.assertEqual(abstract.author_affiliations, affil)
         
     def test_clean_authors_and_affiliations_removes_blanks(self):
         data = self.mock_data()
-        data['authors'] = "A, B,, , "
-        data['author_affiliations'] = "A , A,, , "
+        data['authors'] = "A\n B\n\n \n "
+        data['author_affiliations'] = "A \n A\n\n \n "
         form = forms.AbstractForm(user=self.user, data=data)
         self.assertTrue(form.is_valid())
         abstract = form.save()
     
-        authors = 'A, B'
+        authors = 'A; B'
         self.assertEqual(abstract.authors, authors)
-        affil = 'A, A'
+        affil = 'A; A'
         self.assertEqual(abstract.author_affiliations, affil)
         
     def test_sets_user(self):

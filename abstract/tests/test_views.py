@@ -12,10 +12,8 @@ from .. import views, factories, models
 
 
 def mock_data():
-    factories.PresentationCategoryFactory(
-        text=settings.STUDENT_CATEGORY)
-    category = factories.PresentationCategoryFactory(
-        text='poster')
+    factories.PresentationCategoryFactory()
+    category = factories.PresentationCategoryFactory()
     kw = factories.KeywordFactory()
     return {
         "keywords": [kw.text, ],

@@ -75,6 +75,9 @@ class TestAssignReviewersView(TestCase):
         self.view = views.assigner.assign_reviewers_view
         self.reviewer = factories.ReviewerFactory()
         self.abstract = AbstractFactory()
+        self.user.first_name = 'Daniel'
+        self.user.last_name = 'Danielson'
+        self.user.save()
         
     def test_permission_denied_non_assigner(self):
         request = self.factory.get('/profile/')
