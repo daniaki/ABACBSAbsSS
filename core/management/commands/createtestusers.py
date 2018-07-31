@@ -1,13 +1,13 @@
 import sys
 
 from django.conf import settings
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
 from django.db import transaction
 
+from abstract.factories import AbstractFactory, AssignmnetFactory
 from account.factories import SubmitterFactory, ReviewerFactory, \
     AssignerFactory, ConferenceChairFactory
-from abstract.factories import AbstractFactory, AssignmnetFactory
 from demographic.factories import CareerStageFactory
 
 User = get_user_model()
@@ -34,8 +34,7 @@ class Command(BaseCommand):
             
             profile = usera.profile
             profile.completed_intial_login = True
-            profile.career_stage = CareerStageFactory(
-                text=settings.STUDENT_STAGE)
+            profile.career_stage = CareerStageFactory()
             profile.save()
             AbstractFactory(submitter=usera)
             AbstractFactory(submitter=usera)

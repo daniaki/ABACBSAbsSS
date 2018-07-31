@@ -7,7 +7,7 @@ from demographic import models
 from abstract import models as abstract_models
 from account.models import UserGroups
 
-BASE_DIR = Path().cwd()
+BASE_DIR = Path(str(Path(__file__))).parents[3]
 DATA_DIR = BASE_DIR / 'data'
 
 

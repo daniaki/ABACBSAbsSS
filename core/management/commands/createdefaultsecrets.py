@@ -7,7 +7,7 @@ from pathlib import Path
 
 from django.core.management.base import BaseCommand
 
-BASE_DIR = Path().cwd()
+BASE_DIR = Path(str(Path(__file__))).parents[3]
 SETTINGS_DIR = str(BASE_DIR / "settings")
 
 
