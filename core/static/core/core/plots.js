@@ -8,7 +8,7 @@ function plotDemographics(abstracts) {
   if (abstracts !== undefined) {
     data.abstracts = abstracts;
   }
-  console.log(data);
+  //console.log(data);
   $.ajax({
     url: window.location.pathname,
     type: 'GET',
@@ -18,8 +18,8 @@ function plotDemographics(abstracts) {
       let keyList = ['gender', 'stage', 'aot'];
       for(let i=0; i < keyList.length; i++) {
         let type = keyList[i];
-        console.log(type);
-        console.log(data);
+        //console.log(type);
+        //console.log(data);
         let plotData = [{values: [], labels: [], type: 'pie'}];
         for (let key in data[type]) {
           if (data[type].hasOwnProperty(key)) {
@@ -58,7 +58,7 @@ function plotDemographics(abstracts) {
             automargin: true,
           }
         };
-        // console.log(plotData);
+        // //console.log(plotData);
         Plotly.newPlot(id, plotData, layout);
       }
 
@@ -83,7 +83,7 @@ function plotDemographics(abstracts) {
           automargin: true,
         }
       };
-      console.log(plotData);
+      //console.log(plotData);
       Plotly.newPlot('state-plot', plotData, layout);
 
     },
