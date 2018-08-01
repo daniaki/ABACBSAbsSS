@@ -1,8 +1,8 @@
-import os
-import sys
 import json
+import os
 import random
 import string
+import sys
 from pathlib import Path
 
 from django.core.management.base import BaseCommand

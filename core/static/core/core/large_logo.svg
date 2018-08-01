@@ -115,6 +115,6 @@ gBsgYwAAAABJRU5ErkJggg==" transform="matrix(1 0 0 1 21.719 3.9944)">
 				c0-9.1,7.4-16.5,16.5-16.5C92,48.7,99.4,56.1,99.4,65.2z"/>
 		</g>
 	</g>
-	<text transform="matrix(1 0 0 1 111.1992 26.4306)"><tspan x="0" y="0" font-family="'MuseoSans-500'" font-size="19">AUSTRALIAN BIOINFORMATICS AND</tspan><tspan x="0" y="22.8" font-family="'MuseoSans-500'" font-size="19">COMPUTATIONAL BIOLOGY SOCIETY </tspan></text>
+	<text style="font-family: 'Open Sans', sans-serif" transform="matrix(1 0 0 1 111.1992 26.4306)"><tspan x="0" y="0" font-size="18">AUSTRALIAN BIOINFORMATICS AND</tspan><tspan x="0" y="22.8" font-size="18">COMPUTATIONAL BIOLOGY SOCIETY </tspan></text>
 </g>
 </svg>

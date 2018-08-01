@@ -82,7 +82,7 @@
           {% if not request.user.is_authenticated %}
             <li class="nav-link"><a class="hover-underline" href="">Login</a></li>
               <li class="nav-link indent"><a class="hover-underline" href="#" data-toggle="modal" data-target="#orcid-login">Applicant</a></li>
-              <li class="nav-link indent"><a class="hover-underline" href="">Staff</a></li>
+              <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:staff_login' %}">Staff</a></li>
           {% else %}
             <li class="nav-link"><a class="hover-underline" href="">Profile</a></li>
               <li class="nav-link indent"><a class="hover-underline" href="{% url 'account:profile' %}">Dashboard</a></li>
@@ -146,6 +146,7 @@
     <script src="{% static 'core/vue/vue.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'core/showdown/showdown.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'core/core/base.js' %}" type="text/javascript"></script>
-    {% block extra_scripts %}{% endblock %}
+    {% block extra_scripts %}
+    {% endblock %}
   </body>
 </html>
