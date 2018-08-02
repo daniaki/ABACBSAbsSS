@@ -193,7 +193,9 @@
         }
       });
     });
-    alignFilterLeft();
+    // alignFilterLeft();
+    $('.dataTables_filter').parents()[1].children[0].remove();
+    $('.dataTables_filter').addClass("left-filter");
     $('#abstract-table').fadeIn(2500);
   });
 </script>
