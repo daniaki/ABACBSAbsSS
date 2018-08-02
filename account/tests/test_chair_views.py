@@ -9,8 +9,10 @@ from demographic.factories import (
     GenderFactory, CareerStageFactory,
     StateFactory, AboriginalOrTorresFactory
 )
+from abstract.models import PresentationCategory
 from abstract.factories import AbstractFactory
 from core.test import TestCase, TestMessageMixin
+
 
 from .. import factories, views
 
@@ -203,7 +205,13 @@ class TestDownloadViews(TestCase):
         self.assertEqual(dict_['authors'], self.abstract.authors)
         self.assertEqual(dict_['affiliations'], self.abstract.author_affiliations)
         self.assertEqual(dict_['keywords'], ','.join([x.text for x in self.abstract.keywords.all()]))
-        self.assertEqual(dict_['categories'], ','.join([x.text for x in self.abstract.categories.all()]))
+        
+        for category in PresentationCategory.objects.all():
+            self.assertEqual(
+                dict_[category.text.lower()],
+                str(category in self.abstract.categories.all())
+            )
+
         self.assertEqual(dict_['submitter'], self.profile.display_name)
         self.assertEqual(dict_['affiliation'], self.profile.affiliation)
         self.assertEqual(dict_['career_stage'], self.profile.career_stage.text)

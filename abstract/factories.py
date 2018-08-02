@@ -25,7 +25,14 @@ class PresentationCategoryFactory(DjangoModelFactory):
         model = models.PresentationCategory
         django_get_or_create = ('text',)
     
-    text = factory.fuzzy.FuzzyChoice(['Poster', 'Selected oral',])
+    text = factory.fuzzy.FuzzyChoice([
+        'ABACBS Conference Poster',
+        'ABACBS Conference Talk',
+        'COMBINE Symposium Poster',
+        'COMBINE Symposium Talk',
+        'BioC Asia Meeting',
+        'Clinical Informatics Symposium',
+    ])
     
 
 class AbstractFactory(DjangoModelFactory):

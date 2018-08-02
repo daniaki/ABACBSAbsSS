@@ -9,17 +9,25 @@
     <div class="table-responsive">
       <table id="abstract-table" class="table table-hover display" style="width:100%">
         <thead>
-          <th>Title</th>
+          <th>Assign</th>
+          <th style="min-width: 200px;">Title</th>
           <th>State</th>
           <th>Keywords</th>
           <th>Pending</th>
           <th>Accepted</th>
           <th>Declined</th>
-          <th>Assign</th>
+          {% for category in CATEGORIES %}
+            <th>{{ category|capfirst }}</th>
+          {% endfor %}
         </thead>
         <tbody>
           {% for abstract in object_list.all %}
             <tr>
+              <td style="text-align: center">
+                <a href="{% url 'account:assign_reviewers' abstract.id %}">
+                  <i class="fa fa-edit"></i>
+                </a>
+              </td>
               <td><a href="{% url 'abstract:abstract_summary' abstract.id %}">{{ abstract.title }}</a></td>
               <td>{{ abstract.state|default:"-" }}</td>
               <td>{{ abstract.keywords.all|join:', '|default:"-" }}</td>
@@ -35,11 +43,9 @@
                 {% users_full_name abstract.declined_reviewers as declined_reviewers %}
                 {{ declined_reviewers|join:', '|default:"-" }}
               </td>
-              <td>
-                <a href="{% url 'account:assign_reviewers' abstract.id %}"
-                   class="btn btn-outline-dark">Edit
-                </a>
-              </td>
+              {% for category in CATEGORIES %}
+                <td>{% has_category category abstract %}</td>
+              {% endfor %}
             </tr>
           {% endfor %}
         </tbody>
@@ -58,6 +64,7 @@
     let table = $("#abstract-table").DataTable({
       paging: false,
     });
+    alignFilterLeft();
   });
 </script>
 {% endblock %}

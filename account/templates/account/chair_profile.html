@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load user_tags %}
 
 {% block body %}
 
@@ -26,20 +27,28 @@
   <br>
   <div id='{{ abstract.id }}-list-container' class="table-responsive">
     {% if abstract_list.count %}
-      <table id="abstract-table" class="table table-hover display" style="width:100%">
+      <div class="mb-4">
+        Toggle columns:
+        <span class="toggle-vis link-like" data-column="3">Career stage</span> -
+        <span class="toggle-vis link-like" data-column="4">Gender</span> -
+        <span class="toggle-vis link-like" data-column="5">Aboriginal/Torres</span> -
+        <span class="toggle-vis link-like" data-column="6">State</span>
+      </div>
+
+      <table id="abstract-table" class="table table-hover display" style="width:100%; display: none;">
         <thead>
           <th style="min-width: 200px">Title</th>
           <th>Submitter</th>
           <th>Keywords</th>
-          <th>Categories</th>
-          {% if show_demographics %}
-            <th>Career stage</th>
-            <th>Gender</th>
-            <th>Aboriginal/Torres</th>
-            <th>State</th>
-          {% endif %}
+          <th>Career stage</th>
+          <th>Gender</th>
+          <th>Aboriginal/Torres</th>
+          <th>State</th>
           <th>Reviews</th>
           <th>Score</th>
+          {% for category in CATEGORIES %}
+            <th>{{ category|capfirst }}</th>
+          {% endfor %}
         </thead>
         <tbody>
           {% for abstract in abstract_list.all %}
@@ -47,15 +56,15 @@
               <td><a href="{% url 'abstract:abstract_summary' abstract.id %}">{{ abstract.title }}</a></td>
               <td>{{ abstract.submitter.profile.display_name }}</td>
               <td>{{ abstract.keywords.all|join:", "|default:"-" }}</td>
-              <td>{{ abstract.categories.all|join:", "|default:"-" }}</td>
-              {% if show_demographics %}
-                <td>{{ abstract.submitter.profile.career_stage.text|default:"-" }} </td>
-                <td>{{ abstract.submitter.profile.gender.text|default:"-" }} </td>
-                <td>{{ abstract.submitter.profile.aboriginal_or_torres.text|default:"-" }} </td>
-                <td>{{ abstract.submitter.profile.state.text|default:"-" }} </td>
-              {% endif %}
+              <td>{{ abstract.submitter.profile.career_stage.text|default:"-" }} </td>
+              <td>{{ abstract.submitter.profile.gender.text|default:"-" }} </td>
+              <td>{{ abstract.submitter.profile.aboriginal_or_torres.text|default:"-" }} </td>
+              <td>{{ abstract.submitter.profile.state.text|default:"-" }} </td>
               <td>{{ abstract.reviews.count|default:"-" }} </td>
               <td>{{ abstract.score|stringformat:"#.3g"|default:"-" }} </td>
+              {% for category in CATEGORIES %}
+                <td>{% has_category category abstract %}</td>
+              {% endfor %}
             </tr>
           {% endfor %}
         </tbody>
@@ -76,16 +85,6 @@
       <div class="col-6 text-right">
         <a id='save-selected' href="" class="btn btn-outline-danger mt-1" data-toggle="tooltip"
            title="Approve abstracts in selected rows.">Save</a>
-        {% if CHAIR_GROUP in request.user.profile.group_names %}
-          <a class="btn btn-outline-danger mt-1"
-             href="{% url 'account:profile' %}?show_demographics=True">
-            Show demographics
-          </a>
-          <a class="btn btn-outline-danger mt-1"
-             href="{% url 'account:profile' %}">
-            Hide demographics
-          </a>
-        {% endif %}
       </div>
     </div>
   </div>
@@ -97,19 +96,26 @@
 <script src="{% static 'core/core/plots.js' %}" type="text/javascript"></script>
 <script type="text/javascript">
   $("document").ready(function() {
-    var toggleSelectedOn = false;
+    let toggleSelectedOn = false;
 
     let table = $("#abstract-table").DataTable({
       paging: false,
     });
-    var nRows = $('tr').length - 1;  // Minus header row
+    let nRows = $('tr').length - 1;  // Minus header row
     $("#abstract-table_info").text(
       `Showing ${nRows} of ${nRows} entries`
-    )
+    );
 
     $('#abstract-table tbody').on('click', 'tr', function () {
       $(this).toggleClass('selected-row');
     });
+
+    $('.toggle-vis').on( 'click', function (e) {
+      e.preventDefault(); // Get the column API object
+      let column = table.column($(this).attr('data-column'));
+      column.visible(!column.visible());
+    });
+    $('.toggle-vis').click();
 
     $('#toggle-selected').click(function () {
       let rows = $('tr');
@@ -187,6 +193,8 @@
         }
       });
     });
+    alignFilterLeft();
+    $('#abstract-table').fadeIn(2500);
   });
 </script>
 {% endblock %}

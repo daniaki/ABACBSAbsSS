@@ -105,7 +105,6 @@ class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
             'authors',
             'affiliations',
             'keywords',
-            'categories',
             'submitter',
             'affiliation',
             'career_stage',
@@ -115,6 +114,9 @@ class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
             'accepted',
             'score',
         ]
+        for category in abstract_models.PresentationCategory.objects.all():
+            columns.append(category.text.lower())
+            
         abstracts = abstract_models.Abstract.objects.all()
         writer = csv.DictWriter(
             response, delimiter='\t', fieldnames=columns,
@@ -133,7 +135,6 @@ class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
                 'authors': abstract.authors,
                 'affiliations': abstract.author_affiliations,
                 'keywords': ','.join([x.text for x in abstract.keywords.all()]),
-                'categories': ','.join([x.text for x in abstract.categories.all()]),
                 'submitter': profile.display_name,
                 'affiliation': profile.affiliation,
                 'career_stage': None if not profile.career_stage else profile.career_stage.text,
@@ -143,6 +144,9 @@ class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
                 'accepted': abstract.accepted,
                 'score': abstract.score,
             }
+            for category in abstract_models.PresentationCategory.objects.all():
+                row[category.text.lower()] = category in abstract.categories.all()
+            
             dict_rows.append(row)
 
         writer.writerows(dict_rows)

@@ -1,5 +1,5 @@
 from account.models import UserGroups
-from abstract.models import Assignment
+from abstract.models import Assignment, PresentationCategory
 
 def user_groups(request):
     """Adds the user group names into the request context."""
@@ -18,3 +18,10 @@ def assignment_status(request):
     context['ACCEPTED'] = Assignment.STATUS_ACCEPTED
     context['DECLINED'] = Assignment.STATUS_REJECTED
     return context
+
+
+def categories(request):
+    """Returns a dict of presentation categories and their lowercase values"""
+    return {
+        'CATEGORIES': PresentationCategory.objects.all()
+    }
