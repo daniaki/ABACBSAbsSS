@@ -1,3 +1,6 @@
-Poster
-Selected oral
-COMBINE (students only)
+ABACBS Conference Poster
+ABACBS Conference Talk
+COMBINE Symposium Poster
+COMBINE Symposium Talk
+BioC Asia Meeting
+Clinical Informatics Symposium
