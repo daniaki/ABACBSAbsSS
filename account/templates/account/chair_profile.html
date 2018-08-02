@@ -29,16 +29,17 @@
     {% if abstract_list.count %}
       <div class="mb-4">
         Toggle columns:
-        <span class="toggle-vis link-like" data-column="3">Career stage</span> -
-        <span class="toggle-vis link-like" data-column="4">Gender</span> -
-        <span class="toggle-vis link-like" data-column="5">Aboriginal/Torres</span> -
-        <span class="toggle-vis link-like" data-column="6">State</span>
+        <span class="toggle-vis link-like" data-column="4">Career stage</span> -
+        <span class="toggle-vis link-like" data-column="5">Gender</span> -
+        <span class="toggle-vis link-like" data-column="6">Aboriginal/Torres</span> -
+        <span class="toggle-vis link-like" data-column="7">State</span>
       </div>
 
       <table id="abstract-table" class="table table-hover display" style="width:100%; display: none;">
         <thead>
           <th style="min-width: 200px">Title</th>
-          <th>Submitter</th>
+          <th>Submitter username</th>
+          <th>Submitter name</th>
           <th>Keywords</th>
           <th>Career stage</th>
           <th>Gender</th>
@@ -54,6 +55,7 @@
           {% for abstract in abstract_list.all %}
             <tr data-attribute="{{ abstract.id }}" {% if abstract.accepted %}class="selected-row"{% endif %}>
               <td><a href="{% url 'abstract:abstract_summary' abstract.id %}">{{ abstract.title }}</a></td>
+              <td>{{ abstract.submitter.username }}</td>
               <td>{{ abstract.submitter.profile.display_name }}</td>
               <td>{{ abstract.keywords.all|join:", "|default:"-" }}</td>
               <td>{{ abstract.submitter.profile.career_stage.text|default:"-" }} </td>
