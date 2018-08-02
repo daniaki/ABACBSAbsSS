@@ -118,9 +118,14 @@ body {
 
 /* Mixins
 --------------------------------------------------------------------------- */
+.left-filter {
+  text-align: left !important;
+}
+
 .link-like {
   color: rgba(31,31,31,.4);
   transition: .05s;
+  cursor: pointer;
 }
 .link-like:hover {
   color: #1c1c1c;

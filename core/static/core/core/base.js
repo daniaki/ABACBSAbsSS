@@ -3,6 +3,11 @@
 jQuery, $;
 let animating = false;
 
+function alignFilterLeft() {
+  $('.dataTables_filter').parents()[1].children[0].remove();
+  $('.dataTables_filter').addClass("left-filter");
+}
+
 function closeSidebar(event) {
   let sidebarWidth = document.getElementById('sidebar').offsetWidth;
   if (!animating && sidebarWidth > 0) {
