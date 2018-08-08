@@ -6,6 +6,10 @@
     <h1>Submit an abstract</h1>
     Please fill out the form below. You can also apply for travel funding
     from your profile.
+
+    Abstracts will be selected for oral presentation on the basis of scientific quality
+    (including innovation and importance) and breadth of interest to the ABACBS community.
+    Those not selected will be offered a poster slot provided they meet a threshold of scientific quality.
     <br><br>
     <form id='abstract-form' action="{% url 'abstract:submit_abstract' %}" method="post">
       {% csrf_token %}
