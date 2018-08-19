@@ -110,10 +110,7 @@ class Abstract(TimeStampedModel):
     text = models.TextField(
         null=False, default=None, blank=False,
         verbose_name='Abstract',
-        help_text='Your abstract is limited 250 words or less and is judged '
-                  'strictly based on the merit of its scientific content, '
-                  'ability to engage the judging panel and your contribution '
-                  'to the work.',
+        help_text='Please describe your abstract using 250 words or less.',
         validators=[validators.validate_250_words_or_less, ]
     )
     title = models.TextField(
@@ -151,7 +148,9 @@ class Abstract(TimeStampedModel):
     categories = models.ManyToManyField(
         to='abstract.PresentationCategory', related_name='%(class)ss',
         verbose_name='Categories',
-        help_text='Please select one or more categories for your abstract.',
+        help_text='Please select one or more categories for your abstract. '
+                  'You must be registered for the conference and sessions that '
+                  'you apply to.',
         related_query_name='%(class)s', blank=False,
     )
     keywords = models.ManyToManyField(
