@@ -51,6 +51,10 @@ function plotDemographics(abstracts) {
 
         let layout = {
           title: title,
+          legend: {
+            orientation: "h",
+            x: 0, y: 0
+          },
           yaxis: {
             automargin: true,
           },
