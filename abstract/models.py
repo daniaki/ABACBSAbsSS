@@ -116,7 +116,7 @@ class Abstract(TimeStampedModel):
     title = models.TextField(
         null=False, default=None, blank=False,
         verbose_name='Abstract title',
-        help_text='Please title your abstract using 20 words or less.',
+        help_text='Please title your abstract using 30 words or less.',
         validators=[validators.validate_30_words_or_less, ]
     )
     contribution = models.TextField(
