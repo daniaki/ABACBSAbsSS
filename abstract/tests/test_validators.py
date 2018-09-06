@@ -6,6 +6,9 @@ from .. import validators
 
 class TestValidators(TestCase):
     
+    def test_removes_empty(self):
+        validators.validate_n_word_or_less('    '.join(['a'] * 10), 10)
+    
     def test_word_len_validators(self):
         validators.validate_30_words_or_less(' '.join(['a'] * 30))
         with self.assertRaises(ValidationError):

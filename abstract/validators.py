@@ -4,7 +4,10 @@ from django.core.exceptions import ValidationError
 
 
 def validate_n_word_or_less(value, n):
-    words = value.split(' ')
+    words = [
+        x.strip() for x in value.split(' ')
+        if x.strip() not in ('', '\n', '\t', ' ')
+    ]
     if len(words) > n:
         raise ValidationError(
             "This field is limited to {} words or less.".format(n))
