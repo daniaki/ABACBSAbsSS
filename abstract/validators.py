@@ -1,14 +1,15 @@
+import re
 from functools import partial
 
 from django.core.exceptions import ValidationError
 
 
+words_re = re.compile(r"\w+(?:-\w+)+|\w+|\d+")
+
+
 def validate_n_word_or_less(value, n):
-    words = [
-        x.strip() for x in value.split(' ')
-        if x.strip() not in ('', '\n', '\t', ' ')
-    ]
-    if len(words) > n:
+    n_words = len(words_re.findall(value))
+    if n_words > n:
         raise ValidationError(
             "This field is limited to {} words or less.".format(n))
 
