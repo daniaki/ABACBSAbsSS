@@ -50,14 +50,14 @@ class AbstractForm(mixins.UserKwargsMixin,
         )
         
     def clean_authors(self):
-        return '; '.join([
+        return '\n'.join([
             x.strip() for x in
             self.cleaned_data.get('authors', '').split('\n')
             if x.strip()
         ])
     
     def clean_author_affiliations(self):
-        return '; '.join([
+        return '\n'.join([
             x.strip() for x in
             self.cleaned_data.get('author_affiliations', '').split('\n')
             if x.strip()
@@ -67,7 +67,7 @@ class AbstractForm(mixins.UserKwargsMixin,
         cleaned_data = super().clean()
         authors = cleaned_data.get('authors', '')
         author_affiliations = cleaned_data.get('author_affiliations', '')
-        if len(authors.split(';')) != len(author_affiliations.split(';')):
+        if len(authors.split('\n')) != len(author_affiliations.split('\n')):
             self.add_error(
                 'authors',
                 (

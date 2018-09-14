@@ -5,6 +5,7 @@ from enum import Enum
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth import get_user_model
+from django.utils.text import mark_safe
 
 from core.models import TimeStampedModel
 
@@ -230,7 +231,7 @@ class Abstract(TimeStampedModel):
         return User.objects.filter(
             pk__in=[a.reviewer.pk for a in self.assignments.all()]
         )
-
+    
     @property
     def pending_assignments(self):
         return self.assignments.filter(status=Assignment.STATUS_PENDING)
@@ -260,6 +261,12 @@ class Abstract(TimeStampedModel):
         return User.objects.filter(
             pk__in=[a.reviewer.pk for a in self.accepted_assignments]
         ).order_by('first_name')
+    
+    def get_authors(self):
+        return self.authors.split('\n')
+    
+    def get_affiliations(self):
+        return self.author_affiliations.split('\n')
 
 
 class Review(TimeStampedModel):
