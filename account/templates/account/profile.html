@@ -24,8 +24,22 @@
         <p> {{ abstract.text }} </p>
         <p> <strong>Keywords:</strong> {{ abstract.keywords.all|join:', ' }}</p>
         <p> <strong>Categories:</strong> {{ abstract.categories.all|join:', ' }}</p>
-        <p> <strong>Authors:</strong> {{ abstract.authors }}</p>
-        <p> <strong>Author affiliations:</strong> {{ abstract.author_affiliations }}</p>
+        <p>
+          <strong>Authors:</strong>
+          <ul>
+            {% for author in abstract.get_authors %}
+              <li>{{ author }}</li>
+            {% endfor %}
+          </ul>
+        </p>
+        <p>
+          <strong>Author affiliations:</strong>
+          <ul>
+            {% for affiliation in abstract.get_affiliations %}
+              <li>{{ affiliation }}</li>
+            {% endfor %}
+          </ul>
+        </p>
       </div>
     {% endfor %}
   {% endif %}
