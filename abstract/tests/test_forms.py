@@ -86,14 +86,14 @@ class TestAbstractForm(TestCase):
     def test_clean_authors_and_affiliations_removes_whitespace(self):
         data = self.mock_data()
         data['authors'] = "A\n B "
-        data['author_affiliations'] = "A \n A"
+        data['author_affiliations'] = "A \n A;C"
         form = forms.AbstractForm(user=self.user, data=data)
         self.assertTrue(form.is_valid())
         abstract = form.save()
         
-        authors = 'A; B'
+        authors = 'A\nB'
         self.assertEqual(abstract.authors, authors)
-        affil = 'A; A'
+        affil = 'A\nA;C'
         self.assertEqual(abstract.author_affiliations, affil)
         
     def test_clean_authors_and_affiliations_removes_blanks(self):
@@ -104,9 +104,9 @@ class TestAbstractForm(TestCase):
         self.assertTrue(form.is_valid())
         abstract = form.save()
     
-        authors = 'A; B'
+        authors = 'A\nB'
         self.assertEqual(abstract.authors, authors)
-        affil = 'A; A'
+        affil = 'A\nA'
         self.assertEqual(abstract.author_affiliations, affil)
         
     def test_sets_user(self):
