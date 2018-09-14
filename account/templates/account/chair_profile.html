@@ -25,6 +25,22 @@
     </p>
   </div>
   <br>
+
+  <div class="container">
+    <hr>
+    <div class="row">
+      <div class="col-6">
+        <a id="toggle-selected" class="btn btn-outline-dark mt-1">Toggle selected</a>
+        <a id="show-plots" class="btn btn-outline-dark mt-1" data-toggle="tooltip"
+           title="Show demographics plots for selected rows.">Show plots</a>
+      </div>
+      <div class="col-6 text-right">
+        <a id='save-selected' href="" class="btn btn-outline-danger mt-1" data-toggle="tooltip"
+           title="Approve abstracts in selected rows.">Save</a>
+      </div>
+    </div>
+  </div>
+
   <div id='{{ abstract.id }}-list-container' class="table-responsive">
     {% if abstract_list.count %}
       <div class="mb-4">
@@ -74,21 +90,6 @@
     {% else %}
       <p class="text-muted">No abstracts have been submitted</p>
     {% endif %}
-  </div>
-
-  <div class="container">
-    <hr>
-    <div class="row">
-      <div class="col-6">
-        <a id="toggle-selected" class="btn btn-outline-dark mt-1">Toggle selected</a>
-        <a id="show-plots" class="btn btn-outline-dark mt-1" data-toggle="tooltip"
-           title="Show demographics plots for selected rows.">Show plots</a>
-      </div>
-      <div class="col-6 text-right">
-        <a id='save-selected' href="" class="btn btn-outline-danger mt-1" data-toggle="tooltip"
-           title="Approve abstracts in selected rows.">Save</a>
-      </div>
-    </div>
   </div>
 {% endblock %}
 
