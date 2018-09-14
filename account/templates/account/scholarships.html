@@ -41,7 +41,7 @@
 {% block extra_scripts %}
 <script type="text/javascript">
   $("document").ready(function() {
-    let table = $("#apps-table").DataTable();
+    let table = $("#apps-table").DataTable({paging: false,});
   });
 </script>
 {% endblock %}
