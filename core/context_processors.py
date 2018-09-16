@@ -1,6 +1,7 @@
 from account.models import UserGroups
 from abstract.models import Assignment, PresentationCategory
 
+
 def user_groups(request):
     """Adds the user group names into the request context."""
     context = dict()
