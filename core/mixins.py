@@ -1,6 +1,22 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import redirect
+from django.utils import timezone
+from django.contrib import messages
+
+from core.utilities import get_local_closing_date
+
 
 User = get_user_model()
+server_tz = timezone.get_current_timezone()
+
+
+class CheckClosingDateMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if server_tz.normalize(timezone.now()) >= get_local_closing_date():
+            messages.info(
+                request, "Sorry, abstract submissions have now been closed!")
+            return redirect("account:profile")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class UserKwargsMixin:
