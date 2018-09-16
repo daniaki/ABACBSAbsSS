@@ -1,7 +1,10 @@
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
+from django.contrib import messages
+
+from core.mixins import CheckClosingDateMixin
+from abstract.models import PresentationCategory
 
 from .. import models, forms
 from ..mixins import CompleteProfileRequired, GroupRestrictedView
@@ -10,6 +13,7 @@ from ..mixins import CompleteProfileRequired, GroupRestrictedView
 class ScholarshipApplicationView(LoginRequiredMixin,
                                  CompleteProfileRequired,
                                  GroupRestrictedView,
+                                 CheckClosingDateMixin,
                                  FormView):
     """
     Basic view handling the Scholarship application creation, edit and
@@ -64,8 +68,22 @@ class ProfileView(LoginRequiredMixin, CompleteProfileRequired,
     group_names = (models.UserGroups.SUBMITTER,)
     http_method_names = ('get',)
 
+    def dispatch(self, request, *args, **kwargs):
+        closed = PresentationCategory.get_closed_categories()
+        if closed.count() > 0:
+            messages.warning(
+                request,
+                "The following categories have been closed: {}. "
+                "If applicable, further editing will result in your "
+                "submission being withdrawn from these cateogies .".format(
+                    ', '.join(['<b>{}</b>'.format(c.text) for c in closed])
+                )
+            )
+        return super().dispatch(request, *args, **kwargs)
 
-class EditProfileView(LoginRequiredMixin, GroupRestrictedView, FormView):
+
+class EditProfileView(LoginRequiredMixin, GroupRestrictedView,
+                      CheckClosingDateMixin, FormView):
     """
     Edit the profile settings of a user. Only viewable by a submitter.
     """

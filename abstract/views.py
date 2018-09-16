@@ -1,13 +1,16 @@
 import logging
 
-from django.views.generic import CreateView, UpdateView, DeleteView, \
-    DetailView, ListView
+from django.views.generic import (
+    CreateView, UpdateView, DeleteView, DetailView
+)
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.contrib import messages
 
 from account.models import UserGroups
 from account.mixins import CompleteProfileRequired, GroupRestrictedView
+
+from core.mixins import CheckClosingDateMixin
 
 from . import forms, models
 
@@ -18,6 +21,7 @@ logger = logging.getLogger('django')
 class SubmissionView(LoginRequiredMixin,
                      GroupRestrictedView,
                      CompleteProfileRequired,
+                     CheckClosingDateMixin,
                      CreateView):
     template_name = 'abstract/submit.html'
     form_class = forms.AbstractForm
@@ -44,6 +48,7 @@ class SubmissionView(LoginRequiredMixin,
 class EditSubmissionView(LoginRequiredMixin,
                          GroupRestrictedView,
                          CompleteProfileRequired,
+                         CheckClosingDateMixin,
                          UpdateView):
     template_name = 'abstract/edit.html'
     form_class = forms.AbstractForm
@@ -57,6 +62,16 @@ class EditSubmissionView(LoginRequiredMixin,
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().submitter != request.user:
             raise Http404()
+        closed = models.PresentationCategory.get_closed_categories()
+        if closed.count() > 0:
+            messages.warning(
+                request,
+                "The following categories have been closed: {}. "
+                "If applicable, further editing will result in your "
+                "submission being withdrawn from these cateogies .".format(
+                    ', '.join(['<b>{}</b>'.format(c.text) for c in closed])
+                )
+            )
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
@@ -77,6 +92,7 @@ class EditSubmissionView(LoginRequiredMixin,
 class DeleteSubmissionView(LoginRequiredMixin,
                            GroupRestrictedView,
                            CompleteProfileRequired,
+                           CheckClosingDateMixin,
                            DeleteView):
     model = models.Abstract
     success_url = '/profile/'
