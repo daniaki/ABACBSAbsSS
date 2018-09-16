@@ -1,4 +1,6 @@
 from django.core import mail
+from django.utils import timezone
+from django.utils.datetime_safe import datetime
 
 from core.test import TestCase
 
@@ -7,6 +9,8 @@ from account.factories import UserFactory, ReviewerFactory, AssignerFactory
 from demographic.factories import CareerStageFactory
 
 from .. import factories, models, forms
+
+server_tz = timezone.get_current_timezone()
 
 
 class TestAbstractForm(TestCase):
@@ -32,7 +36,20 @@ class TestAbstractForm(TestCase):
         profile.career_stage = stage
         profile.save()
         self.user = user
-        
+
+    def test_disabled_categories_set(self):
+        c1 = factories.PresentationCategoryFactory(text='1')
+        c2 = factories.PresentationCategoryFactory(text='2')
+        c1.closing_date = datetime(2012, 1, 1, 1, tzinfo=server_tz)
+        c1.save()
+        c2.closing_date = datetime(3000, 1, 1, 1, tzinfo=server_tz)
+        c2.save()
+        form = forms.AbstractForm(user=self.user, data={})
+        self.assertNotIn(
+            c2.pk, form.fields['categories'].widget.disabled_choices)
+        self.assertIn(
+            c1.pk, form.fields['categories'].widget.disabled_choices)
+
     def test_error_text_more_than_250_words(self):
         data = self.mock_data()
         data['text'] = ' '.join(['a'] * 251)

@@ -1,8 +1,11 @@
 from core.test import TestCase
-
-from account.factories import ReviewerFactory
+from django.utils import timezone
+from django.utils.datetime_safe import datetime
 
 from .. import models, factories
+
+
+server_tz = timezone.get_current_timezone()
 
 
 class TestAbstractModel(TestCase):
@@ -11,7 +14,31 @@ class TestAbstractModel(TestCase):
         super().setUp()
         self.abstract = factories.AbstractFactory()  # type: models.Abstract
         factories.AbstractFactory.assign_reviews(self.abstract, n=3)
-    
+
+    def test_can_get_open_categories(self):
+        c1 = factories.PresentationCategoryFactory(text='1')
+        c2 = factories.PresentationCategoryFactory(text='2')
+        c1.closing_date = datetime(2012, 1, 1, 1, tzinfo=server_tz)
+        c1.save()
+        c2.closing_date = datetime(3000, 1, 1, 1, tzinfo=server_tz)
+        c2.save()
+        self.assertNotIn(
+            c1, models.PresentationCategory.get_open_categories())
+        self.assertIn(
+            c2, models.PresentationCategory.get_open_categories())
+
+    def test_can_get_closed_categories(self):
+        c1 = factories.PresentationCategoryFactory(text='1')
+        c2 = factories.PresentationCategoryFactory(text='2')
+        c1.closing_date = datetime(2012, 1, 1, 1, tzinfo=server_tz)
+        c1.save()
+        c2.closing_date = datetime(3000, 1, 1, 1, tzinfo=server_tz)
+        c2.save()
+        self.assertIn(
+            c1, models.PresentationCategory.get_closed_categories())
+        self.assertNotIn(
+            c2, models.PresentationCategory.get_closed_categories())
+
     def test_score_content_adds_review_scores(self):
         self.assertEqual(
             self.abstract.score_content,
