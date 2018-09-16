@@ -213,4 +213,4 @@ REST_FRAMEWORK = {
 DEFAULT_FROM_EMAIL = "committee@abacbs.org"
 SERVER_EMAIL = "committee@abacbs.org"
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-CLOSING_DATE = '2018-09-17 09:00:00+10:00'
+CLOSING_DATE = '2018-09-28 09:00:00+10:00'

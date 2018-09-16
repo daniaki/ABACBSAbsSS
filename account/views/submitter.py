@@ -71,11 +71,11 @@ class ProfileView(LoginRequiredMixin, CompleteProfileRequired,
     def dispatch(self, request, *args, **kwargs):
         closed = PresentationCategory.get_closed_categories()
         if closed.count() > 0:
-            messages.warning(
+            messages.info(
                 request,
-                "The following categories have been closed: {}. "
-                "If applicable, further editing will result in your "
-                "submission being withdrawn from these categories.".format(
+                "The following categories have now been closed: {}. "
+                "Submissions under these categories can not longer be "
+                "edited or withdrawn.".format(
                     ', '.join(['<b>{}</b>'.format(c.text) for c in closed])
                 )
             )
