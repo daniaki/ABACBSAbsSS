@@ -5,7 +5,7 @@ from enum import Enum
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth import get_user_model
-from django.utils.text import mark_safe
+from django.utils import timezone
 
 from core.models import TimeStampedModel
 
@@ -13,6 +13,7 @@ from . import validators
 
 User = get_user_model()
 logger = logging.getLogger('django')
+server_tz = timezone.get_current_timezone()
 
 
 class ScoreCategories(Enum):
@@ -51,12 +52,31 @@ class PresentationCategory(TimeStampedModel):
         ordering = ('text',)
      
     text = models.CharField(
-        null=False, default=None, blank=False, max_length=128, unique=True
-    )
-    
+        null=False, default=None, blank=False, max_length=128, unique=True)
+    closing_date = models.DateTimeField(default=None, null=True)
+
     def __str__(self):
         return self.text
-    
+
+    @classmethod
+    def get_open_categories(cls):
+        pks = []
+        for category in cls.objects.all():
+            if category.closing_date is None:
+                pks.append(category.pk)
+            elif server_tz.normalize(timezone.now()) < \
+                    server_tz.normalize(category.closing_date):
+                pks.append(category.pk)
+        return cls.objects.filter(pk__in=set(pks))
+
+    @classmethod
+    def get_closed_categories(cls):
+        pks = []
+        for category in cls.objects.all():
+            if category not in cls.get_open_categories():
+                pks.append(category.pk)
+        return cls.objects.filter(pk__in=set(pks))
+
 
 class Abstract(TimeStampedModel):
     """
