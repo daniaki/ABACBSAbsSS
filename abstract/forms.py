@@ -1,9 +1,6 @@
-from django.conf import settings
 from django import forms
-from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
-from django.utils.text import mark_safe
 
 from core import mixins
 
@@ -45,10 +42,14 @@ class AbstractForm(mixins.UserKwargsMixin,
             label='Presentation category',
             required=True,
             queryset=models.PresentationCategory.objects.all(),
-            widget=forms.CheckboxSelectMultiple(),
+            widget=fields.CategorySelect(),
             help_text=self.fields['categories'].help_text,
         )
-        
+        self.fields['categories'].widget.disabled_choices = [
+            category.pk for category
+            in models.PresentationCategory.get_closed_categories()
+        ]
+
     def clean_authors(self):
         return '\n'.join([
             x.strip() for x in
