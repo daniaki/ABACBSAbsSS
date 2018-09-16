@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-import os
 import json
 from pathlib import Path
 
@@ -214,3 +213,4 @@ REST_FRAMEWORK = {
 DEFAULT_FROM_EMAIL = "committee@abacbs.org"
 SERVER_EMAIL = "committee@abacbs.org"
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+CLOSING_DATE = '2018-09-17 09:00:00+10:00'
