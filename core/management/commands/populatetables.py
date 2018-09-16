@@ -2,6 +2,8 @@ import sys
 from pathlib import Path
 
 from django.core.management.base import BaseCommand
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 
 from demographic import models
 from abstract import models as abstract_models
@@ -9,7 +11,7 @@ from account.models import UserGroups
 
 BASE_DIR = Path(str(Path(__file__))).parents[3]
 DATA_DIR = BASE_DIR / 'data'
-
+server_tz = timezone.get_current_timezone()
 
 class Command(BaseCommand):
     """Populates the gender, state and career stage tables."""
@@ -85,11 +87,16 @@ class Command(BaseCommand):
         sys.stdout.write("Creating presentation categories.\n")
         with open(str(DATA_DIR / 'categories.txt')) as fp:
             categories = [
-                x.strip() for x in fp.readlines() if x.strip()]
-            for category in categories:
+                x.split('\t') for x in
+                [x.strip() for x in fp.readlines() if x.strip()]
+            ]
+            for category, datetime in categories:
+                dt = parse_datetime(datetime).astimezone(tz=server_tz)
                 model, created = abstract_models.PresentationCategory.\
-                    objects.get_or_create(text=category )
+                    objects.get_or_create(text=category, closing_date=dt)
                 if created:
-                    sys.stdout.write("\tCreated category {}.\n".format(category))
+                    sys.stdout.write(
+                        "\tCreated category {}/{}.\n".format(category, dt))
                 else:
-                    sys.stdout.write("\t{} already exists.\n".format(category))
+                    sys.stdout.write(
+                        "\t{}/{} already exists.\n".format(category, dt))
