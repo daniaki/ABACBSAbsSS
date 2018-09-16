@@ -6,6 +6,7 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.contrib import messages
+from django.shortcuts import redirect
 
 from account.models import UserGroups
 from account.mixins import CompleteProfileRequired, GroupRestrictedView
@@ -62,17 +63,20 @@ class EditSubmissionView(LoginRequiredMixin,
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().submitter != request.user:
             raise Http404()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
         closed = models.PresentationCategory.get_closed_categories()
         if closed.count() > 0:
             messages.warning(
                 request,
                 "The following categories have been closed: {}. "
                 "If applicable, further editing will result in your "
-                "submission being withdrawn from these cateogies .".format(
+                "submission being withdrawn from these categories.".format(
                     ', '.join(['<b>{}</b>'.format(c.text) for c in closed])
                 )
             )
-        return super().dispatch(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -105,6 +109,23 @@ class DeleteSubmissionView(LoginRequiredMixin,
     def dispatch(self, request, *args, **kwargs):
         if self.get_object().submitter != request.user:
             raise Http404()
+
+        closed = models.PresentationCategory.get_closed_categories()
+        abstract = self.get_object()
+        abstract_closed = []
+        for category in abstract.categories.all():
+            if category in closed:
+                abstract_closed.append(category)
+        if abstract_closed:
+            messages.warning(
+                request,
+                "\"{}\" cannot be deleted because submission has been closed "
+                "for the following categories: {}.".format(
+                    '<b>{}</b>'.format(abstract.title),
+                    ', '.join(['<b>{}</b>'.format(c.text) for c in abstract_closed])
+                )
+            )
+            return redirect("account:profile")
         return super().dispatch(request, *args, **kwargs)
         
     def get_success_url(self):

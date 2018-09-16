@@ -75,7 +75,7 @@ class ProfileView(LoginRequiredMixin, CompleteProfileRequired,
                 request,
                 "The following categories have been closed: {}. "
                 "If applicable, further editing will result in your "
-                "submission being withdrawn from these cateogies .".format(
+                "submission being withdrawn from these categories.".format(
                     ', '.join(['<b>{}</b>'.format(c.text) for c in closed])
                 )
             )
