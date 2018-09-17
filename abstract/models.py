@@ -337,18 +337,18 @@ class Review(TimeStampedModel):
     )
     score_content = models.IntegerField(
         null=False, blank=False, default=None, verbose_name="Content",
-        help_text="Score based on the abstract's scientific content.",
+        help_text="Score reflecting the scientific "
+                  "quality, importance and innovation.",
         validators=[MinValueValidator(MIN_SCORE), MaxValueValidator(MAX_SCORE)]
     )
     score_contribution = models.IntegerField(
         null=False, blank=False, default=None, verbose_name="Contribution",
-        help_text="Score based on the author's contribution to the work.",
+        help_text="Score reflecting the author's contribution.",
         validators=[MinValueValidator(MIN_SCORE), MaxValueValidator(MAX_SCORE)]
     )
     score_interest = models.IntegerField(
         null=False, blank=False, default=None, verbose_name="Interest",
-        help_text="Score based on the ability of the "
-                  "abstract's contents to hold your interest.",
+        help_text="Score reflecting your interest and engagement.",
         validators=[MinValueValidator(MIN_SCORE), MaxValueValidator(MAX_SCORE)]
     )
 
