@@ -87,7 +87,7 @@
         {% if assignment.review or assignment.rejection_comment %}
           <div class="media">
             {% if assignment.review %}
-              <i class="align-self-start mr-3 fa fa-check" style="font-size: 34px; color: #007ab1"></i>
+              <i class="align-self-start mr-3 fa fa-check" style="font-size: 34px; color: #5cb85c"></i>
             {% else %}
               <i class="align-self-start mr-3 fa fa-times" style="font-size: 34px; color: #dd0c15"></i>
             {% endif %}
@@ -105,7 +105,7 @@
             </div>
           </div>
         {% endif %}
-      {% if forloop.counter < abstract.assignments.count %}
+      {% if forloop.counter0 < abstract.assignments.count %}
         <hr>
       {% endif %}
       {% endfor %}
