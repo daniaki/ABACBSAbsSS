@@ -106,3 +106,4 @@ venv.bak/
 /static/
 .idea/*
 /settings/secrets.json
+/data/reviewers.csv
