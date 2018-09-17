@@ -23,6 +23,7 @@ with open(str(DATA_DIR / 'reviewers.csv'), 'rt') as fp:
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         with transaction.atomic():
+            sys.stdout.write("email,username,password\n")
             for name, email in accounts:
                 first, *last = name.split(' ')
                 uname = '{}.{}'.format(
@@ -45,6 +46,6 @@ class Command(BaseCommand):
                 account.set_password(password)
                 account.save()
                 account.profile.save()
-                sys.stdout.write("{}\t{}\t{}\n".format(
+                sys.stdout.write("{},{},{}\n".format(
                     account.email, account.username, password,
                 ))
