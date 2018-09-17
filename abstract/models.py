@@ -96,7 +96,7 @@ class Abstract(TimeStampedModel):
     authors: `models.TextField`
         List of all authors
         
-    author_contributions: `models.TextField`
+    author_affiliations: `models.TextField`
         List of all author affiliations
         
     categories: `models.ManyToManyField`
