@@ -15,7 +15,7 @@ BASE_DIR = Path(str(Path(__file__))).parents[3]
 DATA_DIR = BASE_DIR / 'data'
 
 accounts = []
-with open(DATA_DIR / 'reviewers.csv') as fp:
+with open(str(DATA_DIR / 'reviewers.csv'), 'rt') as fp:
     for line in fp:
         name, email = [x.strip() for x in line.strip().split(',')]
         accounts.append((name, email))
