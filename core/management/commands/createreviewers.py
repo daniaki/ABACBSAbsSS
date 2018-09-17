@@ -40,7 +40,7 @@ class Command(BaseCommand):
                     )
                 else:
                     account = account.first()
-                    
+
                 password = User.objects.make_random_password()
                 account.set_password(password)
                 account.save()
