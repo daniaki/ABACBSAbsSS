@@ -32,8 +32,6 @@
         <a id="toggle-selected" class="btn btn-outline-dark mt-1">Toggle selected</a>
         <a id="show-plots" class="btn btn-outline-dark mt-1" data-toggle="tooltip"
            title="Show demographics plots for selected rows.">Show plots</a>
-      </div>
-      <div class="col-6 text-right">
         <a id='save-selected' href="" class="btn btn-outline-danger mt-1" data-toggle="tooltip"
            title="Approve abstracts in selected rows.">Save</a>
       </div>
@@ -62,6 +60,7 @@
           <th>Aboriginal/Torres</th>
           <th>State</th>
           <th>Reviews</th>
+          <th>Comments</th>
           <th>Score</th>
           {% for category in CATEGORIES %}
             <th>{{ category|capfirst }}</th>
@@ -79,9 +78,11 @@
               <td>{{ abstract.submitter.profile.aboriginal_or_torres.text|default:"-" }} </td>
               <td>{{ abstract.submitter.profile.state.text|default:"-" }} </td>
               <td>{{ abstract.reviews.count|default:"-" }} </td>
+              <td>{{ abstract.comments|length|default:"-" }} </td>
               <td>{{ abstract.score|stringformat:"#.3g"|default:"-" }} </td>
               {% for category in CATEGORIES %}
-                <td>{% has_category category abstract %}</td>
+                {% has_category category abstract as has_cat %}
+                <td>{% if has_cat %}Yes{% else %}No{% endif %}</td>
               {% endfor %}
             </tr>
           {% endfor %}
@@ -199,7 +200,7 @@
     // alignFilterLeft();
     $('.dataTables_filter').parents()[1].children[0].remove();
     $('.dataTables_filter').addClass("left-filter");
-    $('#abstract-table').fadeIn(2500);
+    $('#abstract-table').fadeIn(500);
   });
 </script>
 {% endblock %}

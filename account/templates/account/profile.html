@@ -25,20 +25,28 @@
         <p> <strong>Keywords:</strong> {{ abstract.keywords.all|join:', ' }}</p>
         <p> <strong>Categories:</strong> {{ abstract.categories.all|join:', ' }}</p>
         <p>
-          <strong>Authors:</strong>
-          <ul>
-            {% for author in abstract.get_authors %}
-              <li>{{ author }}</li>
-            {% endfor %}
-          </ul>
+          <strong>Contributing authors:</strong>
+            {% if not abstract.get_authors|length %}
+             Not provided
+            {% else %}
+            <ul>
+              {% for author in abstract.get_authors %}
+                <li>{{ author }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
         </p>
         <p>
           <strong>Author affiliations:</strong>
-          <ul>
-            {% for affiliation in abstract.get_affiliations %}
-              <li>{{ affiliation }}</li>
-            {% endfor %}
-          </ul>
+            {% if not abstract.get_affiliations|length %}
+             Not provided
+            {% else %}
+            <ul>
+              {% for affiliation in abstract.get_affiliations %}
+                <li>{{ affiliation }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
         </p>
       </div>
     {% endfor %}

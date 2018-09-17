@@ -2,21 +2,13 @@
 
 {% block body %}
   <div id='{{ abstract.id }}-detail-container' class="container">
-
   {% include 'abstract/abstract.html' %}
   <br>
 
-  {% if CHAIR_GROUP in request.user.profile.group_names %}
-    <hr>
-    <a class="btn btn-outline-danger mt-1"
-       href="{% url 'abstract:abstract_summary' abstract.id %}?show_demographics=True">
-      Show demographics
-    </a>
-    <a class="btn btn-outline-danger mt-1"
-       href="{% url 'abstract:abstract_summary' abstract.id %}">
-      Hide demographics
-    </a>
-  {% endif %}
+  <a class="btn btn-outline-dark mt-1"
+     href="{% url 'account:profile' %}">
+    Back
+  </a>
 </div>
 
 {% endblock %}

@@ -265,6 +265,11 @@ class Abstract(TimeStampedModel):
         return self.assignments.filter(status=Assignment.STATUS_ACCEPTED)
 
     @property
+    def completed_assignments(self):
+        return self.assignments.filter(status=Assignment.STATUS_ACCEPTED) | \
+               self.assignments.filter(status=Assignment.STATUS_REJECTED)
+
+    @property
     def pending_reviewers(self):
         return User.objects.filter(
             pk__in=[a.reviewer.pk for a in self.pending_assignments]
@@ -283,10 +288,21 @@ class Abstract(TimeStampedModel):
         ).order_by('first_name')
     
     def get_authors(self):
-        return self.authors.split('\n')
+        return [x.strip() for x in self.authors.split('\n') if x.strip()]
     
     def get_affiliations(self):
-        return self.author_affiliations.split('\n')
+        return [x.strip() for x in self.author_affiliations.split('\n') if x.strip()]
+
+    @property
+    def comments(self):
+        assignments = self.completed_assignments
+        comments = []
+        for assignment in assignments:
+            if assignment.rejection_comment:
+                comments.append(assignment.rejection_comment)
+            elif assignment.review.text:
+                comments.append(assignment.review.text)
+        return comments
 
 
 class Review(TimeStampedModel):
@@ -323,9 +339,9 @@ class Review(TimeStampedModel):
         ordering = ('reviewer',)
     
     text = models.TextField(
-        null=False, default=None, blank=False, verbose_name='Comments',
+        null=True, default=None, blank=True, verbose_name='Comments',
         help_text="Please provide a few short comments justifying why "
-                  "you have given the scores above."
+                  "you have given the scores above (optional)."
     )
     reviewer = models.ForeignKey(
         to=User, on_delete=models.CASCADE, related_name='%(class)ss',

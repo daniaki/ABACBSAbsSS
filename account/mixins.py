@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from django.http import Http404, JsonResponse
 from django.contrib.auth.mixins import PermissionDenied
+from django.views.decorators.vary import vary_on_headers
 
 from . import models
 
@@ -45,6 +46,7 @@ class AjaxView:
     """
     Use this mixin in any view which supports an AJAX entry point.
     """
+
     @staticmethod
     def error(payload, status_code=None):
         response = JsonResponse(data={'error': payload})
@@ -52,6 +54,7 @@ class AjaxView:
             response.status_code = status_code
         return response
 
+    @vary_on_headers('X-Requested-With')
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             return self.get_ajax()

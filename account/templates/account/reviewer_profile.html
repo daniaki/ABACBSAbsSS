@@ -50,6 +50,19 @@
 
         <br><br>
         <p>{{ assignment.abstract.text }}</p>
+        <p><strong>Contribution:</strong> {{ assignment.abstract.contribution }}</p>
+        <p>
+          <strong>Contributing authors:</strong>
+            {% if not assignment.abstract.get_authors|length %}
+             Not provided
+            {% else %}
+            <ul>
+              {% for author in assignment.abstract.get_authors %}
+                <li>{{ author }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+        </p>
         <p><strong>Keywords:</strong> {{ assignment.abstract.keywords.all|join:', ' }}</p>
 
         {% include 'account/review_form.html' %}

@@ -235,7 +235,7 @@ class TestReviewForm(TestCase):
             'score_interest': 1,
         }
     
-    def test_invalid_no_text(self):
+    def test_valid_no_text(self):
         data = self.mock_data()
         data.pop('text')
         form = forms.ReviewForm(data=data)
@@ -243,7 +243,7 @@ class TestReviewForm(TestCase):
         
         data['text'] = " "
         form = forms.ReviewForm(data=data)
-        self.assertFalse(form.is_valid())
+        self.assertTrue(form.is_valid())
         
     def test_invalid_score_content_less_than_min(self):
         data = self.mock_data()

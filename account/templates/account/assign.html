@@ -51,8 +51,8 @@
   <form action="{% url 'account:assign_reviewers' abstract.id %}" method="post">
     {% csrf_token %}
     {% include 'core/bs4_form.html' %}
-    <button type="submit" class="btn btn-outline-dark">Save</button>
-    <a class="btn btn-outline-dark" href="{% url 'account:profile' %}">Cancel</a>
+    <button type="submit" class="btn btn-outline-success">Save</button>
+    <a class="btn btn-outline-danger" href="{% url 'account:profile' %}">Back</a>
   </form>
 {% endblock %}
 

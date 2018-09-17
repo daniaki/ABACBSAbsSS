@@ -1,23 +1,45 @@
 <div class="abstract-detail" id="{{ abstract.id }}-detail">
   <h2>{{ abstract.title }}</h2>
+
+  {% if CHAIR_GROUP in request.user.profile.group_names %}
+    <hr>
+    <a class="btn btn-outline-danger mt-1"
+       href="{% url 'abstract:abstract_summary' abstract.id %}?show_demographics=True">
+      Show demographics
+    </a>
+    <a class="btn btn-outline-danger mt-1"
+       href="{% url 'abstract:abstract_summary' abstract.id %}">
+      Hide demographics
+    </a>
+    <hr>
+  {% endif %}
+
   <p>{{ abstract.text }}</p>
   <p><strong>Submitted by:</strong> {{ abstract.submitter.profile.display_name }}</p>
   <p><strong>Contribution:</strong> {{ abstract.contribution }}</p>
   <p>
-    <strong>Authors:</strong>
-    <ul>
-      {% for author in abstract.get_authors %}
-        <li>{{ author }}</li>
-      {% endfor %}
-    </ul>
+    <strong>Contributing authors:</strong>
+      {% if not abstract.get_authors|length %}
+       Not provided
+      {% else %}
+      <ul>
+        {% for author in abstract.get_authors %}
+          <li>{{ author }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
   </p>
   <p>
     <strong>Author affiliations:</strong>
-    <ul>
-      {% for affiliation in abstract.get_affiliations %}
-        <li>{{ affiliation }}</li>
-      {% endfor %}
-    </ul>
+      {% if not abstract.get_affiliations|length %}
+       Not provided
+      {% else %}
+      <ul>
+        {% for affiliation in abstract.get_affiliations %}
+          <li>{{ affiliation }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
   </p>
   <p><strong>Categories:</strong> {{ abstract.categories.all|join:', ' }}</p>
   <p><strong>Keywords:</strong> {{ abstract.keywords.all|join:', ' }}</p>
@@ -79,35 +101,37 @@
   <hr>
   <h2>Comments</h2>
   <br>
-  {% if not abstract.assignments.count %}
-    <p class="text-muted">This abstract has not been assigned for review</p>
+  {% if not abstract.completed_assignments.count %}
+    <p class="text-muted">This abstract has not been reviewed</p>
   {% else %}
     <div class="container">
-      {% for assignment in abstract.assignments.all %}
-        {% if assignment.review or assignment.rejection_comment %}
-          <div class="media">
-            {% if assignment.review %}
-              <i class="align-self-start mr-3 fa fa-check" style="font-size: 34px; color: #5cb85c"></i>
-            {% else %}
-              <i class="align-self-start mr-3 fa fa-times" style="font-size: 34px; color: #dd0c15"></i>
-            {% endif %}
-            <div class="media-body">
-              <h5 class="mt-2">{{ assignment.reviewer.profile.full_name }}</h5>
-              {% if assignment.review %}
-                <div class="border-review hover-div">
-                  <p class="markdown">{{ assignment.review.text|default:'-' }}</p>
-                </div>
-              {% else %}
-                <div class="border-decline hover-div">
-                  <p class="markdown">{{ assignment.get_comment|default:'-' }} </p>
-                </div>
-              {% endif %}
+      {% for assignment in abstract.accepted_assignments %}
+        <div class="media">
+          <i class="align-self-start mr-3 fa fa-check" style="font-size: 34px; color: #5cb85c"></i>
+          <div class="media-body">
+            <h5 class="mt-2">{{ assignment.reviewer.profile.full_name }}</h5>
+              <div class="border-review hover-div">
+                <p class="markdown">{{ assignment.review.text|default:'No comment provided' }}</p>
+              </div>
+          </div>
+        </div>
+        {% if forloop.counter0 < abstract.accepted_assignments.count %}
+        <br>
+        {% endif %}
+      {% endfor %}
+      {% for assignment in abstract.declined_assignments %}
+        <div class="media">
+          <i class="align-self-start mr-3 fa fa-times" style="font-size: 34px; color: #dd0c15"></i>
+          <div class="media-body">
+            <h5 class="mt-2">{{ assignment.reviewer.profile.full_name }}</h5>
+            <div class="border-decline hover-div">
+              <p class="markdown">{{ assignment.get_comment|default:'No comment provided' }} </p>
             </div>
           </div>
+        </div>
+        {% if forloop.counter0 < abstract.declined_assignments.count %}
+        <br>
         {% endif %}
-      {% if abstract.assignments.count > 1 and forloop.counter < abstract.assignments.count %}
-        <hr>
-      {% endif %}
       {% endfor %}
     </div>
   {% endif %}

@@ -166,9 +166,8 @@ class TestProfileView(TestCase):
 
     # Accept
     # --------------------------------------------------------------------- #
-    def test_error_invalid_accept_missing_text_and_score(self):
+    def test_error_invalid_accept_score(self):
         data = self.mock_accept_form_data()
-        data.pop('text')
         data.pop('score_content')
         request = self.factory.post(
             '/profile/', data=data,
@@ -177,10 +176,6 @@ class TestProfileView(TestCase):
         request.user = self.reviewer
         response = views.reviewer.ProfileView.as_view()(request)
         data = json.loads(response.content.decode('utf-8'))
-        self.assertIn(
-            'This field is required',
-            data['error']['text'][0]['message']
-        )
         self.assertIn(
             'This field is required',
             data['error']['score_content'][0]['message']
