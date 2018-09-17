@@ -239,7 +239,7 @@ class TestReviewForm(TestCase):
         data = self.mock_data()
         data.pop('text')
         form = forms.ReviewForm(data=data)
-        self.assertFalse(form.is_valid())
+        self.assertTrue(form.is_valid())
         
         data['text'] = " "
         form = forms.ReviewForm(data=data)

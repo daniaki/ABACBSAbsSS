@@ -214,7 +214,7 @@ class Abstract(TimeStampedModel):
             score = 0
             for review in self.reviews.all():
                 score += review.score_content
-            return score
+            return score / self.reviews.count()
         return None
     
     @property
@@ -223,7 +223,7 @@ class Abstract(TimeStampedModel):
             score = 0
             for review in self.reviews.all():
                 score += review.score_contribution
-            return score
+            return score / self.reviews.count()
         return None
     
     @property
@@ -232,7 +232,7 @@ class Abstract(TimeStampedModel):
             score = 0
             for review in self.reviews.all():
                 score += review.score_interest
-            return score
+            return score / self.reviews.count()
         return None
        
     @property

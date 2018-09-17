@@ -43,18 +43,21 @@ class TestAbstractModel(TestCase):
         self.assertEqual(
             self.abstract.score_content,
             sum([c.score_content for c in self.abstract.reviews.all()])
+            / self.abstract.reviews.count()
         )
 
     def test_score_interest_adds_review_scores(self):
         self.assertEqual(
             self.abstract.score_interest,
             sum([c.score_interest for c in self.abstract.reviews.all()])
+            / self.abstract.reviews.count()
         )
 
     def test_score_contribution_adds_review_scores(self):
         self.assertEqual(
             self.abstract.score_contribution,
             sum([c.score_contribution for c in self.abstract.reviews.all()])
+            / self.abstract.reviews.count()
         )
         
     def test_score_averages_over_each_category(self):
