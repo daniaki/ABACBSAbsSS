@@ -16,6 +16,7 @@
           <th>Pending</th>
           <th>Accepted</th>
           <th>Declined</th>
+          <th>Comments</th>
           {% for category in CATEGORIES %}
             <th>{{ category|capfirst }}</th>
           {% endfor %}
@@ -43,8 +44,10 @@
                 {% users_full_name abstract.declined_reviewers as declined_reviewers %}
                 {{ declined_reviewers|join:', '|default:"-" }}
               </td>
+              <td>{{ abstract.comments|length|default:"-" }} </td>
               {% for category in CATEGORIES %}
-                <td>{% has_category category abstract %}</td>
+                {% has_category category abstract as has_cat %}
+                <td>{% if has_cat %}Yes{% else %}No{% endif %}</td>
               {% endfor %}
             </tr>
           {% endfor %}
