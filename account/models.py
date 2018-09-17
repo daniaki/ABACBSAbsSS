@@ -81,7 +81,7 @@ class Profile(TimeStampedModel):
     # ----------------------------------------------------------------------- #
     email = models.EmailField(
         default=None, blank=False, null=True,
-        verbose_name='Email address', unique=True,
+        verbose_name='Email address', unique=False,
     )
     affiliation = models.CharField(
         max_length=64, null=True, blank=False,
