@@ -29,14 +29,22 @@ class Command(BaseCommand):
                     first.lower()[0],
                     '.'.join([x.strip().lower() for x in last])
                 )
-                account = ReviewerFactory(
-                    username=uname,
-                    email=email,
-                    first_name=name,
-                    last_name='',
-                )
+
+                account = User.objects.filter(username=uname)
+                if not account.count():
+                    account = ReviewerFactory(
+                        username=uname,
+                        email=email,
+                        first_name=name,
+                        last_name='',
+                    )
+                else:
+                    account = account.first()
+                    
                 password = User.objects.make_random_password()
                 account.set_password(password)
-                sys.stdout.write("{}\t{},{}\n".format(
+                account.save()
+                account.profile.save()
+                sys.stdout.write("{}\t{}\t{}\n".format(
                     account.email, account.username, password,
                 ))
