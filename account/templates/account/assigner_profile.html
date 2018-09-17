@@ -29,7 +29,7 @@
                 </a>
               </td>
               <td><a href="{% url 'abstract:abstract_summary' abstract.id %}">{{ abstract.title }}</a></td>
-              <td>{{ abstract.state|default:"-" }}</td>
+              <td>{{ abstract.submitter.profile.state|default:"-" }}</td>
               <td>{{ abstract.keywords.all|join:', '|default:"-" }}</td>
               <td>
                 {% users_full_name abstract.pending_reviewers as pending_reviewers %}
