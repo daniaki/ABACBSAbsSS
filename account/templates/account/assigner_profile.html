@@ -61,12 +61,12 @@
 <script type="text/javascript">
   $("document").ready(function() {
     let table = $("#abstract-table").DataTable({
-      {#dom: "lfrtip",#}
+      dom: "lfrtip",
       pageLength: 25,
       lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
     });
     // alignFilterLeft();
-    $('.dataTables_filter').parents()[1].children[0].remove();
+    {#$('.dataTables_filter').parents()[1].children[0].remove();#}
     $('.dataTables_filter').addClass("left-filter");
     $('#abstract-table').fadeIn(500);
   });
