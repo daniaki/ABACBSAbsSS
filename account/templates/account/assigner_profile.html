@@ -17,9 +17,7 @@
           <th>Accepted</th>
           <th>Declined</th>
           <th>Comments</th>
-          {% for category in CATEGORIES %}
-            <th>{{ category|capfirst }}</th>
-          {% endfor %}
+          <th>Categories</th>
         </thead>
         <tbody>
           {% for abstract in object_list.all %}
@@ -45,10 +43,7 @@
                 {{ declined_reviewers|join:', '|default:"-" }}
               </td>
               <td>{{ abstract.comments|length|default:"-" }} </td>
-              {% for category in CATEGORIES %}
-                {% has_category category abstract as has_cat %}
-                <td>{% if has_cat %}Yes{% else %}No{% endif %}</td>
-              {% endfor %}
+              <td>{{ abstract.categories.all|join:", " }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -65,7 +60,9 @@
 <script type="text/javascript">
   $("document").ready(function() {
     let table = $("#abstract-table").DataTable({
-      paging: false,
+      dom: "lfrtip",
+      pageLength: 25,
+      lengthMenu: [ 25, 50, 75, 100, "All" ],
     });
     // alignFilterLeft();
     $('.dataTables_filter').parents()[1].children[0].remove();

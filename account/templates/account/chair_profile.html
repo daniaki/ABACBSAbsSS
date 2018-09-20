@@ -62,9 +62,7 @@
           <th>Reviews</th>
           <th>Comments</th>
           <th>Score</th>
-          {% for category in CATEGORIES %}
-            <th>{{ category|capfirst }}</th>
-          {% endfor %}
+          <th>Categories</th>
         </thead>
         <tbody>
           {% for abstract in abstract_list.all %}
@@ -80,10 +78,7 @@
               <td>{{ abstract.reviews.count|default:"-" }} </td>
               <td>{{ abstract.comments|length|default:"-" }} </td>
               <td>{{ abstract.score|stringformat:"#.3g"|default:"-" }} </td>
-              {% for category in CATEGORIES %}
-                {% has_category category abstract as has_cat %}
-                <td>{% if has_cat %}Yes{% else %}No{% endif %}</td>
-              {% endfor %}
+              <td>{{ abstract.categories.all|join:", " }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -98,13 +93,17 @@
 {% block extra_scripts %}
 <script src="{% static 'core/plotly/plotly-latest.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'core/core/plots.js' %}" type="text/javascript"></script>
+<script src="http://cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js" type="text/javascript"></script>
 <script type="text/javascript">
   $("document").ready(function() {
     let toggleSelectedOn = false;
 
     let table = $("#abstract-table").DataTable({
-      paging: false,
+      dom: "lfrtip",
+      pageLength: 25,
+      lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
     });
+
     let nRows = $('tr').length - 1;  // Minus header row
     $("#abstract-table_info").text(
       `Showing ${nRows} of ${nRows} entries`
