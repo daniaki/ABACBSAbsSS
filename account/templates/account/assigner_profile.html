@@ -57,10 +57,13 @@
 
 
 {% block extra_scripts %}
+<script src="http://cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js" type="text/javascript"></script>
 <script type="text/javascript">
   $("document").ready(function() {
     let table = $("#abstract-table").DataTable({
-
+      {#dom: "lfrtip",#}
+      pageLength: 25,
+      lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
     });
     // alignFilterLeft();
     $('.dataTables_filter').parents()[1].children[0].remove();
