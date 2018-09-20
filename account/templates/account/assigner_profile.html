@@ -62,7 +62,7 @@
     let table = $("#abstract-table").DataTable({
       dom: "lfrtip",
       pageLength: 25,
-      lengthMenu: [ 25, 50, 75, 100, "All" ],
+      lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
     });
     // alignFilterLeft();
     $('.dataTables_filter').parents()[1].children[0].remove();
