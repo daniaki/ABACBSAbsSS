@@ -7,7 +7,7 @@
   <!-- Plot modal -->
   {% include 'account/plot_modal.html' %}
 
-  <div class="{% if show_demographics %}container-fluid{% else %}container{% endif %}">
+  <div class="container-fluid">
     <h1>
       Abstracts
       <a href="{% url 'account:download_abstracts' %}" class="pl-2">
@@ -26,7 +26,7 @@
   </div>
   <br><hr>
 
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-6">
         <a id="toggle-selected" class="btn btn-outline-dark mt-1">Toggle selected</a>
