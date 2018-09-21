@@ -11,11 +11,13 @@ server_tz = timezone.get_current_timezone()
 
 
 class CheckClosingDateMixin:
+    closing_dates = [get_local_closing_date(),]
+    closed_message = "Sorry, abstract submissions have now been closed!"
     def dispatch(self, request, *args, **kwargs):
-        if server_tz.normalize(timezone.now()) >= get_local_closing_date():
-            messages.warning(
-                request, "Sorry, abstract submissions have now been closed!")
-            return redirect("account:profile")
+        for date in self.closing_dates:
+            if server_tz.normalize(timezone.now()) >= date:
+                messages.info(request, self.closed_message)
+                return redirect("account:profile")
         return super().dispatch(request, *args, **kwargs)
 
 

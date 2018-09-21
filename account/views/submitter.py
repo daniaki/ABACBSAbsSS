@@ -6,6 +6,8 @@ from django.contrib import messages
 from core.mixins import CheckClosingDateMixin
 from abstract.models import PresentationCategory
 
+from core.utilities import get_local_closing_date, get_local_scholarship_closing_date
+
 from .. import models, forms
 from ..mixins import CompleteProfileRequired, GroupRestrictedView
 
@@ -24,6 +26,11 @@ class ScholarshipApplicationView(LoginRequiredMixin,
     form_class = forms.ScholarshipApplicationForm
     success_url = '/profile/'
     template_name = 'account/scholarship_application.html'
+    closing_dates = [
+        get_local_scholarship_closing_date(),
+        get_local_closing_date(),
+    ]
+    closed_message = "Sorry, travel bursary applications have now closed!"
 
     def get(self, request, *args, **kwargs):
         if self.request.GET.get('delete', False) == 'True':
@@ -73,9 +80,14 @@ class ProfileView(LoginRequiredMixin, CompleteProfileRequired,
         if closed.count() > 0:
             messages.info(
                 request,
-                "The following categories have now been closed: {}. "
-                "Submissions under these categories can no longer be "
-                "edited or withdrawn.".format(
+                "<ul>"
+                    "<li>Travel bursary applications have now closed.</li>"
+                    "<li>"
+                    "The following categories have now been closed: {}. "
+                    "Submissions under these categories can no longer be "
+                    "edited or withdrawn."
+                    "</li>"
+                "</ul>".format(
                     ', '.join(['<b>{}</b>'.format(c.text) for c in closed])
                 )
             )
