@@ -5,7 +5,7 @@
       {% if 'success' in message.tags %}
         <div class="alert alert-success alert-dismissible fade show" role="alert">
           <h4 class="alert-heading">Success!</h4>
-          <hr>
+          <hr style="width: 98%">
           <p>{{ message|safe }}</p>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -14,10 +14,10 @@
       {% endif %}
 
       {% if 'error' in message.tags %}
-        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-          <h4 class="alert-heading">Error!</h4>
-          <hr>
-          <p>{{ message|safe }}</p>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <h4 class="alert-heading text-center">Error!</h4>
+          <hr style="width: 98%">
+          <p class="pl-4">{{ message|safe }}</p>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -25,10 +25,10 @@
       {% endif %}
 
       {% if 'warning' in message.tags %}
-        <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
           <h4 class="alert-heading">Warning!</h4>
-          <hr>
-          <p>{{ message|safe }}</p>
+          <hr style="width: 98%">
+          <p class="pl-4">{{ message|safe }}</p>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -36,10 +36,10 @@
       {% endif %}
 
       {% if 'info' in message.tags %}
-        <div class="alert alert-primary alert-dismissible fade show text-center" role="alert">
-          <h4 class="alert-heading">Information</h4>
-          <hr>
-          <p>{{ message|safe }}</p>
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+          <h4 class="alert-heading text-center">Information</h4>
+          <hr style="width: 98%">
+          <p class="pl-4">{{ message|safe }}</p>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
