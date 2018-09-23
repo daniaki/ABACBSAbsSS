@@ -21,7 +21,14 @@ with open(str(DATA_DIR / 'reviewers.csv'), 'rt') as fp:
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument('password', nargs='?', type=str, default='')
+
     def handle(self, *args, **kwargs):
+        password = kwargs.get('password', '').strip()
+        if password:
+            password = User.objects.make_random_password()
+
         with transaction.atomic():
             sys.stdout.write("email,username,password\n")
             for name, email in accounts:
@@ -42,7 +49,6 @@ class Command(BaseCommand):
                 else:
                     account = account.first()
 
-                password = User.objects.make_random_password()
                 account.set_password(password)
                 account.save()
                 account.profile.save()
