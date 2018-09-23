@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         password = kwargs.get('password', '').strip()
-        if password:
+        if not password:
             password = User.objects.make_random_password()
 
         with transaction.atomic():
