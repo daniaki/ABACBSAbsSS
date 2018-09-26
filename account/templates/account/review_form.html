@@ -3,7 +3,7 @@
 <form class="hidden" id="{{ assignment.id }}-review-form" v-bind:class="{'show': accepted, 'hidden': !accepted}">
   <hr>
   <h4>Review</h4>
-  <p class="text-muted">Please fill in your review scores in the space provided. The maximum score for each area is 7, while the minimum is 0. You may also provide additional comments if you wish.
+  <p class="text-muted">Please fill in your review scores in the space provided. The maximum score for each area is {{ max_score }}, while the minimum is {{ min_score }}. You may also provide additional comments if you wish.
     You may edit this review at any time. Basic markdown is supported. Click the 'Preview' to see your rendered markdown.
   </p>
 
