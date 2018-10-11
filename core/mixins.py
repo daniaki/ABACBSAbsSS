@@ -10,14 +10,23 @@ User = get_user_model()
 server_tz = timezone.get_current_timezone()
 
 
+def add_closed_message(request, message):
+    # temp hack for mock tests
+    return messages.info(request, message)
+
+
 class CheckClosingDateMixin:
     closing_dates = [get_local_closing_date(),]
     closed_message = "Sorry, abstract submissions have now been closed!"
+    ignore_for_debug = False
+    
     def dispatch(self, request, *args, **kwargs):
         for date in self.closing_dates:
-            if server_tz.normalize(timezone.now()) >= date:
-                messages.info(request, self.closed_message)
-                return redirect("account:profile")
+            if server_tz.normalize(timezone.now()) >= date and \
+                    not self.ignore_for_debug:
+                add_closed_message(request, self.closed_message)
+                response = redirect("account:profile")
+                return response
         return super().dispatch(request, *args, **kwargs)
 
 
