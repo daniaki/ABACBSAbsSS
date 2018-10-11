@@ -21,6 +21,16 @@ class TestScholarshipApplicationView(TestMessageMixin, TestCase):
         profile = self.user.profile
         profile.completed_intial_login = True
         profile.save()
+        self.client.login(
+            username=profile.user.username, password=profile.user.password)
+        setattr(
+            views.submitter.ScholarshipApplicationView,
+            'ignore_for_debug', True)
+        
+    def tearDown(self):
+        setattr(
+            views.submitter.ScholarshipApplicationView,
+            'ignore_for_debug', False)
         
     def test_creates(self):
         data = {'text': 'hello', 'has_other_funding': False, 'other_funding': ''}
@@ -40,7 +50,7 @@ class TestScholarshipApplicationView(TestMessageMixin, TestCase):
             self.assertEqual(response.status_code, 403)
     
     def test_incomplete_profile_redirects(self):
-        request = self.factory.get(self.path)
+        request = self.create_request('get', path=self.path)
         request.user = self.user
         
         profile = self.user.profile
@@ -51,13 +61,14 @@ class TestScholarshipApplicationView(TestMessageMixin, TestCase):
         self.assertEqual(response.status_code, 302)
     
     def test_compelete_profile_not_redirected(self):
-        request = self.factory.get(self.path)
+        request = self.create_request('get', path=self.path)
         request.user = self.user
         
         profile = self.user.profile
         profile.completed_intial_login = True
         profile.save()
         
+        setattr(views.submitter.ScholarshipApplicationView, 'ignore_for_debug', True)
         response = account.views.submitter.ScholarshipApplicationView.as_view()(request)
         self.assertEqual(response.status_code, 200)
 

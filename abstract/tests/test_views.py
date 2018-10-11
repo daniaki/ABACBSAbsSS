@@ -32,6 +32,10 @@ class TestSubmissionView(TestMessageMixin, TestCase):
         self.factory = RequestFactory()
         self.user = a_factories.SubmitterFactory()
         self.path = reverse('abstract:submit_abstract')
+        setattr(views.SubmissionView, 'ignore_for_debug', True)
+
+    def tearDown(self):
+        setattr(views.SubmissionView, 'ignore_for_debug', False)
         
     def test_creates(self):
         data = mock_data()
@@ -85,6 +89,10 @@ class TestEditSubmissionView(TestMessageMixin, TestCase):
         self.abstract = factories.AbstractFactory(submitter=self.user)
         self.path = reverse('abstract:edit_abstract',
                             kwargs={'id': self.abstract.id})
+        setattr(views.EditSubmissionView, 'ignore_for_debug', True)
+
+    def tearDown(self):
+        setattr(views.EditSubmissionView, 'ignore_for_debug', False)
         
     def test_edits(self):
         data = mock_data()
@@ -152,6 +160,10 @@ class TestDeleteSubmissionView(TestMessageMixin, TestCase):
         self.abstract = factories.AbstractFactory(submitter=self.user)
         self.path = reverse('abstract:delete_abstract',
                             kwargs={'id': self.abstract.id})
+        setattr(views.DeleteSubmissionView, 'ignore_for_debug', True)
+
+    def tearDown(self):
+        setattr(views.DeleteSubmissionView, 'ignore_for_debug', False)
     
     def test_404_deleting_abstract_that_does_not_belong_to_user(self):
         request = self.factory.get(self.path)

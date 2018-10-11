@@ -199,11 +199,12 @@ class TestDownloadViews(TestCase):
         reader = csv.DictReader(
             handle, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
         dict_ = list(reader)[0]
-        self.assertEqual(dict_['title'], self.abstract.title.replace('\n', ' '))
-        self.assertEqual(dict_['content'], self.abstract.text.replace('\n', ' '))
-        self.assertEqual(dict_['contribution'], self.abstract.contribution.replace('\n', ' '))
+        self.assertEqual(dict_['title'], views.chair.format_text(self.abstract.title))
+        self.assertEqual(dict_['content'], views.chair.format_text(self.abstract.text))
+        self.assertEqual(dict_['contribution'], views.chair.format_text(self.abstract.contribution))
         self.assertEqual(dict_['authors'], self.abstract.authors)
         self.assertEqual(dict_['affiliations'], self.abstract.author_affiliations)
+        self.assertEqual(dict_['applied_for_scholarship'], 'True')
         self.assertEqual(dict_['keywords'], ','.join([x.text for x in self.abstract.keywords.all()]))
         
         for category in PresentationCategory.objects.all():
@@ -233,8 +234,8 @@ class TestDownloadViews(TestCase):
         dict_ = list(reader)[0]
 
         self.assertEqual(dict_['applicant'], self.profile.display_name)
-        self.assertEqual(dict_['reason'], self.scholarship.text)
-        self.assertEqual(dict_['other_funding'], self.scholarship.other_funding)
+        self.assertEqual(dict_['reason'], views.chair.format_text(self.scholarship.text))
+        self.assertEqual(dict_['other_funding'], views.chair.format_text(self.scholarship.other_funding))
         self.assertEqual(dict_['email'], self.profile.email)
         self.assertEqual(dict_['career_stage'], self.profile.career_stage.text)
 
