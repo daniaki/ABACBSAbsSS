@@ -15,6 +15,10 @@ from .. import models, mixins
 logger = logging.getLogger('django')
 
 
+def format_text(text, sep=' '):
+    return ' '.join([x.strip() for x in text.split(sep=sep) if x.strip()])
+
+
 class ScholarshipListView(LoginRequiredMixin, mixins.GroupRestrictedView,
                           ListView):
     """
@@ -112,6 +116,7 @@ class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
             'state',
             'aboriginal/torres',
             'accepted',
+            'applied_for_scholarship',
             'score',
         ]
         for category in abstract_models.PresentationCategory.objects.all():
@@ -129,9 +134,9 @@ class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
             submitter = abstract.submitter
             profile = submitter.profile
             row = {
-                'title': abstract.title.replace('\n', ' '),
-                'content': abstract.text.replace('\n', ' '),
-                'contribution': abstract.contribution.replace('\n', ' '),
+                'title': format_text(abstract.title),
+                'content': format_text(abstract.text),
+                'contribution': format_text(abstract.contribution),
                 'authors': abstract.authors.replace('\n', '|||'),
                 'affiliations': abstract.author_affiliations.replace('\n', '|||'),
                 'keywords': ','.join([x.text for x in abstract.keywords.all()]),
@@ -141,6 +146,7 @@ class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
                 'gender': None if not profile.gender else profile.gender.text,
                 'state': None if not profile.state else profile.state.text,
                 'aboriginal/torres': None if not profile.aboriginal_or_torres else profile.aboriginal_or_torres.text,
+                'applied_for_scholarship': getattr(abstract.submitter, 'scholarship_application', None) is not None,
                 'accepted': abstract.accepted,
                 'score': abstract.score,
             }
@@ -190,8 +196,8 @@ class DownloadScholarshipApplications(LoginRequiredMixin,
                 'applicant': profile.display_name,
                 'email': profile.email,
                 'career_stage': profile.career_stage.text,
-                'reason': application.text,
-                'other_funding': application.other_funding
+                'reason': format_text(application.text),
+                'other_funding': format_text(application.other_funding)
             }
             dict_rows.append(row)
         writer.writerows(dict_rows)
