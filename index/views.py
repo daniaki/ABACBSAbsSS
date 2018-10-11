@@ -10,7 +10,6 @@ def index(request):
         abstracts = Abstract.objects.all()
         data = compute_statistics(abstracts)
         return JsonResponse(data=data)
-
     return render(request, "index/index.html", {})
 
 
