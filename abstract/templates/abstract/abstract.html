@@ -46,15 +46,18 @@
   <p><strong>Overall score:</strong> {{ abstract.score|stringformat:"#.3g"|default:'-' }}</p>
 </div>
 
-{% if show_demographics %}
-  <div class="abstract-demographics" id="{{ abstract.id }}-demographics">
-    <hr>
-    <h4>Demographic Information</h4>
-    <p><strong>Career stage:</strong> {{ abstract.submitter.profile.career_stage }}</p>
-    <p><strong>Gender:</strong> {{ abstract.submitter.profile.gender }}</p>
-    <p><strong>State:</strong> {{ abstract.submitter.profile.state }}</p>
-    <p><strong>Aboriginal or Torres Straight Islander:</strong> {{ abstract.submitter.profile.aboriginal_or_torres }}</p>
-  </div>
+
+{% if CHAIR_GROUP in request.user.profile.group_names %}
+  {% if show_demographics %}
+    <div class="abstract-demographics" id="{{ abstract.id }}-demographics">
+      <hr>
+      <h4>Demographic Information</h4>
+      <p><strong>Career stage:</strong> {{ abstract.submitter.profile.career_stage }}</p>
+      <p><strong>Gender:</strong> {{ abstract.submitter.profile.gender }}</p>
+      <p><strong>State:</strong> {{ abstract.submitter.profile.state }}</p>
+      <p><strong>Aboriginal or Torres Straight Islander:</strong> {{ abstract.submitter.profile.aboriginal_or_torres }}</p>
+    </div>
+  {% endif %}
 {% endif %}
 
 <div id="{{ abstract.id }}-reviews" class="abstract-reviews">
@@ -70,9 +73,11 @@
           <th>Username</th>
           <th>Name</th>
           <th>Status</th>
-          <th>Content</th>
-          <th>Contribution</th>
-          <th>Interest</th>
+          {% if CHAIR_GROUP in request.user.profile.group_names %}
+            <th>Content</th>
+            <th>Contribution</th>
+            <th>Interest</th>
+          {% endif %}
         </thead>
         <tbody>
           {% for assignment in abstract.assignments.all %}
@@ -86,9 +91,11 @@
                   {{ assignment.status|capfirst }}
                 {% endif %}
               </td>
-              <td>{{ assignment.review.score_content|default:'-' }}</td>
-              <td>{{ assignment.review.score_contribution|default:'-' }} </td>
-              <td>{{ assignment.review.score_interest|default:'-' }} </td>
+              {% if CHAIR_GROUP in request.user.profile.group_names %}
+                <td>{{ assignment.review.score_content|default:'-' }}</td>
+                <td>{{ assignment.review.score_contribution|default:'-' }} </td>
+                <td>{{ assignment.review.score_interest|default:'-' }} </td>
+              {% endif %}
             </tr>
           {% endfor %}
         </tbody>
