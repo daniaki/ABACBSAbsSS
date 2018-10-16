@@ -43,7 +43,9 @@
   </p>
   <p><strong>Categories:</strong> {{ abstract.categories.all|join:', ' }}</p>
   <p><strong>Keywords:</strong> {{ abstract.keywords.all|join:', ' }}</p>
-  <p><strong>Overall score:</strong> {{ abstract.score|stringformat:"#.3g"|default:'-' }}</p>
+  {% if CHAIR_GROUP in request.user.profile.group_names %}
+    <p><strong>Overall score:</strong> {{ abstract.score|stringformat:"#.3g"|default:'-' }}</p>
+  {% endif %}
 </div>
 
 
