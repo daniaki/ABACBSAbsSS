@@ -149,6 +149,7 @@ class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
                 'applied_for_scholarship': getattr(abstract.submitter, 'scholarship_application', None) is not None,
                 'accepted': abstract.accepted,
                 'score': abstract.score,
+                'email': format_text(abstract.submitter.profile.email),
             }
             for category in abstract_models.PresentationCategory.objects.all():
                 row[category.text.lower()] = category in abstract.categories.all()
