@@ -118,6 +118,7 @@ class DownloadAbstracts(LoginRequiredMixin, mixins.GroupRestrictedView,
             'accepted',
             'applied_for_scholarship',
             'score',
+            'email',
         ]
         for category in abstract_models.PresentationCategory.objects.all():
             columns.append(category.text.lower())
