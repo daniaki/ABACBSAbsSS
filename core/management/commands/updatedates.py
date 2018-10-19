@@ -5,9 +5,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
-from demographic import models
 from abstract import models as abstract_models
-from account.models import UserGroups
 
 BASE_DIR = Path(str(Path(__file__))).parents[3]
 DATA_DIR = BASE_DIR / 'data'
