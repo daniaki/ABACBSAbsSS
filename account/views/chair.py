@@ -1,4 +1,5 @@
 import csv
+import re
 import logging
 
 from django.views.generic import ListView, TemplateView
@@ -16,6 +17,7 @@ logger = logging.getLogger('django')
 
 
 def format_text(text, sep=' '):
+    text = re.sub(r'\n+|\t+', ' ', text)
     return ' '.join([x.strip() for x in text.split(sep=sep) if x.strip()])
 
 
