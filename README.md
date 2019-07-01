@@ -58,7 +58,7 @@ python manage.py populatetables
 python manage.py migrate
 ```
 
-# Production setup
+# ORCID setup
 You will need an [ORCID](https://orcid.org/) account to obtain a key, secret
 pair for the application. In your account, navigate to `developer tools`. You
 will need to create a new entry by specifying an application `name`, `URL`,
