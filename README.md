@@ -68,7 +68,7 @@ You will need an [ORCID](https://orcid.org/) account to obtain a key, secret
 pair for the application. In your account, navigate to `developer tools`. You
 will need to create a new entry by specifying an application `name`, `URL`,
 `description` and a `redirect URI`. The redirect uri should be the URL you provided
-suffixed by `/oauth2/complete/orcid/`. For example: 
+suffixed by `/oauth/complete/orcid/`. For example: 
 
 ```
 URL: https://abacbs.org/conference/
