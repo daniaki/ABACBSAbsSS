@@ -59,12 +59,11 @@ Required settings are `orcid_key`, `orcid_secret`, `secret_key`, `closing_date`
 and `grant_closing_date`. The remaining settings are not yet used. 
 To create a blank `settings.json` file run:
 
-
-# Production setup
 ```bash
 python manage.py createdefaultsecrets
 ```
 
+# Production setup
 You will need an [ORCID](https://orcid.org/) account to obtain a key, secret
 pair for the application. In your account, navigate to `developer tools`. You
 will need to create a new entry by specifying an application `name`, `URL`,
