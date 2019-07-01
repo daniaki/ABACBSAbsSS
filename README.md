@@ -2,7 +2,7 @@
 Conference abstract submission and review web application
 
 # Requirements
-- django >= 2.0.11
+- django == 2.0.13
 - social-auth-app-django
 - factory-boy
 - Faker

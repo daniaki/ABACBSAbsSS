@@ -95,8 +95,6 @@ INSTALLED_APPS = [
     'abstract',
 
     'social_django',
-    'rest_framework',
-    'django_filters',
 ]
 
 MIDDLEWARE = [
