@@ -36,3 +36,89 @@ python manage.py populatetables
 python manage.py migrate
 ```
 
+# Configuration
+The project requires that a `settings.json` file exist in the settings folder with
+the following format:
+
+```json
+{
+  "orcid_key": "",
+  "orcid_secret": "",
+  "secret_key": "",
+  "email_host": "localhost",
+  "email_port": "1025",
+  "email_host_user": "",
+  "email_host_password": "",
+  "reply_to_email": "",
+  "closing_date": "2018-11-07 22:59:59+10:00",
+  "grant_closing_date": "2018-09-17 09:00:00+10:00"
+}
+```
+
+Required settings are `orcid_key`, `orcid_secret`, `secret_key`, `closing_date`
+and `grant_closing_date`. The remaining settings are not yet used. 
+To create a blank `settings.json` file run:
+
+
+# Production setup
+```bash
+python manage.py createdefaultsecrets
+```
+
+You will need an [ORCID](https://orcid.org/) account to obtain a key, secret
+pair for the application. In your account, navigate to `developer tools`. You
+will need to create a new entry by specifying an application `name`, `URL`,
+`description` and a `redirect URI`. The redirect uri should be the URL you provided
+suffixed by `/oauth2/complete/orcid/`. For example: 
+
+```
+URL: https://abacbs.org/conference/
+Redirect URI: https:/abacbs.org/oauth2/complete/orcid/
+```
+
+Once you have registered the application, copy the `Client ID` to `orcid_key`
+and the `Client secret` to `orcid_secret` in `settings.json`.
+
+
+# User accounts
+This step details how to create accounts for staff users.
+
+Create a file called `accounts.csv` in file `data` folder with the following 
+format:
+
+```csv
+email,name,password,group
+john@smith.com,John Smith,1234qwer,conference_chair
+```
+
+The group column must be one of `reviewer`, `assigner` or `conference chair`.
+Reviewers are permitted to review abstracts which are assigned to them by
+an Assigner. Conference chairs have access to all data including demographic
+statistics, the ability to approve submissions, download database dumps etc. 
+
+
+
+# Closing dates
+In `settings.json` modify the two keys `closing_date` (global closing date)
+and `grant_closing_date` (closing date for travel grant applications). The values
+for these keys should follow the python datetime format:
+
+```
+2018-09-17 09:00:00+10:00
+```
+
+# Categories
+In `data/categories.txt` you can add submission categories. The file is a
+tab separated file with the first column being the category name and the second
+column being the category closing date. The closing date follows the same format
+as above.
+
+
+# Customisation
+You can modify any of the files contained in the folder `data` by
+adding/removing rows to customise specific aspects of the submission system. If
+you make modifications, be sure to re-run the command:
+
+```bash
+python manage.py populatetables
+```

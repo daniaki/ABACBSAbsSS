@@ -3,6 +3,7 @@ import os
 import random
 import string
 import sys
+
 from pathlib import Path
 
 from django.core.management.base import BaseCommand
@@ -26,7 +27,9 @@ class Command(BaseCommand):
             "email_port": "1025",
             "email_host_user": "",
             "email_host_password": "",
-            "reply_to_email": ""
+            "reply_to_email": "",
+            "closing_date": "2018-11-07 22:59:59+10:00",
+            "grant_closing_date": "2018-11-07 22:59:59+10:00",
         }
 
         path = os.path.join(SETTINGS_DIR, 'secrets.json')
