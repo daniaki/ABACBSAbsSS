@@ -2,7 +2,7 @@
 Conference abstract submission and review web application
 
 # Requirements
-- django==2.0
+- django >= 2.0.11
 - social-auth-app-django
 - factory-boy
 - Faker
@@ -96,6 +96,8 @@ Reviewers are permitted to review abstracts which are assigned to them by
 an Assigner. Conference chairs have access to all data including demographic
 statistics, the ability to approve submissions, download database dumps etc. 
 
+This command will output the accounts created with passwords and usernames. Pipe
+the output into a separate file which you can then email to staff members.
 
 
 # Closing dates
