@@ -72,7 +72,7 @@ suffixed by `/oauth2/complete/orcid/`. For example:
 
 ```
 URL: https://abacbs.org/conference/
-Redirect URI: https:/abacbs.org/oauth2/complete/orcid/
+Redirect URI: https:/abacbs.org/conference/oauth2/complete/orcid/
 ```
 
 Once you have registered the application, copy the `Client ID` to `orcid_key`
