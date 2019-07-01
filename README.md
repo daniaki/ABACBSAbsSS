@@ -37,7 +37,7 @@ python manage.py migrate
 ```
 
 # Configuration
-The project requires that a `settings.json` file exist in the settings folder with
+The project requires that a `secrets.json` file exist in the settings folder with
 the following format:
 
 ```json
@@ -57,7 +57,7 @@ the following format:
 
 Required settings are `orcid_key`, `orcid_secret`, `secret_key`, `closing_date`
 and `grant_closing_date`. The remaining settings are not yet used. 
-To create a blank `settings.json` file run:
+To create a blank `secrets.json` file run:
 
 ```bash
 python manage.py createdefaultsecrets
@@ -76,7 +76,7 @@ Redirect URI: https:/abacbs.org/conference/oauth/complete/orcid/
 ```
 
 Once you have registered the application, copy the `Client ID` to `orcid_key`
-and the `Client secret` to `orcid_secret` in `settings.json`.
+and the `Client secret` to `orcid_secret` in `secrets.json`.
 
 
 # User accounts
@@ -100,7 +100,7 @@ the output into a separate file which you can then email to staff members.
 
 
 # Closing dates
-In `settings.json` modify the two keys `closing_date` (global closing date)
+In `secrets.json` modify the two keys `closing_date` (global closing date)
 and `grant_closing_date` (closing date for travel grant applications). The values
 for these keys should follow the python datetime format:
 
