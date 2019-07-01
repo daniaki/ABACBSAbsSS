@@ -6,9 +6,7 @@
   <div id='login-block' class="container">
     <h1>Staff and reviewer login</h1>
     This login is for staff and reviewers only. Please fill out the form below
-    with your assigned username and password. If you have forgotten your password,
-    you can click the reset button below. This will generate a new password
-    and send it to your contact email address.
+    with your assigned username and password.
 
     <br><br>
     <form action="{% url 'account:staff_login' %}" method="post">
@@ -16,9 +14,6 @@
       {% include 'core/bs4_form.html' %}
       <button type="submit" class="btn btn-outline-dark">Login</button>
     </form>
-
-{#    <br><br><hr>#}
-{#    <a href="{% url 'account:reset_password' %}" style="text-transform: none">Reset password</a>#}
   </div>
 
 {% endblock %}
