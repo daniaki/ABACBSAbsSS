@@ -9,34 +9,8 @@ Conference abstract submission and review web application
 - mock
 - mod_wsgi
 
-# Local Development
-Make sure to file in the genenrated secrets file if running on staging/production.
 
-```bash
-pip install -r requirements\local.txt
-python manage.py createdefaultsecrets
-python manage.py populatetables
-python manage.py createtestusers
-python manage.py migrate
-```
-
-# Staging setup
-```bash
-pip install -r requirements\staging.txt
-python manage.py createdefaultsecrets
-python manage.py populatetables
-python manage.py migrate
-```
-
-# Production setup
-```bash
-pip install -r requirements\production.txt
-python manage.py createdefaultsecrets
-python manage.py populatetables
-python manage.py migrate
-```
-
-# Configuration
+# Initial configuration
 The project requires that a `secrets.json` file exist in the settings folder with
 the following format:
 
@@ -56,11 +30,32 @@ the following format:
 ```
 
 Required settings are `orcid_key`, `orcid_secret`, `secret_key`, `closing_date`
-and `grant_closing_date`. The remaining settings are not yet used. 
-To create a blank `secrets.json` file run:
+and `grant_closing_date`. The remaining settings are not yet used. Copy and paste
+the above into a new `secrets.json` file.
+
+
+# Local Development
+Make sure to file in the genenrated secrets file if running on staging/production.
 
 ```bash
-python manage.py createdefaultsecrets
+pip install -r requirements\local.txt
+python manage.py populatetables
+python manage.py createtestusers
+python manage.py migrate
+```
+
+# Staging setup
+```bash
+pip install -r requirements\staging.txt
+python manage.py populatetables
+python manage.py migrate
+```
+
+# Production setup
+```bash
+pip install -r requirements\production.txt
+python manage.py populatetables
+python manage.py migrate
 ```
 
 # Production setup
@@ -119,6 +114,14 @@ as above.
 You can modify any of the files contained in the folder `data` by
 adding/removing rows to customise specific aspects of the submission system. If
 you make modifications, be sure to re-run the command:
+
+```bash
+python manage.py populatetables
+```
+
+
+# Additional notes:
+Any time you make changes to the data directory, re-run the command:
 
 ```bash
 python manage.py populatetables
