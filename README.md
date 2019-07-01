@@ -90,7 +90,7 @@ email,name,password,group
 john@smith.com,John Smith,1234qwer,conference_chair
 ```
 
-The group column must be one of `reviewer`, `assigner` or `conference chair`.
+The group column must be one of `reviewer`, `assigner` or `conference_chair`.
 Reviewers are permitted to review abstracts which are assigned to them by
 an Assigner. Conference chairs have access to all data including demographic
 statistics, the ability to approve submissions, download database dumps etc. 
