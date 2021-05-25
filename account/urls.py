@@ -1,5 +1,5 @@
 from django.urls import path, include
-from django.contrib.auth.views import logout
+from django.contrib.auth import logout
 
 from . import views
 
