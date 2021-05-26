@@ -4,6 +4,13 @@ DEBUG = False
 USE_SOCIAL_AUTH = not DEBUG
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.compute.amazonaws.com', 'abstracts.abacbs.org']
 
+# See https://docs.djangoproject.com/en/0.11/ref/settings/#secure-proxy-ssl-header
+# for security risks related to SSL headers. Set these only if you are using the
+# NGINX proxy.
+# Enable use of forwarded scheme, host and port from nginx/apache when proxying
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Loggers setup.
 LOGGING = {
     'version': 1,
@@ -20,7 +27,7 @@ LOGGING = {
         'file': {
             'level': 'WARNING',
             'class': 'logging.FileHandler',
-            'filename': str(BASE_DIR / 'info.log'),
+            'filename': str(BASE_DIR / 'logs' / 'info.log'),
             'formatter': 'verbose'
         }
     },
