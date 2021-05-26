@@ -103,13 +103,16 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-/static/
-.idea/*
 
-/settings/secrets.json
+settings/secrets.json
 Dockerfile
 docker-compose.yml
 docker/
 **/*.cert
 **/*.key
 logs/*
+static/*
+
+# IDE
+.idea/*
+.vscode/*
