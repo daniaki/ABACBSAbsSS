@@ -139,3 +139,14 @@ Finally, run the following command in the application directory:
 ```shell
 docker-compose up -d
 ```
+
+If you decide that you want to add new customised data entries while the docker-compose service is already running, 
+you will need to start a shell session into the running container:
+
+```shell
+docker exec -it <container-name> /bin/bash
+```
+
+Once inside, modify the desired file in the `data/` directory and then re-run `python manage.py populatetables` in that
+same shell session. If you are unsure of how to find your container's name, in your host system run `docker ps`. You 
+should see something similar to `<project-root-folder-name>_app_1`, for example `abacbsabsss_app_1`.
