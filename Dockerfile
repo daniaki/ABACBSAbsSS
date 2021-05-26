@@ -32,8 +32,6 @@ FROM builder as app
 
 WORKDIR /srv/app
 
-COPY . .
-
 RUN chown -R ${APP_USER}:${APP_USER} /srv/app
 
 # Copy entrypoint script into the image
@@ -45,6 +43,5 @@ EXPOSE 8000
 
 # Run entrypoint script in maveric source root
 USER ${APP_USER}
-WORKDIR /srv/app
 
 ENTRYPOINT ["docker-entrypoint.sh"]
