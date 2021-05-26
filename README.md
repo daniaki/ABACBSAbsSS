@@ -103,7 +103,6 @@ Any time you make changes to the data directory, re-run the command:
 python manage.py populatetables
 ```
 
-
 # Local Development
 ```bash
 pip install -r requirements\local.txt
@@ -113,17 +112,21 @@ python manage.py createtestusers
 ```
 
 # Production setup
+## Option 1: Managed by you
+If managing your own environment, set up a production server using Nginx and Gunicorn. Consult the documentation found 
+[here](https://docs.gunicorn.org/en/stable/deploy.html). Initialize the Django application using:
+
 ```bash
 pip install -r requirements\production.txt
 python manage.py migrate
 python manage.py populatetables
 ```
 
-To set up a production server using Nginx and Gunicorn, consult the documentation found 
-[here](https://docs.gunicorn.org/en/stable/deploy.html). Alternatively if you want to run this application in Docker, 
-make sure to have Docker and Docker-compose installed. Place you SSL certificates in `docker/nginx/ssl` and make sure 
-they are labelled `app.cert` and `app.key` for your certificate file and key file respectively. In the 
-`docker/nginx/nginx.conf` file, modify the field `server_name` to your registered domain name.
+## Option 2: Manged by Docker
+Alternatively if you want to run this application in Docker and skip the above steps, make sure to have Docker and 
+Docker-compose installed. Place you SSL certificates in `docker/nginx/ssl` and make sure  they are labelled `app.cert` 
+and `app.key` for your certificate file and key file respectively. In the `docker/nginx/nginx.conf` file, modify the 
+field `server_name` to your registered domain name.
 
 You are responsible for performing your own scheduled database backups if needed. You can do this by executing a shell
 session in the running docker-compose container and copying the `db.sqlite3` file to your host file system.
