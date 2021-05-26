@@ -23,11 +23,10 @@ futura-pt
 --------------------------------------------------------------------------- */
 /* Universal Font*/
 * {
-  font-family: 'Open Sans', sans-serif;
+  font-family: Helvetica Neue, sans-serif;
   font-style: normal;
   font-size: 14px;
-  letter-spacing: 1px;
-	
+  line-height: 1.6;
 
   /* Debug */
   /*border: solid 1px red;*/
