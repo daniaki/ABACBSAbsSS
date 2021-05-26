@@ -128,8 +128,8 @@ Docker-compose installed. Place you SSL certificates in `docker/nginx/ssl` and m
 and `app.key` for your certificate file and key file respectively. In the `docker/nginx/nginx.conf` file, modify the 
 field `server_name` to your registered domain name.
 
-You are responsible for performing your own scheduled database backups if needed. You can do this by executing a shell
-session in the running docker-compose container and copying the `db.sqlite3` file to your host file system.
+You are responsible for performing your own scheduled database backups if needed. You can do this by copying the 
+`db.sqlite3` file manually or via a scheduled cron job.
 
 The dockerized application works by accepting HTTP traffic on port 80, redirecting to HTTPS on port 443. You will need
 to make sure your host system is accepting traffic on these ports.
