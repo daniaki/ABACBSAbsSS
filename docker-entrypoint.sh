@@ -7,7 +7,7 @@ set -e
 echo "Running management commands."
 python3 manage.py migrate
 python3 manage.py populatetables
-python3 manage.py collectstatic --noinput --clear
+python3 manage.py collectstatic --noinput
 
 if [ "$ENVIRONMENT" = "production" ]; then
   gunicorn ABACBSAbsSS.wsgi:application \
